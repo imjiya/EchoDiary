@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             EchoDiaryTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Jiya",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
