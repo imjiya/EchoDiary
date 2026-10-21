@@ -12,6 +12,8 @@ import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.onboarding.OnboardingScreen
+import com.simats.echodiary.ui.onboarding.SecondOnboardingScreen
+import com.simats.echodiary.ui.onboarding.ThirdOnboardingScreen
 import com.simats.echodiary.ui.splash.SplashScreen
 import com.simats.echodiary.ui.theme.EchoDiaryTheme
 
@@ -33,6 +35,26 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.Onboarding -> {
                         OnboardingScreen(
+                            onNavigateToSecondOnboarding = {
+                                currentScreen = Screen.SecondOnboarding
+                            },
+                            onNavigateToLogin = {
+                                currentScreen = Screen.Login
+                            }
+                        )
+                    }
+                    is Screen.SecondOnboarding -> {
+                        SecondOnboardingScreen(
+                            onNavigateToThirdOnboarding = {
+                                currentScreen = Screen.ThirdOnboarding
+                            },
+                            onNavigateToLogin = {
+                                currentScreen = Screen.Login
+                            }
+                        )
+                    }
+                    is Screen.ThirdOnboarding -> {
+                        ThirdOnboardingScreen(
                             onNavigateToLogin = {
                                 currentScreen = Screen.Login
                             }
@@ -41,7 +63,7 @@ class MainActivity : ComponentActivity() {
                     is Screen.Login -> {
                         LoginScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Onboarding
+                                currentScreen = Screen.SecondOnboarding
                             },
                             onNavigateToHome = {
                                 currentScreen = Screen.Home

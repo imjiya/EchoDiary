@@ -14,17 +14,18 @@ class OnboardingViewModel : ViewModel() {
 
     fun onGetStartedClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(OnboardingNavigationEvent.NavigateToHome)
+            _navigationEvent.emit(OnboardingNavigationEvent.NavigateToSecondOnboarding)
         }
     }
 
     fun onLogInClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(OnboardingNavigationEvent.NavigateToHome)
+            _navigationEvent.emit(OnboardingNavigationEvent.NavigateToLogin)
         }
     }
 }
 
 sealed class OnboardingNavigationEvent {
-    object NavigateToHome : OnboardingNavigationEvent()
+    object NavigateToSecondOnboarding : OnboardingNavigationEvent()
+    object NavigateToLogin : OnboardingNavigationEvent()
 }

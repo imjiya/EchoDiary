@@ -37,12 +37,14 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun OnboardingScreen(
     viewModel: OnboardingViewModel = remember { OnboardingViewModel() },
+    onNavigateToSecondOnboarding: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
-                is OnboardingNavigationEvent.NavigateToHome -> onNavigateToLogin()
+                is OnboardingNavigationEvent.NavigateToSecondOnboarding -> onNavigateToSecondOnboarding()
+                is OnboardingNavigationEvent.NavigateToLogin -> onNavigateToLogin()
             }
         }
     }
