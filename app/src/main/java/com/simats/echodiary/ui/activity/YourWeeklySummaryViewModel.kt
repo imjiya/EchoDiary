@@ -32,6 +32,7 @@ sealed class YourWeeklySummaryNavigationEvent {
     object NavigateBack : YourWeeklySummaryNavigationEvent()
     object NavigateToAllActivities : YourWeeklySummaryNavigationEvent()
     object NavigateToCreatingMemory : YourWeeklySummaryNavigationEvent()
+    object NavigateToAnalysisResults : YourWeeklySummaryNavigationEvent()
 }
 
 class YourWeeklySummaryViewModel : ViewModel() {
@@ -50,7 +51,7 @@ class YourWeeklySummaryViewModel : ViewModel() {
 
     fun onViewAnalysisClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateToAllActivities)
+            _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateToAnalysisResults)
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
+import com.simats.echodiary.ui.activity.AnalysisResultsScreen
 import com.simats.echodiary.ui.activity.AllActivitiesScreen
 import com.simats.echodiary.ui.activity.ChooseCategoryScreen
 import com.simats.echodiary.ui.activity.CreatingYourMemoryScreen
@@ -312,6 +313,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToCreatingMemory = {
                                 currentScreen = Screen.CreatingYourMemory
+                            },
+                            onNavigateToAnalysisResults = {
+                                currentScreen = Screen.AnalysisResults
                             }
                         )
                     }
@@ -335,6 +339,19 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
+                            }
+                        )
+                    }
+                    is Screen.AnalysisResults -> {
+                        AnalysisResultsScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.YourWeeklySummary
+                            },
+                            onNavigateToWeeklyMemory = {
+                                currentScreen = Screen.WeeklyMemory
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }

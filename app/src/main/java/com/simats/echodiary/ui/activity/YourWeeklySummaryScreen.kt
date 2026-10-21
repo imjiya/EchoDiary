@@ -48,7 +48,8 @@ fun YourWeeklySummaryScreen(
     viewModel: YourWeeklySummaryViewModel = remember { YourWeeklySummaryViewModel() },
     onNavigateBack: () -> Unit,
     onNavigateToAllActivities: () -> Unit,
-    onNavigateToCreatingMemory: () -> Unit
+    onNavigateToCreatingMemory: () -> Unit,
+    onNavigateToAnalysisResults: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -58,6 +59,7 @@ fun YourWeeklySummaryScreen(
                 is YourWeeklySummaryNavigationEvent.NavigateBack -> onNavigateBack()
                 is YourWeeklySummaryNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
                 is YourWeeklySummaryNavigationEvent.NavigateToCreatingMemory -> onNavigateToCreatingMemory()
+                is YourWeeklySummaryNavigationEvent.NavigateToAnalysisResults -> onNavigateToAnalysisResults()
             }
         }
     }
