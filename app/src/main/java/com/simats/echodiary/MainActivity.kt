@@ -19,6 +19,7 @@ import com.simats.echodiary.ui.activity.EditActivityScreen
 import com.simats.echodiary.ui.activity.FilterActivitiesScreen
 import com.simats.echodiary.ui.activity.MemoriesScreen
 import com.simats.echodiary.ui.activity.MonthlyMemoryScreen
+import com.simats.echodiary.ui.activity.YearlyMemoryScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.SearchDiaryScreen
 import com.simats.echodiary.ui.activity.SelectedDateScreen
@@ -304,6 +305,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToMonthlyMemory = {
                                 currentScreen = Screen.MonthlyMemory
+                            },
+                            onNavigateToYearlyMemory = {
+                                currentScreen = Screen.YearlyMemory
                             }
                         )
                     }
@@ -361,6 +365,16 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.MonthlyMemory -> {
                         MonthlyMemoryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Memories
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
+                            }
+                        )
+                    }
+                    is Screen.YearlyMemory -> {
+                        YearlyMemoryScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Memories
                             },

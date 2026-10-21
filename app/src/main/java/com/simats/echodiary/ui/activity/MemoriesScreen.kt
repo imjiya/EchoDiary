@@ -46,7 +46,8 @@ fun MemoriesScreen(
     onNavigateToCalendar: () -> Unit,
     onNavigateToAllActivities: () -> Unit,
     onNavigateToYourWeeklySummary: () -> Unit,
-    onNavigateToMonthlyMemory: () -> Unit
+    onNavigateToMonthlyMemory: () -> Unit,
+    onNavigateToYearlyMemory: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -173,6 +174,8 @@ fun MemoriesScreen(
                                     onNavigateToYourWeeklySummary()
                                 } else if (tab == "Monthly") {
                                     onNavigateToMonthlyMemory()
+                                } else if (tab == "Yearly") {
+                                    onNavigateToYearlyMemory()
                                 }
                             }
                             .padding(vertical = 10.dp),
@@ -312,7 +315,7 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                    .clickable { onNavigateToAllActivities() }
+                    .clickable { onNavigateToYearlyMemory() }
                     .padding(16.dp)
             ) {
                 Row(
