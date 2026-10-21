@@ -22,6 +22,7 @@ import com.simats.echodiary.ui.activity.SelectedDateScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryViewModel
+import com.simats.echodiary.ui.activity.YourWeeklySummaryScreen
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
@@ -290,6 +291,19 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToCalendar = {
                                 currentScreen = Screen.Calendar
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToYourWeeklySummary = {
+                                currentScreen = Screen.YourWeeklySummary
+                            }
+                        )
+                    }
+                    is Screen.YourWeeklySummary -> {
+                        YourWeeklySummaryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Memories
                             },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
