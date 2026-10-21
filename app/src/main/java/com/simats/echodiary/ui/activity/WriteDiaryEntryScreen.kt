@@ -48,7 +48,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun WriteDiaryEntryScreen(
     viewModel: WriteDiaryEntryViewModel = remember { WriteDiaryEntryViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToActivityDetails: () -> Unit
+    onNavigateToActivityDetails: () -> Unit,
+    onNavigateToChooseCategory: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -57,6 +58,7 @@ fun WriteDiaryEntryScreen(
             when (event) {
                 is WriteDiaryEntryNavigationEvent.NavigateBack -> onNavigateBack()
                 is WriteDiaryEntryNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails()
+                is WriteDiaryEntryNavigationEvent.NavigateToChooseCategory -> onNavigateToChooseCategory()
             }
         }
     }
@@ -196,21 +198,27 @@ fun WriteDiaryEntryScreen(
                         color = Color(0xFF1E293B),
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
-                    OutlinedTextField(
-                        value = state.category,
-                        onValueChange = { viewModel.onCategoryChanged(it) },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        trailingIcon = {
-                            Text(text = "▼", fontSize = 12.sp, color = Color(0xFF64748B), modifier = Modifier.padding(end = 12.dp))
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFF5165F6),
-                            unfocusedBorderColor = Color(0xFFE2E8F0),
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.onCategoryFieldClicked() }
+                    ) {
+                        OutlinedTextField(
+                            value = state.category,
+                            onValueChange = { viewModel.onCategoryChanged(it) },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = false,
+                            shape = RoundedCornerShape(16.dp),
+                            trailingIcon = {
+                                Text(text = "▼", fontSize = 12.sp, color = Color(0xFF64748B), modifier = Modifier.padding(end = 12.dp))
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledBorderColor = Color(0xFFE2E8F0),
+                                disabledContainerColor = Color.White,
+                                disabledTextColor = Color(0xFF1E293B)
+                            )
                         )
-                    )
+                    }
                 }
             }
 

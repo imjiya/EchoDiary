@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +46,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun AllActivitiesScreen(
     viewModel: AllActivitiesViewModel = remember { AllActivitiesViewModel() },
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToSearchDiary: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -110,24 +112,30 @@ fun AllActivitiesScreen(
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
-            OutlinedTextField(
-                value = state.searchQuery,
-                onValueChange = { viewModel.onSearchQueryChanged(it) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                placeholder = {
-                    Text(text = "Search entries", color = Color(0xFF94A3B8), fontSize = 14.sp)
-                },
-                trailingIcon = {
-                    Text(text = "🔍", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToSearchDiary() }
+            ) {
+                OutlinedTextField(
+                    value = state.searchQuery,
+                    onValueChange = { },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = false,
+                    shape = RoundedCornerShape(16.dp),
+                    placeholder = {
+                        Text(text = "Search entries", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                    },
+                    trailingIcon = {
+                        Text(text = "🔍", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledBorderColor = Color(0xFFE2E8F0),
+                        disabledContainerColor = Color.White,
+                        disabledTextColor = Color(0xFF1E293B)
+                    )
                 )
-            )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

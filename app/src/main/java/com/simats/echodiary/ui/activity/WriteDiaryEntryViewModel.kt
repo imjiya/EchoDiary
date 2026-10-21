@@ -23,6 +23,7 @@ data class WriteDiaryEntryUiState(
 sealed class WriteDiaryEntryNavigationEvent {
     object NavigateBack : WriteDiaryEntryNavigationEvent()
     object NavigateToActivityDetails : WriteDiaryEntryNavigationEvent()
+    object NavigateToChooseCategory : WriteDiaryEntryNavigationEvent()
 }
 
 class WriteDiaryEntryViewModel : ViewModel() {
@@ -55,6 +56,12 @@ class WriteDiaryEntryViewModel : ViewModel() {
 
     fun onAddPhotoClicked() {
         _uiState.update { it.copy(hasPhoto = true) }
+    }
+
+    fun onCategoryFieldClicked() {
+        viewModelScope.launch {
+            _navigationEvent.emit(WriteDiaryEntryNavigationEvent.NavigateToChooseCategory)
+        }
     }
 
     fun onSaveEntryClicked() {

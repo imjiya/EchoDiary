@@ -12,10 +12,13 @@ import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
 import com.simats.echodiary.ui.activity.AllActivitiesScreen
+import com.simats.echodiary.ui.activity.ChooseCategoryScreen
 import com.simats.echodiary.ui.activity.EditActivityScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
+import com.simats.echodiary.ui.activity.SearchDiaryScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryScreen
+import com.simats.echodiary.ui.activity.WriteDiaryEntryViewModel
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
@@ -35,6 +38,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             EchoDiaryTheme {
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
+                val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
 
                 when (currentScreen) {
                     is Screen.Splash -> {
@@ -168,11 +172,15 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.WriteDiaryEntry -> {
                         WriteDiaryEntryScreen(
+                            viewModel = writeDiaryViewModel,
                             onNavigateBack = {
                                 currentScreen = Screen.AddActivity
                             },
                             onNavigateToActivityDetails = {
                                 currentScreen = Screen.ActivityDetails
+                            },
+                            onNavigateToChooseCategory = {
+                                currentScreen = Screen.ChooseCategory
                             }
                         )
                     }
@@ -203,6 +211,9 @@ class MainActivity : ComponentActivity() {
                         AllActivitiesScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Home
+                            },
+                            onNavigateToSearchDiary = {
+                                currentScreen = Screen.SearchDiary
                             }
                         )
                     }
@@ -213,6 +224,27 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
+                            }
+                        )
+                    }
+                    is Screen.ChooseCategory -> {
+                        ChooseCategoryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.WriteDiaryEntry
+                            },
+                            onCategorySelected = { cat ->
+                                writeDiaryViewModel.onCategoryChanged(cat)
+                                currentScreen = Screen.WriteDiaryEntry
+                            }
+                        )
+                    }
+                    is Screen.SearchDiary -> {
+                        SearchDiaryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }

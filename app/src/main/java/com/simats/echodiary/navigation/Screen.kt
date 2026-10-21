@@ -18,4 +18,6 @@ sealed class Screen(val route: String) {
     object EditActivity : Screen("edit_activity")
     object AllActivities : Screen("all_activities")
     object Calendar : Screen("calendar")
+    object ChooseCategory : Screen("choose_category")
+    object SearchDiary : Screen("search_diary")
 }
