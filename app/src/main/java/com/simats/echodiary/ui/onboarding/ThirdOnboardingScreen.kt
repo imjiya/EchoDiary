@@ -44,11 +44,13 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ThirdOnboardingScreen(
     viewModel: ThirdOnboardingViewModel = remember { ThirdOnboardingViewModel() },
+    onNavigateToFourthOnboarding: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
+                is ThirdOnboardingNavigationEvent.NavigateToFourthOnboarding -> onNavigateToFourthOnboarding()
                 is ThirdOnboardingNavigationEvent.NavigateToLogin -> onNavigateToLogin()
             }
         }

@@ -11,9 +11,11 @@ import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
+import com.simats.echodiary.ui.onboarding.FourthOnboardingScreen
 import com.simats.echodiary.ui.onboarding.OnboardingScreen
 import com.simats.echodiary.ui.onboarding.SecondOnboardingScreen
 import com.simats.echodiary.ui.onboarding.ThirdOnboardingScreen
+import com.simats.echodiary.ui.register.CreateAccountScreen
 import com.simats.echodiary.ui.splash.SplashScreen
 import com.simats.echodiary.ui.theme.EchoDiaryTheme
 
@@ -55,15 +57,39 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.ThirdOnboarding -> {
                         ThirdOnboardingScreen(
+                            onNavigateToFourthOnboarding = {
+                                /********* FIXED ROUTING *********/
+                                currentScreen = Screen.FourthOnboarding
+                            },
                             onNavigateToLogin = {
                                 currentScreen = Screen.Login
+                            }
+                        )
+                    }
+                    is Screen.FourthOnboarding -> {
+                        FourthOnboardingScreen(
+                            onNavigateToCreateAccount = {
+                                currentScreen = Screen.CreateAccount
+                            }
+                        )
+                    }
+                    is Screen.CreateAccount -> {
+                        CreateAccountScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.FourthOnboarding
+                            },
+                            onNavigateToLogin = {
+                                currentScreen = Screen.Login
+                            },
+                            onNavigateToHome = {
+                                currentScreen = Screen.Home
                             }
                         )
                     }
                     is Screen.Login -> {
                         LoginScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.SecondOnboarding
+                                currentScreen = Screen.CreateAccount
                             },
                             onNavigateToHome = {
                                 currentScreen = Screen.Home

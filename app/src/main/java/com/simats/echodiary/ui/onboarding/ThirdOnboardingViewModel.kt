@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 sealed class ThirdOnboardingNavigationEvent {
+    object NavigateToFourthOnboarding : ThirdOnboardingNavigationEvent()
     object NavigateToLogin : ThirdOnboardingNavigationEvent()
 }
 
@@ -18,7 +19,7 @@ class ThirdOnboardingViewModel : ViewModel() {
 
     fun onContinueClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(ThirdOnboardingNavigationEvent.NavigateToLogin)
+            _navigationEvent.emit(ThirdOnboardingNavigationEvent.NavigateToFourthOnboarding)
         }
     }
 
