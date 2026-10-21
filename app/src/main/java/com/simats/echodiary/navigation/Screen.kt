@@ -11,4 +11,5 @@ sealed class Screen(val route: String) {
     object CreateAccount : Screen("create_account")
     object Home : Screen("home")
     object AddActivity : Screen("add_activity")
+    object VoiceRecording : Screen("voice_recording")
 }

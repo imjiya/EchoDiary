@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 
 sealed class AddActivityNavigationEvent {
     object NavigateBack : AddActivityNavigationEvent()
+    object NavigateToVoiceRecording : AddActivityNavigationEvent()
 }
 
 class AddActivityViewModel : ViewModel() {
@@ -23,10 +24,12 @@ class AddActivityViewModel : ViewModel() {
     }
 
     fun onRecordByVoiceClicked() {
-        // Voice entry flow
+        viewModelScope.launch {
+            _navigationEvent.emit(AddActivityNavigationEvent.NavigateToVoiceRecording)
+        }
     }
 
     fun onWriteManuallyClicked() {
-        // Manual diary entry flow
+        // Manual entry
     }
 }
