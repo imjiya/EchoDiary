@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun ActivityDetailsScreen(
     viewModel: ActivityDetailsViewModel = remember { ActivityDetailsViewModel() },
     onNavigateBack: () -> Unit,
+    onNavigateToEdit: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -54,7 +55,7 @@ fun ActivityDetailsScreen(
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 is ActivityDetailsNavigationEvent.NavigateBack -> onNavigateBack()
-                is ActivityDetailsNavigationEvent.NavigateToEdit -> {}
+                is ActivityDetailsNavigationEvent.NavigateToEdit -> onNavigateToEdit()
                 is ActivityDetailsNavigationEvent.NavigateToDelete -> onNavigateToHome()
             }
         }

@@ -11,6 +11,8 @@ import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
+import com.simats.echodiary.ui.activity.AllActivitiesScreen
+import com.simats.echodiary.ui.activity.EditActivityScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryScreen
@@ -118,6 +120,9 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(
                             onNavigateToAddActivity = {
                                 currentScreen = Screen.AddActivity
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
                             }
                         )
                     }
@@ -172,7 +177,27 @@ class MainActivity : ComponentActivity() {
                             onNavigateBack = {
                                 currentScreen = Screen.Home
                             },
+                            onNavigateToEdit = {
+                                currentScreen = Screen.EditActivity
+                            },
                             onNavigateToHome = {
+                                currentScreen = Screen.Home
+                            }
+                        )
+                    }
+                    is Screen.EditActivity -> {
+                        EditActivityScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.ActivityDetails
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
+                            }
+                        )
+                    }
+                    is Screen.AllActivities -> {
+                        AllActivitiesScreen(
+                            onNavigateBack = {
                                 currentScreen = Screen.Home
                             }
                         )

@@ -45,7 +45,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = remember { HomeViewModel() },
-    onNavigateToAddActivity: () -> Unit
+    onNavigateToAddActivity: () -> Unit,
+    onNavigateToAllActivities: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -266,7 +267,7 @@ fun HomeScreen(
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { }
+                        modifier = Modifier.clickable { onNavigateToAllActivities() }
                     ) {
                         Text(
                             text = "Revisit your week",
@@ -304,7 +305,7 @@ fun HomeScreen(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF5165F6),
-                    modifier = Modifier.clickable { }
+                    modifier = Modifier.clickable { onNavigateToAllActivities() }
                 )
             }
 
