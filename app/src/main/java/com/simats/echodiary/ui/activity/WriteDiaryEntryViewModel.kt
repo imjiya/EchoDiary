@@ -22,7 +22,7 @@ data class WriteDiaryEntryUiState(
 
 sealed class WriteDiaryEntryNavigationEvent {
     object NavigateBack : WriteDiaryEntryNavigationEvent()
-    object NavigateToAllActivities : WriteDiaryEntryNavigationEvent()
+    object NavigateToActivityDetails : WriteDiaryEntryNavigationEvent()
 }
 
 class WriteDiaryEntryViewModel : ViewModel() {
@@ -59,7 +59,7 @@ class WriteDiaryEntryViewModel : ViewModel() {
 
     fun onSaveEntryClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(WriteDiaryEntryNavigationEvent.NavigateToAllActivities)
+            _navigationEvent.emit(WriteDiaryEntryNavigationEvent.NavigateToActivityDetails)
         }
     }
 

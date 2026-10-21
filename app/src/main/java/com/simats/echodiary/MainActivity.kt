@@ -9,8 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
+import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
-import com.simats.echodiary.ui.activity.AllActivitiesScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryScreen
@@ -152,8 +152,8 @@ class MainActivity : ComponentActivity() {
                             onNavigateToVoiceRecording = {
                                 currentScreen = Screen.VoiceRecording
                             },
-                            onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }
@@ -162,14 +162,17 @@ class MainActivity : ComponentActivity() {
                             onNavigateBack = {
                                 currentScreen = Screen.AddActivity
                             },
-                            onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }
-                    is Screen.AllActivities -> {
-                        AllActivitiesScreen(
+                    is Screen.ActivityDetails -> {
+                        ActivityDetailsScreen(
                             onNavigateBack = {
+                                currentScreen = Screen.Home
+                            },
+                            onNavigateToHome = {
                                 currentScreen = Screen.Home
                             }
                         )

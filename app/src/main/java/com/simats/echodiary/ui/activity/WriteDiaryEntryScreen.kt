@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun WriteDiaryEntryScreen(
     viewModel: WriteDiaryEntryViewModel = remember { WriteDiaryEntryViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToAllActivities: () -> Unit
+    onNavigateToActivityDetails: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -56,7 +56,7 @@ fun WriteDiaryEntryScreen(
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 is WriteDiaryEntryNavigationEvent.NavigateBack -> onNavigateBack()
-                is WriteDiaryEntryNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
+                is WriteDiaryEntryNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails()
             }
         }
     }
