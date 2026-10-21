@@ -14,6 +14,7 @@ import com.simats.echodiary.ui.activity.AddActivityScreen
 import com.simats.echodiary.ui.activity.AllActivitiesScreen
 import com.simats.echodiary.ui.activity.ChooseCategoryScreen
 import com.simats.echodiary.ui.activity.EditActivityScreen
+import com.simats.echodiary.ui.activity.FilterActivitiesScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.SearchDiaryScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
@@ -144,6 +145,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToWriteDiaryEntry = {
                                 currentScreen = Screen.WriteDiaryEntry
+                            },
+                            onNavigateToFilterActivities = {
+                                currentScreen = Screen.FilterActivities
                             }
                         )
                     }
@@ -202,8 +206,8 @@ class MainActivity : ComponentActivity() {
                             onNavigateBack = {
                                 currentScreen = Screen.ActivityDetails
                             },
-                            onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
                             }
                         )
                     }
@@ -242,6 +246,16 @@ class MainActivity : ComponentActivity() {
                         SearchDiaryScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
+                            }
+                        )
+                    }
+                    is Screen.FilterActivities -> {
+                        FilterActivitiesScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.AddActivity
                             },
                             onNavigateToActivityDetails = {
                                 currentScreen = Screen.ActivityDetails

@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun EditActivityScreen(
     viewModel: EditActivityViewModel = remember { EditActivityViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToActivityDetails: () -> Unit
+    onNavigateToAllActivities: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -56,7 +56,7 @@ fun EditActivityScreen(
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 is EditActivityNavigationEvent.NavigateBack -> onNavigateBack()
-                is EditActivityNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails()
+                is EditActivityNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
             }
         }
     }

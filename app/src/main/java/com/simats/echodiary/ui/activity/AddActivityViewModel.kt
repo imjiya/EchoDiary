@@ -11,6 +11,7 @@ sealed class AddActivityNavigationEvent {
     object NavigateBack : AddActivityNavigationEvent()
     object NavigateToVoiceRecording : AddActivityNavigationEvent()
     object NavigateToWriteDiaryEntry : AddActivityNavigationEvent()
+    object NavigateToFilterActivities : AddActivityNavigationEvent()
 }
 
 class AddActivityViewModel : ViewModel() {
@@ -33,6 +34,12 @@ class AddActivityViewModel : ViewModel() {
     fun onWriteManuallyClicked() {
         viewModelScope.launch {
             _navigationEvent.emit(AddActivityNavigationEvent.NavigateToWriteDiaryEntry)
+        }
+    }
+
+    fun onCategoryButtonClicked() {
+        viewModelScope.launch {
+            _navigationEvent.emit(AddActivityNavigationEvent.NavigateToFilterActivities)
         }
     }
 }

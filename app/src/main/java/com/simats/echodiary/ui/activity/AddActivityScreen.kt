@@ -48,7 +48,8 @@ fun AddActivityScreen(
     viewModel: AddActivityViewModel = remember { AddActivityViewModel() },
     onNavigateBack: () -> Unit,
     onNavigateToVoiceRecording: () -> Unit,
-    onNavigateToWriteDiaryEntry: () -> Unit
+    onNavigateToWriteDiaryEntry: () -> Unit,
+    onNavigateToFilterActivities: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
@@ -56,6 +57,7 @@ fun AddActivityScreen(
                 is AddActivityNavigationEvent.NavigateBack -> onNavigateBack()
                 is AddActivityNavigationEvent.NavigateToVoiceRecording -> onNavigateToVoiceRecording()
                 is AddActivityNavigationEvent.NavigateToWriteDiaryEntry -> onNavigateToWriteDiaryEntry()
+                is AddActivityNavigationEvent.NavigateToFilterActivities -> onNavigateToFilterActivities()
             }
         }
     }
@@ -294,7 +296,7 @@ fun AddActivityScreen(
                 Box(
                     modifier = Modifier
                         .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                        .clickable { }
+                        .clickable { viewModel.onCategoryButtonClicked() }
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -308,7 +310,7 @@ fun AddActivityScreen(
                 Box(
                     modifier = Modifier
                         .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                        .clickable { }
+                        .clickable { viewModel.onCategoryButtonClicked() }
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -322,7 +324,7 @@ fun AddActivityScreen(
                 Box(
                     modifier = Modifier
                         .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                        .clickable { }
+                        .clickable { viewModel.onCategoryButtonClicked() }
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
                 ) {

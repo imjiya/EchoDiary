@@ -22,7 +22,7 @@ data class EditActivityUiState(
 
 sealed class EditActivityNavigationEvent {
     object NavigateBack : EditActivityNavigationEvent()
-    object NavigateToActivityDetails : EditActivityNavigationEvent()
+    object NavigateToAllActivities : EditActivityNavigationEvent()
 }
 
 class EditActivityViewModel : ViewModel() {
@@ -59,7 +59,7 @@ class EditActivityViewModel : ViewModel() {
 
     fun onSaveClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(EditActivityNavigationEvent.NavigateToActivityDetails)
+            _navigationEvent.emit(EditActivityNavigationEvent.NavigateToAllActivities)
         }
     }
 
