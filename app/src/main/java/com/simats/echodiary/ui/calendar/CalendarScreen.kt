@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.sp
 fun CalendarScreen(
     viewModel: CalendarViewModel = remember { CalendarViewModel() },
     onNavigateToHome: () -> Unit,
-    onNavigateToAllActivities: () -> Unit
+    onNavigateToSelectedDate: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -205,7 +205,12 @@ fun CalendarScreen(
                                                 color = if (isSelected) Color(0xFF5165F6) else Color.Transparent,
                                                 shape = CircleShape
                                             )
-                                            .clickable { viewModel.selectDay(dayNum) },
+                                            .clickable {
+                                                viewModel.selectDay(dayNum)
+                                                if (hasEntry) {
+                                                    onNavigateToSelectedDate()
+                                                }
+                                            },
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -270,6 +275,7 @@ fun CalendarScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .clickable { onNavigateToSelectedDate() }
                     .padding(16.dp)
             ) {
                 Column {
@@ -308,7 +314,7 @@ fun CalendarScreen(
             // View selected date activities link
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { onNavigateToAllActivities() }
+                modifier = Modifier.clickable { onNavigateToSelectedDate() }
             ) {
                 Text(
                     text = "View selected date activities",
