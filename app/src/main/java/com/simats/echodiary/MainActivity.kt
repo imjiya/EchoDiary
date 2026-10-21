@@ -15,6 +15,7 @@ import com.simats.echodiary.ui.activity.AllActivitiesScreen
 import com.simats.echodiary.ui.activity.ChooseCategoryScreen
 import com.simats.echodiary.ui.activity.EditActivityScreen
 import com.simats.echodiary.ui.activity.FilterActivitiesScreen
+import com.simats.echodiary.ui.activity.MemoriesScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.SearchDiaryScreen
 import com.simats.echodiary.ui.activity.SelectedDateScreen
@@ -133,6 +134,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToCalendar = {
                                 currentScreen = Screen.Calendar
+                            },
+                            onNavigateToMemories = {
+                                currentScreen = Screen.Memories
                             }
                         )
                     }
@@ -229,6 +233,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToSelectedDate = {
                                 currentScreen = Screen.SelectedDate
+                            },
+                            onNavigateToMemories = {
+                                currentScreen = Screen.Memories
                             }
                         )
                     }
@@ -273,6 +280,19 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToAddEntry = {
                                 currentScreen = Screen.AddActivity
+                            }
+                        )
+                    }
+                    is Screen.Memories -> {
+                        MemoriesScreen(
+                            onNavigateToHome = {
+                                currentScreen = Screen.Home
+                            },
+                            onNavigateToCalendar = {
+                                currentScreen = Screen.Calendar
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
                             }
                         )
                     }

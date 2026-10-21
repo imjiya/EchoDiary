@@ -44,7 +44,8 @@ import androidx.compose.ui.unit.sp
 fun CalendarScreen(
     viewModel: CalendarViewModel = remember { CalendarViewModel() },
     onNavigateToHome: () -> Unit,
-    onNavigateToSelectedDate: () -> Unit
+    onNavigateToSelectedDate: () -> Unit,
+    onNavigateToMemories: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -62,6 +63,8 @@ fun CalendarScreen(
                             viewModel.onTabSelected(index)
                             if (index == 0) {
                                 onNavigateToHome()
+                            } else if (index == 2) {
+                                onNavigateToMemories()
                             }
                         },
                         icon = {

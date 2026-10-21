@@ -47,7 +47,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = remember { HomeViewModel() },
     onNavigateToAddActivity: () -> Unit,
     onNavigateToAllActivities: () -> Unit,
-    onNavigateToCalendar: () -> Unit
+    onNavigateToCalendar: () -> Unit,
+    onNavigateToMemories: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -65,6 +66,8 @@ fun HomeScreen(
                             viewModel.onTabSelected(index)
                             if (index == 1) {
                                 onNavigateToCalendar()
+                            } else if (index == 2) {
+                                onNavigateToMemories()
                             }
                         },
                         icon = {
