@@ -50,7 +50,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun VoiceRecordingScreen(
     viewModel: VoiceRecordingViewModel = remember { VoiceRecordingViewModel() },
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToReviewTranscript: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -58,6 +59,7 @@ fun VoiceRecordingScreen(
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 is VoiceRecordingNavigationEvent.NavigateBack -> onNavigateBack()
+                is VoiceRecordingNavigationEvent.NavigateToReviewTranscript -> onNavigateToReviewTranscript()
             }
         }
     }

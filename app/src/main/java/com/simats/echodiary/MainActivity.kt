@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.activity.AddActivityScreen
+import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
@@ -132,6 +133,22 @@ class MainActivity : ComponentActivity() {
                         VoiceRecordingScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.AddActivity
+                            },
+                            onNavigateToReviewTranscript = {
+                                currentScreen = Screen.ReviewTranscript
+                            }
+                        )
+                    }
+                    is Screen.ReviewTranscript -> {
+                        ReviewTranscriptScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.VoiceRecording
+                            },
+                            onNavigateToVoiceRecording = {
+                                currentScreen = Screen.VoiceRecording
+                            },
+                            onNavigateToHome = {
+                                currentScreen = Screen.Home
                             }
                         )
                     }

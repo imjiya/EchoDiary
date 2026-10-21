@@ -18,6 +18,7 @@ data class VoiceRecordingUiState(
 
 sealed class VoiceRecordingNavigationEvent {
     object NavigateBack : VoiceRecordingNavigationEvent()
+    object NavigateToReviewTranscript : VoiceRecordingNavigationEvent()
 }
 
 class VoiceRecordingViewModel : ViewModel() {
@@ -38,7 +39,7 @@ class VoiceRecordingViewModel : ViewModel() {
 
     fun onStopClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(VoiceRecordingNavigationEvent.NavigateBack)
+            _navigationEvent.emit(VoiceRecordingNavigationEvent.NavigateToReviewTranscript)
         }
     }
 
