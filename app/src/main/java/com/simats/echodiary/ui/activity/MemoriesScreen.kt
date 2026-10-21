@@ -47,7 +47,8 @@ fun MemoriesScreen(
     onNavigateToAllActivities: () -> Unit,
     onNavigateToYourWeeklySummary: () -> Unit,
     onNavigateToMonthlyMemory: () -> Unit,
-    onNavigateToYearlyMemory: () -> Unit
+    onNavigateToYearlyMemory: () -> Unit,
+    onNavigateToPhotoMemories: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -358,7 +359,7 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                    .clickable { onNavigateToAllActivities() }
+                    .clickable { onNavigateToPhotoMemories() }
                     .padding(16.dp)
             ) {
                 Row(
