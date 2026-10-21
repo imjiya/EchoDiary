@@ -44,7 +44,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = remember { HomeViewModel() }
+    viewModel: HomeViewModel = remember { HomeViewModel() },
+    onNavigateToAddActivity: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -170,7 +171,7 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(
-                    onClick = {},
+                    onClick = onNavigateToAddActivity,
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),
@@ -186,7 +187,7 @@ fun HomeScreen(
                 }
 
                 Button(
-                    onClick = {},
+                    onClick = onNavigateToAddActivity,
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),

@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
+import com.simats.echodiary.ui.activity.AddActivityScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.login.ResetPasswordScreen
@@ -110,7 +111,18 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     is Screen.Home -> {
-                        HomeScreen()
+                        HomeScreen(
+                            onNavigateToAddActivity = {
+                                currentScreen = Screen.AddActivity
+                            }
+                        )
+                    }
+                    is Screen.AddActivity -> {
+                        AddActivityScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Home
+                            }
+                        )
                     }
                 }
             }
