@@ -10,8 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.activity.AddActivityScreen
+import com.simats.echodiary.ui.activity.AllActivitiesScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
+import com.simats.echodiary.ui.activity.WriteDiaryEntryScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.login.ResetPasswordScreen
@@ -126,6 +128,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToVoiceRecording = {
                                 currentScreen = Screen.VoiceRecording
+                            },
+                            onNavigateToWriteDiaryEntry = {
+                                currentScreen = Screen.WriteDiaryEntry
                             }
                         )
                     }
@@ -147,7 +152,24 @@ class MainActivity : ComponentActivity() {
                             onNavigateToVoiceRecording = {
                                 currentScreen = Screen.VoiceRecording
                             },
-                            onNavigateToHome = {
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
+                            }
+                        )
+                    }
+                    is Screen.WriteDiaryEntry -> {
+                        WriteDiaryEntryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.AddActivity
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
+                            }
+                        )
+                    }
+                    is Screen.AllActivities -> {
+                        AllActivitiesScreen(
+                            onNavigateBack = {
                                 currentScreen = Screen.Home
                             }
                         )

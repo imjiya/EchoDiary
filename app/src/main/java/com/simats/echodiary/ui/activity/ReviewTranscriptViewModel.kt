@@ -18,7 +18,7 @@ data class ReviewTranscriptUiState(
 sealed class ReviewTranscriptNavigationEvent {
     object NavigateBack : ReviewTranscriptNavigationEvent()
     object NavigateToVoiceRecording : ReviewTranscriptNavigationEvent()
-    object NavigateToHome : ReviewTranscriptNavigationEvent()
+    object NavigateToAllActivities : ReviewTranscriptNavigationEvent()
 }
 
 class ReviewTranscriptViewModel : ViewModel() {
@@ -35,7 +35,7 @@ class ReviewTranscriptViewModel : ViewModel() {
 
     fun onContinueToEntryClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(ReviewTranscriptNavigationEvent.NavigateToHome)
+            _navigationEvent.emit(ReviewTranscriptNavigationEvent.NavigateToAllActivities)
         }
     }
 

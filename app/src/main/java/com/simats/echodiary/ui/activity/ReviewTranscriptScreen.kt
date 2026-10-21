@@ -53,7 +53,7 @@ fun ReviewTranscriptScreen(
     viewModel: ReviewTranscriptViewModel = remember { ReviewTranscriptViewModel() },
     onNavigateBack: () -> Unit,
     onNavigateToVoiceRecording: () -> Unit,
-    onNavigateToHome: () -> Unit
+    onNavigateToAllActivities: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -62,7 +62,7 @@ fun ReviewTranscriptScreen(
             when (event) {
                 is ReviewTranscriptNavigationEvent.NavigateBack -> onNavigateBack()
                 is ReviewTranscriptNavigationEvent.NavigateToVoiceRecording -> onNavigateToVoiceRecording()
-                is ReviewTranscriptNavigationEvent.NavigateToHome -> onNavigateToHome()
+                is ReviewTranscriptNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
             }
         }
     }

@@ -47,13 +47,15 @@ import kotlinx.coroutines.flow.collectLatest
 fun AddActivityScreen(
     viewModel: AddActivityViewModel = remember { AddActivityViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToVoiceRecording: () -> Unit
+    onNavigateToVoiceRecording: () -> Unit,
+    onNavigateToWriteDiaryEntry: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 is AddActivityNavigationEvent.NavigateBack -> onNavigateBack()
                 is AddActivityNavigationEvent.NavigateToVoiceRecording -> onNavigateToVoiceRecording()
+                is AddActivityNavigationEvent.NavigateToWriteDiaryEntry -> onNavigateToWriteDiaryEntry()
             }
         }
     }
