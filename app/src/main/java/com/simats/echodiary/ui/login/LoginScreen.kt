@@ -51,6 +51,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun LoginScreen(
     viewModel: LoginViewModel = remember { LoginViewModel() },
     onNavigateBack: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit,
+    onNavigateToCreateAccount: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -60,7 +62,8 @@ fun LoginScreen(
             when (event) {
                 is LoginNavigationEvent.NavigateBack -> onNavigateBack()
                 is LoginNavigationEvent.NavigateToHome -> onNavigateToHome()
-                else -> {}
+                is LoginNavigationEvent.NavigateToForgotPassword -> onNavigateToForgotPassword()
+                is LoginNavigationEvent.NavigateToCreateAccount -> onNavigateToCreateAccount()
             }
         }
     }
@@ -257,24 +260,8 @@ fun LoginScreen(
                             Canvas(modifier = Modifier.size(20.dp)) {
                                 val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round)
                                 val color = Color(0xFF94A3B8)
-                                drawArc(
-                                    color = color,
-                                    startAngle = 0f,
-                                    sweepAngle = 180f,
-                                    useCenter = false,
-                                    topLeft = Offset(0f, size.height * 0.25f),
-                                    size = Size(size.width, size.height * 0.5f),
-                                    style = stroke
-                                )
-                                drawArc(
-                                    color = color,
-                                    startAngle = 180f,
-                                    sweepAngle = 180f,
-                                    useCenter = false,
-                                    topLeft = Offset(0f, size.height * 0.25f),
-                                    size = Size(size.width, size.height * 0.5f),
-                                    style = stroke
-                                )
+                                drawArc(color, 0f, 180f, false, Offset(0f, size.height * 0.25f), Size(size.width, size.height * 0.5f), style = stroke)
+                                drawArc(color, 180f, 180f, false, Offset(0f, size.height * 0.25f), Size(size.width, size.height * 0.5f), style = stroke)
                                 drawCircle(color, radius = size.width * 0.15f, center = center)
                             }
                         }

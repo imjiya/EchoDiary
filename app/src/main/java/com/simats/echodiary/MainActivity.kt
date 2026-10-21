@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
+import com.simats.echodiary.ui.login.ResetPasswordScreen
 import com.simats.echodiary.ui.onboarding.FourthOnboardingScreen
 import com.simats.echodiary.ui.onboarding.OnboardingScreen
 import com.simats.echodiary.ui.onboarding.SecondOnboardingScreen
@@ -58,7 +59,6 @@ class MainActivity : ComponentActivity() {
                     is Screen.ThirdOnboarding -> {
                         ThirdOnboardingScreen(
                             onNavigateToFourthOnboarding = {
-                                /********* FIXED ROUTING *********/
                                 currentScreen = Screen.FourthOnboarding
                             },
                             onNavigateToLogin = {
@@ -91,8 +91,21 @@ class MainActivity : ComponentActivity() {
                             onNavigateBack = {
                                 currentScreen = Screen.CreateAccount
                             },
+                            onNavigateToForgotPassword = {
+                                currentScreen = Screen.ResetPassword
+                            },
+                            onNavigateToCreateAccount = {
+                                currentScreen = Screen.CreateAccount
+                            },
                             onNavigateToHome = {
                                 currentScreen = Screen.Home
+                            }
+                        )
+                    }
+                    is Screen.ResetPassword -> {
+                        ResetPasswordScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Login
                             }
                         )
                     }
