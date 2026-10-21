@@ -31,6 +31,7 @@ data class YourWeeklySummaryUiState(
 sealed class YourWeeklySummaryNavigationEvent {
     object NavigateBack : YourWeeklySummaryNavigationEvent()
     object NavigateToAllActivities : YourWeeklySummaryNavigationEvent()
+    object NavigateToCreatingMemory : YourWeeklySummaryNavigationEvent()
 }
 
 class YourWeeklySummaryViewModel : ViewModel() {
@@ -43,7 +44,7 @@ class YourWeeklySummaryViewModel : ViewModel() {
 
     fun onGenerateWeeklyMemoryClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateToAllActivities)
+            _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateToCreatingMemory)
         }
     }
 

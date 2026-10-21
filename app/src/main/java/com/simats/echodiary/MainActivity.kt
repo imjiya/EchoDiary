@@ -13,6 +13,7 @@ import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
 import com.simats.echodiary.ui.activity.AllActivitiesScreen
 import com.simats.echodiary.ui.activity.ChooseCategoryScreen
+import com.simats.echodiary.ui.activity.CreatingYourMemoryScreen
 import com.simats.echodiary.ui.activity.EditActivityScreen
 import com.simats.echodiary.ui.activity.FilterActivitiesScreen
 import com.simats.echodiary.ui.activity.MemoriesScreen
@@ -23,6 +24,7 @@ import com.simats.echodiary.ui.activity.VoiceRecordingScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryViewModel
 import com.simats.echodiary.ui.activity.YourWeeklySummaryScreen
+import com.simats.echodiary.ui.activity.WeeklyMemoryScreen
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
@@ -303,6 +305,32 @@ class MainActivity : ComponentActivity() {
                     is Screen.YourWeeklySummary -> {
                         YourWeeklySummaryScreen(
                             onNavigateBack = {
+                                currentScreen = Screen.Memories
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToCreatingMemory = {
+                                currentScreen = Screen.CreatingYourMemory
+                            }
+                        )
+                    }
+                    is Screen.CreatingYourMemory -> {
+                        CreatingYourMemoryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.YourWeeklySummary
+                            },
+                            onNavigateToWeeklyMemory = {
+                                currentScreen = Screen.WeeklyMemory
+                            }
+                        )
+                    }
+                    is Screen.WeeklyMemory -> {
+                        WeeklyMemoryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.CreatingYourMemory
+                            },
+                            onNavigateToMemories = {
                                 currentScreen = Screen.Memories
                             },
                             onNavigateToAllActivities = {

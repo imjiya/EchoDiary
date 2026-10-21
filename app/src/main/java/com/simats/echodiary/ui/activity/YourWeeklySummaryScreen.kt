@@ -47,7 +47,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun YourWeeklySummaryScreen(
     viewModel: YourWeeklySummaryViewModel = remember { YourWeeklySummaryViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToAllActivities: () -> Unit
+    onNavigateToAllActivities: () -> Unit,
+    onNavigateToCreatingMemory: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -56,6 +57,7 @@ fun YourWeeklySummaryScreen(
             when (event) {
                 is YourWeeklySummaryNavigationEvent.NavigateBack -> onNavigateBack()
                 is YourWeeklySummaryNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
+                is YourWeeklySummaryNavigationEvent.NavigateToCreatingMemory -> onNavigateToCreatingMemory()
             }
         }
     }
