@@ -27,4 +27,5 @@ sealed class Screen(val route: String) {
     object CreatingYourMemory : Screen("creating_your_memory")
     object WeeklyMemory : Screen("weekly_memory")
     object AnalysisResults : Screen("analysis_results")
+    object MonthlyMemory : Screen("monthly_memory")
 }
