@@ -46,7 +46,8 @@ import androidx.compose.ui.unit.sp
 fun HomeScreen(
     viewModel: HomeViewModel = remember { HomeViewModel() },
     onNavigateToAddActivity: () -> Unit,
-    onNavigateToAllActivities: () -> Unit
+    onNavigateToAllActivities: () -> Unit,
+    onNavigateToCalendar: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -60,7 +61,12 @@ fun HomeScreen(
                 tabs.forEachIndexed { index, title ->
                     NavigationBarItem(
                         selected = state.selectedTab == index,
-                        onClick = { viewModel.onTabSelected(index) },
+                        onClick = {
+                            viewModel.onTabSelected(index)
+                            if (index == 1) {
+                                onNavigateToCalendar()
+                            }
+                        },
                         icon = {
                             Canvas(modifier = Modifier.size(24.dp)) {
                                 val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)

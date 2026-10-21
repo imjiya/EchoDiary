@@ -16,6 +16,7 @@ import com.simats.echodiary.ui.activity.EditActivityScreen
 import com.simats.echodiary.ui.activity.ReviewTranscriptScreen
 import com.simats.echodiary.ui.activity.VoiceRecordingScreen
 import com.simats.echodiary.ui.activity.WriteDiaryEntryScreen
+import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.login.ResetPasswordScreen
@@ -123,6 +124,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToCalendar = {
+                                currentScreen = Screen.Calendar
                             }
                         )
                     }
@@ -199,6 +203,16 @@ class MainActivity : ComponentActivity() {
                         AllActivitiesScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Home
+                            }
+                        )
+                    }
+                    is Screen.Calendar -> {
+                        CalendarScreen(
+                            onNavigateToHome = {
+                                currentScreen = Screen.Home
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
                             }
                         )
                     }
