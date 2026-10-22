@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.simats.echodiary.navigation.Screen
+import com.simats.echodiary.ui.activity.ActivityAndMoodScreen
 import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
 import com.simats.echodiary.ui.activity.AnalysisResultsScreen
@@ -351,6 +352,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToActivityAndMood = {
+                                currentScreen = Screen.ActivityAndMood
                             }
                         )
                     }
@@ -391,6 +395,16 @@ class MainActivity : ComponentActivity() {
                         PhotoMemoriesScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Memories
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
+                            }
+                        )
+                    }
+                    is Screen.ActivityAndMood -> {
+                        ActivityAndMoodScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.WeeklyMemory
                             },
                             onNavigateToActivityDetails = {
                                 currentScreen = Screen.ActivityDetails

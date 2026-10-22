@@ -22,6 +22,7 @@ sealed class WeeklyMemoryNavigationEvent {
     object NavigateBack : WeeklyMemoryNavigationEvent()
     object NavigateToMemories : WeeklyMemoryNavigationEvent()
     object NavigateToAllActivities : WeeklyMemoryNavigationEvent()
+    object NavigateToActivityAndMood : WeeklyMemoryNavigationEvent()
 }
 
 class WeeklyMemoryViewModel : ViewModel() {
@@ -48,7 +49,7 @@ class WeeklyMemoryViewModel : ViewModel() {
 
     fun onViewDetailsClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(WeeklyMemoryNavigationEvent.NavigateToAllActivities)
+            _navigationEvent.emit(WeeklyMemoryNavigationEvent.NavigateToActivityAndMood)
         }
     }
 
