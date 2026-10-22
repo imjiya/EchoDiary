@@ -48,7 +48,8 @@ private enum class PrivacyIconType {
 @Composable
 fun PrivacyAndDataScreen(
     viewModel: PrivacyAndDataViewModel = remember { PrivacyAndDataViewModel() },
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToEmptyStates: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -167,7 +168,7 @@ fun PrivacyAndDataScreen(
                     title = "Clear diary data",
                     subtitle = "Review entries and memories to remove",
                     iconType = PrivacyIconType.CLEAR,
-                    onClick = { }
+                    onClick = onNavigateToEmptyStates
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

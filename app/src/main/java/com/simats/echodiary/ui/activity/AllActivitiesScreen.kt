@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -47,7 +48,9 @@ import kotlinx.coroutines.flow.collectLatest
 fun AllActivitiesScreen(
     viewModel: AllActivitiesViewModel = remember { AllActivitiesViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToSearchDiary: () -> Unit
+    onNavigateToSearchDiary: () -> Unit,
+    onNavigateToActivityDetails: () -> Unit = {},
+    onNavigateToFilterActivities: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -84,8 +87,19 @@ fun AllActivitiesScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { }) {
-                        Text(text = "🎛️", fontSize = 18.sp)
+                    IconButton(onClick = onNavigateToFilterActivities) {
+                        Canvas(modifier = Modifier.size(20.dp)) {
+                            val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
+                            val color = Color(0xFF1E293B)
+                            drawLine(color, Offset(size.width * 0.15f, size.height * 0.25f), Offset(size.width * 0.85f, size.height * 0.25f), strokeWidth = stroke.width)
+                            drawCircle(color, radius = 2.5.dp.toPx(), center = Offset(size.width * 0.35f, size.height * 0.25f))
+
+                            drawLine(color, Offset(size.width * 0.15f, size.height * 0.5f), Offset(size.width * 0.85f, size.height * 0.5f), strokeWidth = stroke.width)
+                            drawCircle(color, radius = 2.5.dp.toPx(), center = Offset(size.width * 0.65f, size.height * 0.5f))
+
+                            drawLine(color, Offset(size.width * 0.15f, size.height * 0.75f), Offset(size.width * 0.85f, size.height * 0.75f), strokeWidth = stroke.width)
+                            drawCircle(color, radius = 2.5.dp.toPx(), center = Offset(size.width * 0.45f, size.height * 0.75f))
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
@@ -121,7 +135,7 @@ fun AllActivitiesScreen(
                     value = state.searchQuery,
                     onValueChange = { },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = false,
+                    readOnly = true,
                     shape = RoundedCornerShape(16.dp),
                     placeholder = {
                         Text(text = "Search entries", color = Color(0xFF94A3B8), fontSize = 14.sp)
@@ -130,10 +144,18 @@ fun AllActivitiesScreen(
                         Text(text = "🔍", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        disabledBorderColor = Color(0xFFE2E8F0),
-                        disabledContainerColor = Color.White,
-                        disabledTextColor = Color(0xFF1E293B)
+                        focusedBorderColor = Color(0xFFE2E8F0),
+                        unfocusedBorderColor = Color(0xFFE2E8F0),
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
                     )
+                )
+
+                // Transparent overlay box to reliably capture clicks over the text field
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clickable { onNavigateToSearchDiary() }
                 )
             }
 
@@ -155,6 +177,7 @@ fun AllActivitiesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .clickable { onNavigateToActivityDetails() }
                         .padding(16.dp)
                 ) {
                     Column {

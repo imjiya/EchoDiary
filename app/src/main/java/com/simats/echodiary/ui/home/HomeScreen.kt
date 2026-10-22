@@ -49,7 +49,12 @@ fun HomeScreen(
     onNavigateToAllActivities: () -> Unit,
     onNavigateToCalendar: () -> Unit,
     onNavigateToMemories: () -> Unit,
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToYourWeeklySummary: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToActivityDetails: () -> Unit = {},
+    onNavigateToPhotoMemories: () -> Unit = {},
+    onNavigateToInsights: () -> Unit = {},
+    onNavigateToChooseCategory: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -215,6 +220,78 @@ fun HomeScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Start with a category
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Start with a category",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1E293B)
+                )
+                Text(
+                    text = "Choose →",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF5165F6),
+                    modifier = Modifier.clickable { onNavigateToChooseCategory() }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .clickable { onNavigateToChooseCategory() }
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "🎓", fontSize = 14.sp)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(text = "College", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .clickable { onNavigateToChooseCategory() }
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "💼", fontSize = 14.sp)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(text = "Work", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .clickable { onNavigateToChooseCategory() }
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "👥", fontSize = 14.sp)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(text = "Friends", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // Weekly Memory Card
@@ -278,7 +355,7 @@ fun HomeScreen(
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onNavigateToAllActivities() }
+                        modifier = Modifier.clickable { onNavigateToYourWeeklySummary() }
                     ) {
                         Text(
                             text = "Revisit your week",
@@ -309,7 +386,8 @@ fun HomeScreen(
                     text = "Recent activities",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = Color(0xFF1E293B),
+                    modifier = Modifier.clickable { onNavigateToAllActivities() }
                 )
                 Text(
                     text = "See All",
@@ -330,6 +408,7 @@ fun HomeScreen(
                         color = Color.White,
                         shape = RoundedCornerShape(16.dp)
                     )
+                    .clickable { onNavigateToActivityDetails() }
                     .padding(16.dp)
             ) {
                 Row(
@@ -387,6 +466,7 @@ fun HomeScreen(
                         color = Color.White,
                         shape = RoundedCornerShape(16.dp)
                     )
+                    .clickable { onNavigateToActivityDetails() }
                     .padding(16.dp)
             ) {
                 Row(
@@ -443,6 +523,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .clickable { onNavigateToPhotoMemories() }
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -469,6 +550,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .clickable { onNavigateToInsights() }
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {

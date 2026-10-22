@@ -46,7 +46,8 @@ fun CalendarScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToSelectedDate: () -> Unit,
     onNavigateToMemories: () -> Unit,
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToActivityDetails: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -279,7 +280,7 @@ fun CalendarScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                    .clickable { onNavigateToSelectedDate() }
+                    .clickable { onNavigateToActivityDetails() }
                     .padding(16.dp)
             ) {
                 Column {

@@ -12,6 +12,7 @@ sealed class AddActivityNavigationEvent {
     object NavigateToVoiceRecording : AddActivityNavigationEvent()
     object NavigateToWriteDiaryEntry : AddActivityNavigationEvent()
     object NavigateToFilterActivities : AddActivityNavigationEvent()
+    object NavigateToChooseCategory : AddActivityNavigationEvent()
 }
 
 class AddActivityViewModel : ViewModel() {
@@ -39,7 +40,7 @@ class AddActivityViewModel : ViewModel() {
 
     fun onCategoryButtonClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(AddActivityNavigationEvent.NavigateToFilterActivities)
+            _navigationEvent.emit(AddActivityNavigationEvent.NavigateToChooseCategory)
         }
     }
 }

@@ -32,7 +32,9 @@ import com.simats.echodiary.ui.activity.YourWeeklySummaryScreen
 import com.simats.echodiary.ui.activity.WeeklyMemoryScreen
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
+import com.simats.echodiary.ui.profile.DialogsAndFeedbackScreen
 import com.simats.echodiary.ui.profile.EditProfileScreen
+import com.simats.echodiary.ui.profile.EmptyStatesScreen
 import com.simats.echodiary.ui.profile.HelpAndSupportScreen
 import com.simats.echodiary.ui.profile.NotificationsScreen
 import com.simats.echodiary.ui.profile.PrivacyAndDataScreen
@@ -152,8 +154,23 @@ class MainActivity : ComponentActivity() {
                             onNavigateToMemories = {
                                 currentScreen = Screen.Memories
                             },
+                            onNavigateToYourWeeklySummary = {
+                                currentScreen = Screen.YourWeeklySummary
+                            },
                             onNavigateToProfile = {
                                 currentScreen = Screen.Profile
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
+                            },
+                            onNavigateToPhotoMemories = {
+                                currentScreen = Screen.PhotoMemories
+                            },
+                            onNavigateToInsights = {
+                                currentScreen = Screen.ActivityAndMood
+                            },
+                            onNavigateToChooseCategory = {
+                                currentScreen = Screen.ChooseCategory
                             }
                         )
                     }
@@ -170,6 +187,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToFilterActivities = {
                                 currentScreen = Screen.FilterActivities
+                            },
+                            onNavigateToChooseCategory = {
+                                currentScreen = Screen.ChooseCategory
                             }
                         )
                     }
@@ -240,6 +260,12 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToSearchDiary = {
                                 currentScreen = Screen.SearchDiary
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
+                            },
+                            onNavigateToFilterActivities = {
+                                currentScreen = Screen.FilterActivities
                             }
                         )
                     }
@@ -256,6 +282,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToProfile = {
                                 currentScreen = Screen.Profile
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }
@@ -283,10 +312,13 @@ class MainActivity : ComponentActivity() {
                     is Screen.FilterActivities -> {
                         FilterActivitiesScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.AddActivity
+                                currentScreen = Screen.AllActivities
                             },
                             onNavigateToActivityDetails = {
                                 currentScreen = Screen.ActivityDetails
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
                             }
                         )
                     }
@@ -419,7 +451,7 @@ class MainActivity : ComponentActivity() {
                     is Screen.ActivityAndMood -> {
                         ActivityAndMoodScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.WeeklyMemory
+                                currentScreen = Screen.Home
                             },
                             onNavigateToActivityDetails = {
                                 currentScreen = Screen.ActivityDetails
@@ -461,7 +493,7 @@ class MainActivity : ComponentActivity() {
                                 currentScreen = Screen.Profile
                             },
                             onNavigateToAccount = {
-                                currentScreen = Screen.EditProfile
+                                currentScreen = Screen.DialogsAndFeedback
                             },
                             onNavigateToPrivacyAndData = {
                                 currentScreen = Screen.PrivacyAndData
@@ -477,6 +509,13 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
+                    is Screen.DialogsAndFeedback -> {
+                        DialogsAndFeedbackScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Settings
+                            }
+                        )
+                    }
                     is Screen.Notifications -> {
                         NotificationsScreen(
                             onNavigateBack = {
@@ -488,6 +527,9 @@ class MainActivity : ComponentActivity() {
                         PrivacyAndDataScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Settings
+                            },
+                            onNavigateToEmptyStates = {
+                                currentScreen = Screen.EmptyStates
                             }
                         )
                     }
@@ -495,6 +537,19 @@ class MainActivity : ComponentActivity() {
                         HelpAndSupportScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Settings
+                            }
+                        )
+                    }
+                    is Screen.EmptyStates -> {
+                        EmptyStatesScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.PrivacyAndData
+                            },
+                            onNavigateToAddEntry = {
+                                currentScreen = Screen.AddActivity
+                            },
+                            onNavigateToAllActivities = {
+                                currentScreen = Screen.AllActivities
                             }
                         )
                     }

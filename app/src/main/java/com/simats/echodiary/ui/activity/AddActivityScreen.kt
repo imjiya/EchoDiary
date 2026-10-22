@@ -49,7 +49,8 @@ fun AddActivityScreen(
     onNavigateBack: () -> Unit,
     onNavigateToVoiceRecording: () -> Unit,
     onNavigateToWriteDiaryEntry: () -> Unit,
-    onNavigateToFilterActivities: () -> Unit
+    onNavigateToFilterActivities: () -> Unit,
+    onNavigateToChooseCategory: () -> Unit = {}
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
@@ -58,6 +59,7 @@ fun AddActivityScreen(
                 is AddActivityNavigationEvent.NavigateToVoiceRecording -> onNavigateToVoiceRecording()
                 is AddActivityNavigationEvent.NavigateToWriteDiaryEntry -> onNavigateToWriteDiaryEntry()
                 is AddActivityNavigationEvent.NavigateToFilterActivities -> onNavigateToFilterActivities()
+                is AddActivityNavigationEvent.NavigateToChooseCategory -> onNavigateToChooseCategory()
             }
         }
     }

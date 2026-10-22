@@ -25,6 +25,7 @@ data class FilterActivitiesUiState(
 sealed class FilterActivitiesNavigationEvent {
     object NavigateBack : FilterActivitiesNavigationEvent()
     object NavigateToActivityDetails : FilterActivitiesNavigationEvent()
+    object NavigateToAllActivities : FilterActivitiesNavigationEvent()
 }
 
 class FilterActivitiesViewModel : ViewModel() {
@@ -59,7 +60,7 @@ class FilterActivitiesViewModel : ViewModel() {
 
     fun onApplyFiltersClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(FilterActivitiesNavigationEvent.NavigateToActivityDetails)
+            _navigationEvent.emit(FilterActivitiesNavigationEvent.NavigateToAllActivities)
         }
     }
 
