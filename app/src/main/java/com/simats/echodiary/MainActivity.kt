@@ -33,7 +33,9 @@ import com.simats.echodiary.ui.activity.WeeklyMemoryScreen
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.profile.EditProfileScreen
+import com.simats.echodiary.ui.profile.HelpAndSupportScreen
 import com.simats.echodiary.ui.profile.NotificationsScreen
+import com.simats.echodiary.ui.profile.PrivacyAndDataScreen
 import com.simats.echodiary.ui.profile.ProfileScreen
 import com.simats.echodiary.ui.profile.SettingsScreen
 import com.simats.echodiary.ui.login.LoginScreen
@@ -461,8 +463,14 @@ class MainActivity : ComponentActivity() {
                             onNavigateToAccount = {
                                 currentScreen = Screen.EditProfile
                             },
+                            onNavigateToPrivacyAndData = {
+                                currentScreen = Screen.PrivacyAndData
+                            },
                             onNavigateToNotifications = {
                                 currentScreen = Screen.Notifications
+                            },
+                            onNavigateToHelpAndSupport = {
+                                currentScreen = Screen.HelpAndSupport
                             },
                             onNavigateToLogin = {
                                 currentScreen = Screen.Login
@@ -471,6 +479,20 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.Notifications -> {
                         NotificationsScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Settings
+                            }
+                        )
+                    }
+                    is Screen.PrivacyAndData -> {
+                        PrivacyAndDataScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Settings
+                            }
+                        )
+                    }
+                    is Screen.HelpAndSupport -> {
+                        HelpAndSupportScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Settings
                             }

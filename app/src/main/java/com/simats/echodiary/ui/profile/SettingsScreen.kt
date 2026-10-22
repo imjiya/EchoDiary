@@ -51,7 +51,9 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = remember { SettingsViewModel() },
     onNavigateBack: () -> Unit,
     onNavigateToAccount: () -> Unit = {},
+    onNavigateToPrivacyAndData: () -> Unit = {},
     onNavigateToNotifications: () -> Unit = {},
+    onNavigateToHelpAndSupport: () -> Unit = {},
     onNavigateToLogin: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -153,7 +155,7 @@ fun SettingsScreen(
                     title = "Privacy & data",
                     subtitle = "Review and manage your content",
                     iconType = SettingsIconType.PRIVACY,
-                    onClick = { }
+                    onClick = onNavigateToPrivacyAndData
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -188,7 +190,7 @@ fun SettingsScreen(
                     title = "Help & support",
                     subtitle = "FAQs and troubleshooting",
                     iconType = SettingsIconType.HELP,
-                    onClick = { }
+                    onClick = onNavigateToHelpAndSupport
                 )
             }
 
