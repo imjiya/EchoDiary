@@ -31,4 +31,6 @@ sealed class Screen(val route: String) {
     object YearlyMemory : Screen("yearly_memory")
     object PhotoMemories : Screen("photo_memories")
     object ActivityAndMood : Screen("activity_and_mood")
+    object Profile : Screen("profile")
+    object EditProfile : Screen("edit_profile")
 }

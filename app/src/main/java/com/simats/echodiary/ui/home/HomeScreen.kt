@@ -48,7 +48,8 @@ fun HomeScreen(
     onNavigateToAddActivity: () -> Unit,
     onNavigateToAllActivities: () -> Unit,
     onNavigateToCalendar: () -> Unit,
-    onNavigateToMemories: () -> Unit
+    onNavigateToMemories: () -> Unit,
+    onNavigateToProfile: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -64,10 +65,10 @@ fun HomeScreen(
                         selected = state.selectedTab == index,
                         onClick = {
                             viewModel.onTabSelected(index)
-                            if (index == 1) {
-                                onNavigateToCalendar()
-                            } else if (index == 2) {
-                                onNavigateToMemories()
+                            when (index) {
+                                1 -> onNavigateToCalendar()
+                                2 -> onNavigateToMemories()
+                                3 -> onNavigateToProfile()
                             }
                         },
                         icon = {
@@ -153,7 +154,8 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .size(44.dp)
-                        .background(color = Color(0xFFEEF2FF), shape = CircleShape),
+                        .background(color = Color(0xFFEEF2FF), shape = CircleShape)
+                        .clickable { onNavigateToProfile() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

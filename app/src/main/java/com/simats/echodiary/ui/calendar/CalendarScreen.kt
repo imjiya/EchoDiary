@@ -45,7 +45,8 @@ fun CalendarScreen(
     viewModel: CalendarViewModel = remember { CalendarViewModel() },
     onNavigateToHome: () -> Unit,
     onNavigateToSelectedDate: () -> Unit,
-    onNavigateToMemories: () -> Unit
+    onNavigateToMemories: () -> Unit,
+    onNavigateToProfile: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -61,10 +62,10 @@ fun CalendarScreen(
                         selected = state.selectedTab == index,
                         onClick = {
                             viewModel.onTabSelected(index)
-                            if (index == 0) {
-                                onNavigateToHome()
-                            } else if (index == 2) {
-                                onNavigateToMemories()
+                            when (index) {
+                                0 -> onNavigateToHome()
+                                2 -> onNavigateToMemories()
+                                3 -> onNavigateToProfile()
                             }
                         },
                         icon = {

@@ -48,7 +48,8 @@ fun MemoriesScreen(
     onNavigateToYourWeeklySummary: () -> Unit,
     onNavigateToMonthlyMemory: () -> Unit,
     onNavigateToYearlyMemory: () -> Unit,
-    onNavigateToPhotoMemories: () -> Unit
+    onNavigateToPhotoMemories: () -> Unit,
+    onNavigateToProfile: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -64,10 +65,10 @@ fun MemoriesScreen(
                         selected = state.selectedTab == index,
                         onClick = {
                             viewModel.onBottomTabSelected(index)
-                            if (index == 0) {
-                                onNavigateToHome()
-                            } else if (index == 1) {
-                                onNavigateToCalendar()
+                            when (index) {
+                                0 -> onNavigateToHome()
+                                1 -> onNavigateToCalendar()
+                                3 -> onNavigateToProfile()
                             }
                         },
                         icon = {

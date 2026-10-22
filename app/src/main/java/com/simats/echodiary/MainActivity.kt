@@ -32,6 +32,8 @@ import com.simats.echodiary.ui.activity.YourWeeklySummaryScreen
 import com.simats.echodiary.ui.activity.WeeklyMemoryScreen
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
+import com.simats.echodiary.ui.profile.EditProfileScreen
+import com.simats.echodiary.ui.profile.ProfileScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.login.ResetPasswordScreen
 import com.simats.echodiary.ui.onboarding.FourthOnboardingScreen
@@ -145,6 +147,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToMemories = {
                                 currentScreen = Screen.Memories
+                            },
+                            onNavigateToProfile = {
+                                currentScreen = Screen.Profile
                             }
                         )
                     }
@@ -244,6 +249,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToMemories = {
                                 currentScreen = Screen.Memories
+                            },
+                            onNavigateToProfile = {
+                                currentScreen = Screen.Profile
                             }
                         )
                     }
@@ -313,6 +321,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToPhotoMemories = {
                                 currentScreen = Screen.PhotoMemories
+                            },
+                            onNavigateToProfile = {
+                                currentScreen = Screen.Profile
                             }
                         )
                     }
@@ -408,6 +419,32 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityDetails = {
                                 currentScreen = Screen.ActivityDetails
+                            }
+                        )
+                    }
+                    is Screen.Profile -> {
+                        ProfileScreen(
+                            onNavigateToHome = {
+                                currentScreen = Screen.Home
+                            },
+                            onNavigateToCalendar = {
+                                currentScreen = Screen.Calendar
+                            },
+                            onNavigateToMemories = {
+                                currentScreen = Screen.Memories
+                            },
+                            onNavigateToEditProfile = {
+                                currentScreen = Screen.EditProfile
+                            },
+                            onNavigateToInsights = {
+                                currentScreen = Screen.ActivityAndMood
+                            }
+                        )
+                    }
+                    is Screen.EditProfile -> {
+                        EditProfileScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Profile
                             }
                         )
                     }
