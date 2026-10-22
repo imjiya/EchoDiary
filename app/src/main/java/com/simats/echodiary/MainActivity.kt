@@ -33,7 +33,9 @@ import com.simats.echodiary.ui.activity.WeeklyMemoryScreen
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
 import com.simats.echodiary.ui.profile.EditProfileScreen
+import com.simats.echodiary.ui.profile.NotificationsScreen
 import com.simats.echodiary.ui.profile.ProfileScreen
+import com.simats.echodiary.ui.profile.SettingsScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.login.ResetPasswordScreen
 import com.simats.echodiary.ui.onboarding.FourthOnboardingScreen
@@ -436,6 +438,9 @@ class MainActivity : ComponentActivity() {
                             onNavigateToEditProfile = {
                                 currentScreen = Screen.EditProfile
                             },
+                            onNavigateToSettings = {
+                                currentScreen = Screen.Settings
+                            },
                             onNavigateToInsights = {
                                 currentScreen = Screen.ActivityAndMood
                             }
@@ -445,6 +450,29 @@ class MainActivity : ComponentActivity() {
                         EditProfileScreen(
                             onNavigateBack = {
                                 currentScreen = Screen.Profile
+                            }
+                        )
+                    }
+                    is Screen.Settings -> {
+                        SettingsScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Profile
+                            },
+                            onNavigateToAccount = {
+                                currentScreen = Screen.EditProfile
+                            },
+                            onNavigateToNotifications = {
+                                currentScreen = Screen.Notifications
+                            },
+                            onNavigateToLogin = {
+                                currentScreen = Screen.Login
+                            }
+                        )
+                    }
+                    is Screen.Notifications -> {
+                        NotificationsScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.Settings
                             }
                         )
                     }

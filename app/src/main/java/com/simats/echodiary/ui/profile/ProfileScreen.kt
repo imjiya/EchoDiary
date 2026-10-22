@@ -51,6 +51,7 @@ fun ProfileScreen(
     onNavigateToCalendar: () -> Unit,
     onNavigateToMemories: () -> Unit,
     onNavigateToEditProfile: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
     onNavigateToInsights: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -257,7 +258,7 @@ fun ProfileScreen(
                     title = "Settings",
                     subtitle = "Make this space yours",
                     iconType = ProfileIconType.SETTINGS,
-                    onClick = { }
+                    onClick = onNavigateToSettings
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
