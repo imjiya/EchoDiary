@@ -34,6 +34,7 @@ data class YearlyMemoryUiState(
 sealed class YearlyMemoryNavigationEvent {
     object NavigateBack : YearlyMemoryNavigationEvent()
     object NavigateToAllActivities : YearlyMemoryNavigationEvent()
+    object NavigateToActivityDetails : YearlyMemoryNavigationEvent()
 }
 
 class YearlyMemoryViewModel : ViewModel() {
@@ -53,9 +54,15 @@ class YearlyMemoryViewModel : ViewModel() {
         // Handle year selection if needed
     }
 
+    fun onChapterCardClicked() {
+        viewModelScope.launch {
+            _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateToActivityDetails)
+        }
+    }
+
     fun onRecordClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateToAllActivities)
+            _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateToActivityDetails)
         }
     }
 }

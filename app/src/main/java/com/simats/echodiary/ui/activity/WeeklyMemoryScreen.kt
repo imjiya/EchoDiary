@@ -48,7 +48,9 @@ fun WeeklyMemoryScreen(
     onNavigateBack: () -> Unit,
     onNavigateToMemories: () -> Unit,
     onNavigateToAllActivities: () -> Unit,
-    onNavigateToActivityAndMood: () -> Unit
+    onNavigateToActivityAndMood: () -> Unit,
+    onNavigateToEditYourMemory: () -> Unit = {},
+    onNavigateToMemoryDetails: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -59,6 +61,8 @@ fun WeeklyMemoryScreen(
                 is WeeklyMemoryNavigationEvent.NavigateToMemories -> onNavigateToMemories()
                 is WeeklyMemoryNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
                 is WeeklyMemoryNavigationEvent.NavigateToActivityAndMood -> onNavigateToActivityAndMood()
+                is WeeklyMemoryNavigationEvent.NavigateToEditYourMemory -> onNavigateToEditYourMemory()
+                is WeeklyMemoryNavigationEvent.NavigateToMemoryDetails -> onNavigateToMemoryDetails()
             }
         }
     }

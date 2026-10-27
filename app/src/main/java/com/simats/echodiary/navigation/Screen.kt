@@ -39,4 +39,6 @@ sealed class Screen(val route: String) {
     object HelpAndSupport : Screen("help_and_support")
     object EmptyStates : Screen("empty_states")
     object DialogsAndFeedback : Screen("dialogs_and_feedback")
+    object EditYourMemory : Screen("edit_your_memory")
+    object MemoryDetails : Screen("memory_details")
 }

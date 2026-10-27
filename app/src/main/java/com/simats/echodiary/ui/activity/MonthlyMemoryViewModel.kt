@@ -36,6 +36,8 @@ data class MonthlyMemoryUiState(
 sealed class MonthlyMemoryNavigationEvent {
     object NavigateBack : MonthlyMemoryNavigationEvent()
     object NavigateToAllActivities : MonthlyMemoryNavigationEvent()
+    object NavigateToActivityAndMood : MonthlyMemoryNavigationEvent()
+    object NavigateToActivityDetails : MonthlyMemoryNavigationEvent()
 }
 
 class MonthlyMemoryViewModel : ViewModel() {
@@ -53,6 +55,12 @@ class MonthlyMemoryViewModel : ViewModel() {
 
     fun onMonthDropdownClicked() {
         // Handle month selection if needed
+    }
+
+    fun onSummaryCardClicked() {
+        viewModelScope.launch {
+            _navigationEvent.emit(MonthlyMemoryNavigationEvent.NavigateToActivityDetails)
+        }
     }
 
     fun onEntryItemClicked() {

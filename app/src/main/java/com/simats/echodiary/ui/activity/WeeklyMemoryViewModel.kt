@@ -23,6 +23,8 @@ sealed class WeeklyMemoryNavigationEvent {
     object NavigateToMemories : WeeklyMemoryNavigationEvent()
     object NavigateToAllActivities : WeeklyMemoryNavigationEvent()
     object NavigateToActivityAndMood : WeeklyMemoryNavigationEvent()
+    object NavigateToEditYourMemory : WeeklyMemoryNavigationEvent()
+    object NavigateToMemoryDetails : WeeklyMemoryNavigationEvent()
 }
 
 class WeeklyMemoryViewModel : ViewModel() {
@@ -40,7 +42,9 @@ class WeeklyMemoryViewModel : ViewModel() {
     }
 
     fun onEditSummaryClicked() {
-        // Edit action
+        viewModelScope.launch {
+            _navigationEvent.emit(WeeklyMemoryNavigationEvent.NavigateToEditYourMemory)
+        }
     }
 
     fun onShareClicked() {
@@ -49,7 +53,7 @@ class WeeklyMemoryViewModel : ViewModel() {
 
     fun onViewDetailsClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(WeeklyMemoryNavigationEvent.NavigateToActivityAndMood)
+            _navigationEvent.emit(WeeklyMemoryNavigationEvent.NavigateToMemoryDetails)
         }
     }
 

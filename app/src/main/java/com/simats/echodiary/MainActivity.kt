@@ -17,6 +17,8 @@ import com.simats.echodiary.ui.activity.AllActivitiesScreen
 import com.simats.echodiary.ui.activity.ChooseCategoryScreen
 import com.simats.echodiary.ui.activity.CreatingYourMemoryScreen
 import com.simats.echodiary.ui.activity.EditActivityScreen
+import com.simats.echodiary.ui.activity.EditYourMemoryScreen
+import com.simats.echodiary.ui.activity.MemoryDetailsScreen
 import com.simats.echodiary.ui.activity.FilterActivitiesScreen
 import com.simats.echodiary.ui.activity.MemoriesScreen
 import com.simats.echodiary.ui.activity.MonthlyMemoryScreen
@@ -402,6 +404,29 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityAndMood = {
                                 currentScreen = Screen.ActivityAndMood
+                            },
+                            onNavigateToEditYourMemory = {
+                                currentScreen = Screen.EditYourMemory
+                            },
+                            onNavigateToMemoryDetails = {
+                                currentScreen = Screen.MemoryDetails
+                            }
+                        )
+                    }
+                    is Screen.EditYourMemory -> {
+                        EditYourMemoryScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.WeeklyMemory
+                            }
+                        )
+                    }
+                    is Screen.MemoryDetails -> {
+                        MemoryDetailsScreen(
+                            onNavigateBack = {
+                                currentScreen = Screen.WeeklyMemory
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }
@@ -425,6 +450,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }
@@ -435,6 +463,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
+                            },
+                            onNavigateToActivityDetails = {
+                                currentScreen = Screen.ActivityDetails
                             }
                         )
                     }
@@ -493,7 +524,7 @@ class MainActivity : ComponentActivity() {
                                 currentScreen = Screen.Profile
                             },
                             onNavigateToAccount = {
-                                currentScreen = Screen.DialogsAndFeedback
+                                currentScreen = Screen.EditProfile
                             },
                             onNavigateToPrivacyAndData = {
                                 currentScreen = Screen.PrivacyAndData

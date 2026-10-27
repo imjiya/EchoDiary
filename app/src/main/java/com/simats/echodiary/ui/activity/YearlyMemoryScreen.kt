@@ -45,7 +45,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun YearlyMemoryScreen(
     viewModel: YearlyMemoryViewModel = remember { YearlyMemoryViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToAllActivities: () -> Unit
+    onNavigateToAllActivities: () -> Unit,
+    onNavigateToActivityDetails: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -54,6 +55,7 @@ fun YearlyMemoryScreen(
             when (event) {
                 is YearlyMemoryNavigationEvent.NavigateBack -> onNavigateBack()
                 is YearlyMemoryNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
+                is YearlyMemoryNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails()
             }
         }
     }
@@ -165,6 +167,7 @@ fun YearlyMemoryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .clickable { viewModel.onChapterCardClicked() }
                     .padding(20.dp)
             ) {
                 Column {

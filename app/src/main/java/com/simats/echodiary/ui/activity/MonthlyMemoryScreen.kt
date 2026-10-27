@@ -47,7 +47,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun MonthlyMemoryScreen(
     viewModel: MonthlyMemoryViewModel = remember { MonthlyMemoryViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToAllActivities: () -> Unit
+    onNavigateToAllActivities: () -> Unit,
+    onNavigateToActivityDetails: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -56,6 +57,8 @@ fun MonthlyMemoryScreen(
             when (event) {
                 is MonthlyMemoryNavigationEvent.NavigateBack -> onNavigateBack()
                 is MonthlyMemoryNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
+                is MonthlyMemoryNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails()
+                else -> {}
             }
         }
     }
@@ -219,6 +222,7 @@ fun MonthlyMemoryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .clickable { viewModel.onSummaryCardClicked() }
                     .padding(20.dp)
             ) {
                 Column {
