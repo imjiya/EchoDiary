@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -125,7 +126,25 @@ fun CreateAccountScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Global Error Banner if present
+            if (!state.errorMessage.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFFEE2E2), shape = RoundedCornerShape(12.dp))
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    Text(
+                        text = state.errorMessage!!,
+                        fontSize = 13.sp,
+                        color = Color(0xFFDC2626),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             // Full Name Field
             Column(
@@ -146,6 +165,7 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
+                    placeholder = { Text("e.g. Alex Morgan", color = Color(0xFF94A3B8)) },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFF5165F6),
                         unfocusedBorderColor = Color(0xFFE2E8F0),
@@ -176,6 +196,7 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
+                    placeholder = { Text("name@example.com", color = Color(0xFF94A3B8)) },
                     trailingIcon = {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -219,6 +240,7 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
+                    placeholder = { Text("Minimum 8 characters", color = Color(0xFF94A3B8)) },
                     visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(onClick = { viewModel.onTogglePasswordVisibility() }) {
@@ -261,14 +283,13 @@ fun CreateAccountScreen(
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
-                val hasError = state.errorMessage != null
                 OutlinedTextField(
                     value = state.confirmPassword,
                     onValueChange = { viewModel.onConfirmPasswordChanged(it) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
-                    isError = hasError,
+                    placeholder = { Text("Re-enter password", color = Color(0xFF94A3B8)) },
                     visualTransformation = if (state.confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(onClick = { viewModel.onToggleConfirmPasswordVisibility() }) {
@@ -282,21 +303,12 @@ fun CreateAccountScreen(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = if (hasError) Color(0xFFEF4444) else Color(0xFF5165F6),
-                        unfocusedBorderColor = if (hasError) Color(0xFFEF4444) else Color(0xFFE2E8F0),
-                        errorBorderColor = Color(0xFFEF4444),
+                        focusedBorderColor = Color(0xFF5165F6),
+                        unfocusedBorderColor = Color(0xFFE2E8F0),
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White
                     )
                 )
-                if (hasError) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = state.errorMessage!!,
-                        fontSize = 12.sp,
-                        color = Color(0xFFEF4444)
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -308,23 +320,35 @@ fun CreateAccountScreen(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             // Create Account Button
             Button(
                 onClick = { viewModel.onCreateAccountClicked() },
+                enabled = !state.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
-            ) {
-                Text(
-                    text = "Create Account",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF5165F6),
+                    disabledContainerColor = Color(0xFF5165F6).copy(alpha = 0.6f)
                 )
+            ) {
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(22.dp),
+                        color = Color.White,
+                        strokeWidth = 2.5.dp
+                    )
+                } else {
+                    Text(
+                        text = "Create Account",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))

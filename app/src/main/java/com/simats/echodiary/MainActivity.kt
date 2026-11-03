@@ -65,7 +65,11 @@ class MainActivity : ComponentActivity() {
                     is Screen.Splash -> {
                         SplashScreen(
                             onNavigateToOnboarding = {
-                                currentScreen = Screen.Onboarding
+                                if (EchoDiaryApp.getSessionManager().isLoggedIn()) {
+                                    currentScreen = Screen.Home
+                                } else {
+                                    currentScreen = Screen.Onboarding
+                                }
                             }
                         )
                     }
