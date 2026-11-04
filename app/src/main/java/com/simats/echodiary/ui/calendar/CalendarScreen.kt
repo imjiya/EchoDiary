@@ -1,8 +1,5 @@
 package com.simats.echodiary.ui.calendar
 
-import com.simats.echodiary.ui.common.EchoBottomBar
-
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,9 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,16 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.common.EchoBottomBar
 
 @Composable
 fun CalendarScreen(
@@ -49,7 +40,8 @@ fun CalendarScreen(
     onNavigateToSelectedDate: () -> Unit,
     onNavigateToMemories: () -> Unit,
     onNavigateToProfile: () -> Unit = {},
-    onNavigateToActivityDetails: () -> Unit = {}
+    onNavigateToActivityDetails: () -> Unit = {},
+    onNavigateToWriteDiary: (String) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -150,14 +142,14 @@ fun CalendarScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                                .padding(vertical = 6.dp),
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
                             week.forEach { dayNum ->
                                 if (dayNum != null) {
                                     val isSelected = state.selectedDay == dayNum
                                     val isToday = dayNum == 11
-                                    val hasEntry = dayNum in listOf(5, 6, 7, 8, 10)
+                                    val hasEntry = dayNum in listOf(5, 6, 7, 8, 10, 11)
 
                                     Box(
                                         modifier = Modifier
@@ -168,9 +160,6 @@ fun CalendarScreen(
                                             )
                                             .clickable {
                                                 viewModel.selectDay(dayNum)
-                                                if (hasEntry) {
-                                                    onNavigateToSelectedDate()
-                                                }
                                             },
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -207,19 +196,26 @@ fun CalendarScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Legend Info
-            Text(
-                text = "· Diary entry · Outlined date: today, Oct 11",
-                fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Only October has represented entries; month controls are disabled.",
-                fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "● Has entries  ·  Select date above",
+                    fontSize = 12.sp,
+                    color = Color(0xFF64748B),
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "Selected: ${state.selectedActivityDate}",
+                    fontSize = 12.sp,
+                    color = Color(0xFF5165F6),
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Selected Date Activities Header
             Text(
@@ -243,7 +239,7 @@ fun CalendarScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "🎓", fontSize = 18.sp)
+                        Text(text = "📅", fontSize = 18.sp)
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
@@ -272,13 +268,37 @@ fun CalendarScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Action: Write Diary for this Date
+            Button(
+                onClick = { onNavigateToWriteDiary(state.selectedActivityDate) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(25.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "✏️ ", fontSize = 15.sp)
+                    Text(
+                        text = "Write Diary for ${state.selectedActivityDate}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF5165F6)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             // View selected date activities link
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { onNavigateToSelectedDate() }
+                modifier = Modifier
+                    .clickable { onNavigateToSelectedDate() }
+                    .padding(vertical = 4.dp)
             ) {
                 Text(
-                    text = "View selected date activities",
+                    text = "View activities for ${state.selectedActivityDate}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF5165F6)

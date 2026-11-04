@@ -56,7 +56,8 @@ fun HomeScreen(
     onNavigateToActivityDetails: () -> Unit = {},
     onNavigateToPhotoMemories: () -> Unit = {},
     onNavigateToInsights: () -> Unit = {},
-    onNavigateToChooseCategory: () -> Unit = {}
+    onNavigateToChooseCategory: () -> Unit = {},
+    onNavigateToWriteDiary: () -> Unit = onNavigateToAddActivity
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -160,7 +161,7 @@ fun HomeScreen(
                 }
 
                 Button(
-                    onClick = onNavigateToAddActivity,
+                    onClick = onNavigateToWriteDiary,
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),

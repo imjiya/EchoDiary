@@ -46,3 +46,4 @@ data class EntryItem(
     @SerializedName("source_type")
     val sourceType: String? = null
 )
+

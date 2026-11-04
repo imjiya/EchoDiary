@@ -60,6 +60,10 @@ class MainActivity : ComponentActivity() {
             EchoDiaryTheme {
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
                 var recordedTranscript by remember { mutableStateOf("Attended lectures and worked on a project.") }
+                var entryTitle by remember { mutableStateOf("Diary Entry") }
+                var entryDescription by remember { mutableStateOf("Attended lectures and worked on a project.") }
+                var entryDate by remember { mutableStateOf("Oct 5, 2026") }
+                var entryCategory by remember { mutableStateOf("College") }
                 val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
 
                 when (currentScreen) {
@@ -152,6 +156,9 @@ class MainActivity : ComponentActivity() {
                             onNavigateToAddActivity = {
                                 currentScreen = Screen.AddActivity
                             },
+                            onNavigateToWriteDiary = {
+                                currentScreen = Screen.WriteDiaryEntry
+                            },
                             onNavigateToAllActivities = {
                                 currentScreen = Screen.AllActivities
                             },
@@ -222,6 +229,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityDetails = { transcript ->
                                 recordedTranscript = transcript
+                                entryTitle = "Voice Diary Entry"
+                                entryDescription = transcript
+                                entryCategory = "Voice Diary"
                                 currentScreen = Screen.ActivityDetails
                             }
                         )
@@ -229,20 +239,31 @@ class MainActivity : ComponentActivity() {
                     is Screen.WriteDiaryEntry -> {
                         WriteDiaryEntryScreen(
                             viewModel = writeDiaryViewModel,
+                            initialDate = entryDate,
                             onNavigateBack = {
                                 currentScreen = Screen.AddActivity
                             },
-                            onNavigateToActivityDetails = {
+                            onNavigateToActivityDetails = { title, description, date, category ->
+                                entryTitle = title
+                                entryDescription = description
+                                entryDate = date
+                                entryCategory = category
                                 currentScreen = Screen.ActivityDetails
                             },
                             onNavigateToChooseCategory = {
                                 currentScreen = Screen.ChooseCategory
+                            },
+                            onNavigateToCalendar = {
+                                currentScreen = Screen.Calendar
                             }
                         )
                     }
                     is Screen.ActivityDetails -> {
                         ActivityDetailsScreen(
-                            initialDescription = recordedTranscript,
+                            initialTitle = entryTitle,
+                            initialDescription = entryDescription,
+                            initialDate = entryDate,
+                            initialCategory = entryCategory,
                             onNavigateBack = {
                                 currentScreen = Screen.Home
                             },
@@ -296,6 +317,11 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityDetails = {
                                 currentScreen = Screen.ActivityDetails
+                            },
+                            onNavigateToWriteDiary = { selectedDate ->
+                                entryDate = selectedDate
+                                writeDiaryViewModel.onDateChanged(selectedDate)
+                                currentScreen = Screen.WriteDiaryEntry
                             }
                         )
                     }

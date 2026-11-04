@@ -13,12 +13,12 @@ import kotlinx.coroutines.launch
 
 data class ActivityDetailsUiState(
     val date: String = "Monday, Oct 5, 2026",
-    val title: String = "Voice Diary Entry",
-    val category: String = "Daily",
+    val title: String = "Diary Entry",
+    val category: String = "College",
     val description: String = "Attended lectures and worked on a project.",
     val mood: String = "Not specified",
     val photoStatus: String = "No photo attached",
-    val entryId: String = "Entry A1 · Saved voice translation"
+    val entryId: String = "Entry A1 · Saved to diary"
 )
 
 sealed class ActivityDetailsNavigationEvent {
@@ -34,6 +34,18 @@ class ActivityDetailsViewModel : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<ActivityDetailsNavigationEvent>()
     val navigationEvent: SharedFlow<ActivityDetailsNavigationEvent> = _navigationEvent.asSharedFlow()
+
+    fun setEntryDetails(title: String, description: String, date: String, category: String) {
+        _uiState.update {
+            it.copy(
+                title = if (title.isNotBlank()) title else it.title,
+                description = if (description.isNotBlank()) description else it.description,
+                date = if (date.isNotBlank()) date else it.date,
+                category = if (category.isNotBlank()) category else it.category,
+                entryId = "Entry · Stored in diary"
+            )
+        }
+    }
 
     fun setDescription(description: String) {
         if (description.isNotBlank()) {

@@ -45,16 +45,19 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ActivityDetailsScreen(
     viewModel: ActivityDetailsViewModel = remember { ActivityDetailsViewModel() },
+    initialTitle: String = "",
     initialDescription: String = "",
+    initialDate: String = "",
+    initialCategory: String = "",
     onNavigateBack: () -> Unit,
     onNavigateToEdit: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(initialDescription) {
-        if (initialDescription.isNotBlank()) {
-            viewModel.setDescription(initialDescription)
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory) {
+        if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
+            viewModel.setEntryDetails(initialTitle, initialDescription, initialDate, initialCategory)
         }
     }
 
