@@ -184,7 +184,7 @@ fun EditYourMemoryScreen(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
-                    text = "Your changes apply to this summary, not to the original diary entries.",
+                    text = "Your changes apply to this summary, saved in your memory of activities.",
                     fontSize = 12.sp,
                     color = Color(0xFF64748B),
                     lineHeight = 17.sp,
@@ -206,7 +206,10 @@ fun EditYourMemoryScreen(
 
             // Action Buttons
             Button(
-                onClick = onNavigateBack,
+                onClick = {
+                    viewModel.onSaveClicked()
+                    onNavigateBack()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),

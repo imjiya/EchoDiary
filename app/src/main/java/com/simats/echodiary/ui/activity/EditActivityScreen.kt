@@ -47,10 +47,29 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun EditActivityScreen(
     viewModel: EditActivityViewModel = remember { EditActivityViewModel() },
+    initialTitle: String = "",
+    initialDescription: String = "",
+    initialDate: String = "",
+    initialCategory: String = "",
+    initialMood: String = "",
+    entryId: Int = 0,
     onNavigateBack: () -> Unit,
     onNavigateToAllActivities: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId) {
+        if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
+            viewModel.setInitialDetails(
+                title = initialTitle,
+                description = initialDescription,
+                date = initialDate,
+                category = initialCategory,
+                mood = initialMood,
+                id = entryId
+            )
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
@@ -66,7 +85,7 @@ fun EditActivityScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Edit activity",
+                        text = "Edit memory",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1E293B)
@@ -102,7 +121,7 @@ fun EditActivityScreen(
 
             // Subtitle
             Text(
-                text = "A1 · Update the details of your diary entry.",
+                text = "Update the details to save in your memory of activities.",
                 fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 fontWeight = FontWeight.Medium

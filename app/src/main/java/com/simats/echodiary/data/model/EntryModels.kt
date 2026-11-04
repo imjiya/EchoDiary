@@ -19,6 +19,21 @@ data class CreateEntryRequest(
     val sourceType: String = "voice"
 )
 
+data class UpdateEntryRequest(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("description")
+    val description: String,
+    @SerializedName("entry_date")
+    val entryDate: String? = null,
+    @SerializedName("category")
+    val category: String? = null,
+    @SerializedName("mood")
+    val mood: String? = null
+)
+
 data class CreateEntryResponse(
     @SerializedName("success")
     val success: Boolean,
@@ -46,4 +61,3 @@ data class EntryItem(
     @SerializedName("source_type")
     val sourceType: String? = null
 )
-

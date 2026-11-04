@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.ui.activity.ActivityAndMoodScreen
 import com.simats.echodiary.ui.activity.ActivityDetailsScreen
@@ -64,6 +65,8 @@ class MainActivity : ComponentActivity() {
                 var entryDescription by remember { mutableStateOf("Attended lectures and worked on a project.") }
                 var entryDate by remember { mutableStateOf("Oct 5, 2026") }
                 var entryCategory by remember { mutableStateOf("College") }
+                var entryMood by remember { mutableStateOf("Not specified") }
+                var entryId by remember { mutableStateOf(0) }
                 val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
 
                 when (currentScreen) {
@@ -174,7 +177,16 @@ class MainActivity : ComponentActivity() {
                             onNavigateToProfile = {
                                 currentScreen = Screen.Profile
                             },
-                            onNavigateToActivityDetails = {
+                            onNavigateToActivityDetails = { activityItem ->
+                                if (activityItem != null) {
+                                    entryTitle = activityItem.title
+                                    entryDescription = activityItem.description
+                                    entryDate = activityItem.date
+                                    entryCategory = activityItem.category
+                                    entryMood = activityItem.mood
+                                    entryId = activityItem.id
+                                    DiaryActivityStore.selectActivity(activityItem)
+                                }
                                 currentScreen = Screen.ActivityDetails
                             },
                             onNavigateToPhotoMemories = {
@@ -229,9 +241,12 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityDetails = { transcript ->
                                 recordedTranscript = transcript
-                                entryTitle = "Voice Diary Entry"
+                                val item = DiaryActivityStore.selectedActivity.value
+                                entryTitle = item?.title ?: "Voice Diary Entry"
                                 entryDescription = transcript
-                                entryCategory = "Voice Diary"
+                                entryCategory = item?.category ?: "Voice Diary"
+                                entryMood = item?.mood ?: "Reflective"
+                                entryId = item?.id ?: 0
                                 currentScreen = Screen.ActivityDetails
                             }
                         )
@@ -244,10 +259,13 @@ class MainActivity : ComponentActivity() {
                                 currentScreen = Screen.AddActivity
                             },
                             onNavigateToActivityDetails = { title, description, date, category ->
+                                val item = DiaryActivityStore.selectedActivity.value
                                 entryTitle = title
                                 entryDescription = description
                                 entryDate = date
                                 entryCategory = category
+                                entryMood = item?.mood ?: writeDiaryViewModel.uiState.value.mood
+                                entryId = item?.id ?: 0
                                 currentScreen = Screen.ActivityDetails
                             },
                             onNavigateToChooseCategory = {
@@ -264,6 +282,7 @@ class MainActivity : ComponentActivity() {
                             initialDescription = entryDescription,
                             initialDate = entryDate,
                             initialCategory = entryCategory,
+                            initialMood = entryMood,
                             onNavigateBack = {
                                 currentScreen = Screen.Home
                             },
@@ -277,6 +296,12 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.EditActivity -> {
                         EditActivityScreen(
+                            initialTitle = entryTitle,
+                            initialDescription = entryDescription,
+                            initialDate = entryDate,
+                            initialCategory = entryCategory,
+                            initialMood = entryMood,
+                            entryId = entryId,
                             onNavigateBack = {
                                 currentScreen = Screen.ActivityDetails
                             },
@@ -293,7 +318,14 @@ class MainActivity : ComponentActivity() {
                             onNavigateToSearchDiary = {
                                 currentScreen = Screen.SearchDiary
                             },
-                            onNavigateToActivityDetails = {
+                            onNavigateToActivityDetails = { activityItem ->
+                                entryTitle = activityItem.title
+                                entryDescription = activityItem.description
+                                entryDate = activityItem.date
+                                entryCategory = activityItem.category
+                                entryMood = activityItem.mood
+                                entryId = activityItem.id
+                                DiaryActivityStore.selectActivity(activityItem)
                                 currentScreen = Screen.ActivityDetails
                             },
                             onNavigateToFilterActivities = {

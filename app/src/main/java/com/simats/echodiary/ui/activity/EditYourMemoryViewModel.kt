@@ -1,6 +1,7 @@
 package com.simats.echodiary.ui.activity
 
 import androidx.lifecycle.ViewModel
+import com.simats.echodiary.data.local.DiaryActivityStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +15,12 @@ data class EditYourMemoryUiState(
 )
 
 class EditYourMemoryViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(EditYourMemoryUiState())
+    private val _uiState = MutableStateFlow(
+        EditYourMemoryUiState(
+            memoryTitle = DiaryActivityStore.weeklyMemoryTitle.value,
+            weeklyNarrative = DiaryActivityStore.weeklyMemoryNarrative.value
+        )
+    )
     val uiState: StateFlow<EditYourMemoryUiState> = _uiState.asStateFlow()
 
     fun onTitleChanged(title: String) {
@@ -23,5 +29,9 @@ class EditYourMemoryViewModel : ViewModel() {
 
     fun onNarrativeChanged(narrative: String) {
         _uiState.update { it.copy(weeklyNarrative = narrative) }
+    }
+
+    fun onSaveClicked() {
+        DiaryActivityStore.updateWeeklyMemory(_uiState.value.memoryTitle, _uiState.value.weeklyNarrative)
     }
 }

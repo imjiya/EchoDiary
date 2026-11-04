@@ -18,7 +18,7 @@ data class ActivityDetailsUiState(
     val description: String = "Attended lectures and worked on a project.",
     val mood: String = "Not specified",
     val photoStatus: String = "No photo attached",
-    val entryId: String = "Entry A1 · Saved to diary"
+    val entryId: String = "Entry · Stored in memory of activities"
 )
 
 sealed class ActivityDetailsNavigationEvent {
@@ -35,14 +35,15 @@ class ActivityDetailsViewModel : ViewModel() {
     private val _navigationEvent = MutableSharedFlow<ActivityDetailsNavigationEvent>()
     val navigationEvent: SharedFlow<ActivityDetailsNavigationEvent> = _navigationEvent.asSharedFlow()
 
-    fun setEntryDetails(title: String, description: String, date: String, category: String) {
+    fun setEntryDetails(title: String, description: String, date: String, category: String, mood: String = "Not specified") {
         _uiState.update {
             it.copy(
                 title = if (title.isNotBlank()) title else it.title,
                 description = if (description.isNotBlank()) description else it.description,
                 date = if (date.isNotBlank()) date else it.date,
                 category = if (category.isNotBlank()) category else it.category,
-                entryId = "Entry · Stored in diary"
+                mood = if (mood.isNotBlank()) mood else it.mood,
+                entryId = "Entry · Stored in memory of activities"
             )
         }
     }

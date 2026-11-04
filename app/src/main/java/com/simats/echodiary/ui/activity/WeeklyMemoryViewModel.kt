@@ -2,12 +2,15 @@ package com.simats.echodiary.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simats.echodiary.data.local.DiaryActivityStore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class WeeklyMemoryUiState(
@@ -34,6 +37,19 @@ class WeeklyMemoryViewModel : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<WeeklyMemoryNavigationEvent>()
     val navigationEvent: SharedFlow<WeeklyMemoryNavigationEvent> = _navigationEvent.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            DiaryActivityStore.weeklyMemoryTitle.collectLatest { title ->
+                _uiState.update { it.copy(title = title) }
+            }
+        }
+        viewModelScope.launch {
+            DiaryActivityStore.weeklyMemoryNarrative.collectLatest { narrative ->
+                _uiState.update { it.copy(summaryText = narrative) }
+            }
+        }
+    }
 
     fun onSaveMemoryClicked() {
         viewModelScope.launch {

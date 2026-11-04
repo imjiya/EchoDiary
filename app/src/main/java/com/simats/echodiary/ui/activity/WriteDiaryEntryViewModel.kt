@@ -3,6 +3,7 @@ package com.simats.echodiary.ui.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.EchoDiaryApp
+import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.data.repository.EntryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,11 +13,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class WriteDiaryEntryUiState(
     val title: String = "",
     val description: String = "",
-    val date: String = "Oct 5, 2026",
+    val date: String = "Oct 11, 2026",
     val category: String = "College",
     val mood: String = "Good",
     val hasPhoto: Boolean = false,
@@ -42,7 +46,11 @@ class WriteDiaryEntryViewModel(
     private val entryRepository: EntryRepository = EchoDiaryApp.getEntryRepository()
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(WriteDiaryEntryUiState())
+    private val _uiState = MutableStateFlow(
+        WriteDiaryEntryUiState(
+            date = SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).format(Date())
+        )
+    )
     val uiState: StateFlow<WriteDiaryEntryUiState> = _uiState.asStateFlow()
 
     private val _navigationEvent = MutableSharedFlow<WriteDiaryEntryNavigationEvent>()
@@ -101,19 +109,36 @@ class WriteDiaryEntryViewModel(
             ) 
         }
 
+        val displayTitle = if (title.isNotBlank()) title else desc.take(40).trim()
+        val displayDesc = if (desc.isNotBlank()) desc else displayTitle
+        val entryDate = _uiState.value.date.ifBlank {
+            SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).format(Date())
+        }
+        val entryCategory = _uiState.value.category.ifBlank { "College" }
+        val entryMood = _uiState.value.mood.ifBlank { "Good" }
+
         viewModelScope.launch {
             val result = entryRepository.createManualEntry(
                 title = title,
                 description = desc,
-                date = _uiState.value.date,
-                category = _uiState.value.category,
-                mood = _uiState.value.mood
+                date = entryDate,
+                category = entryCategory,
+                mood = entryMood
             )
 
-            val displayTitle = if (title.isNotBlank()) title else desc.take(40).trim()
-            val displayDesc = if (desc.isNotBlank()) desc else displayTitle
+            result.onSuccess { response ->
+                val serverId = response.entry?.id ?: ((System.currentTimeMillis() % 100000).toInt())
+                val newActivity = DiaryEntryItem(
+                    id = serverId,
+                    title = displayTitle,
+                    category = entryCategory,
+                    date = entryDate,
+                    description = displayDesc,
+                    icon = DiaryActivityStore.getCategoryIcon(entryCategory),
+                    mood = entryMood
+                )
+                DiaryActivityStore.addActivity(newActivity)
 
-            result.onSuccess {
                 _uiState.update {
                     it.copy(
                         isSaving = false,
@@ -125,23 +150,35 @@ class WriteDiaryEntryViewModel(
                     WriteDiaryEntryNavigationEvent.NavigateToActivityDetails(
                         title = displayTitle,
                         description = displayDesc,
-                        date = _uiState.value.date,
-                        category = _uiState.value.category
+                        date = entryDate,
+                        category = entryCategory
                     )
                 )
             }.onFailure { error ->
+                val localId = (System.currentTimeMillis() % 100000).toInt()
+                val newActivity = DiaryEntryItem(
+                    id = localId,
+                    title = displayTitle,
+                    category = entryCategory,
+                    date = entryDate,
+                    description = displayDesc,
+                    icon = DiaryActivityStore.getCategoryIcon(entryCategory),
+                    mood = entryMood
+                )
+                DiaryActivityStore.addActivity(newActivity)
+
                 _uiState.update {
                     it.copy(
                         isSaving = false,
-                        errorMessage = error.message ?: "Failed to sync to server, saving locally."
+                        errorMessage = error.message ?: "Saved locally to memory of activities."
                     )
                 }
                 _navigationEvent.emit(
                     WriteDiaryEntryNavigationEvent.NavigateToActivityDetails(
                         title = displayTitle,
                         description = displayDesc,
-                        date = _uiState.value.date,
-                        category = _uiState.value.category
+                        date = entryDate,
+                        category = entryCategory
                     )
                 )
             }

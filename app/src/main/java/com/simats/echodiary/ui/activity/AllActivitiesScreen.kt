@@ -49,7 +49,7 @@ fun AllActivitiesScreen(
     viewModel: AllActivitiesViewModel = remember { AllActivitiesViewModel() },
     onNavigateBack: () -> Unit,
     onNavigateToSearchDiary: () -> Unit,
-    onNavigateToActivityDetails: () -> Unit = {},
+    onNavigateToActivityDetails: (DiaryEntryItem) -> Unit = {},
     onNavigateToFilterActivities: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -133,9 +133,8 @@ fun AllActivitiesScreen(
             ) {
                 OutlinedTextField(
                     value = state.searchQuery,
-                    onValueChange = { },
+                    onValueChange = { viewModel.onSearchQueryChanged(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
                     shape = RoundedCornerShape(16.dp),
                     placeholder = {
                         Text(text = "Search entries", color = Color(0xFF94A3B8), fontSize = 14.sp)
@@ -144,18 +143,11 @@ fun AllActivitiesScreen(
                         Text(text = "🔍", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFE2E8F0),
+                        focusedBorderColor = Color(0xFF5165F6),
                         unfocusedBorderColor = Color(0xFFE2E8F0),
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White
                     )
-                )
-
-                // Transparent overlay box to reliably capture clicks over the text field
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .clickable { onNavigateToSearchDiary() }
                 )
             }
 
@@ -163,7 +155,7 @@ fun AllActivitiesScreen(
 
             // Subtitle info
             Text(
-                text = "${state.entries.size} entries · Oldest first · Oct 5–10, 2026",
+                text = "${state.entries.size} entries · Stored in memory of activities",
                 fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 fontWeight = FontWeight.Medium
@@ -177,16 +169,16 @@ fun AllActivitiesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                        .clickable { onNavigateToActivityDetails() }
+                        .clickable { onNavigateToActivityDetails(entry) }
                         .padding(16.dp)
                 ) {
                     Column {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = entry.icon, fontSize = 18.sp)
+                            Text(text = entry.icon, fontSize = 20.sp)
                             Spacer(modifier = Modifier.width(10.dp))
-                            Column {
+                            Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = entry.title,
                                     fontSize = 15.sp,
@@ -199,15 +191,21 @@ fun AllActivitiesScreen(
                                     color = Color(0xFF94A3B8)
                                 )
                             }
+                            Text(
+                                text = "✏️",
+                                fontSize = 14.sp,
+                                modifier = Modifier.clickable { onNavigateToActivityDetails(entry) }
+                            )
                         }
 
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Text(
-                            text = entry.description,
-                            fontSize = 14.sp,
-                            color = Color(0xFF64748B)
-                        )
+                        if (entry.description.isNotBlank()) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                text = entry.description,
+                                fontSize = 14.sp,
+                                color = Color(0xFF64748B)
+                            )
+                        }
                     }
                 }
 
@@ -217,7 +215,7 @@ fun AllActivitiesScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "All five entries in your diary",
+                text = "All ${state.entries.size} entries in your diary",
                 fontSize = 13.sp,
                 color = Color(0xFF94A3B8),
                 textAlign = TextAlign.Center,

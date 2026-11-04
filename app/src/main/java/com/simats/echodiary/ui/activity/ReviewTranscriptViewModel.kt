@@ -3,6 +3,7 @@ package com.simats.echodiary.ui.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.EchoDiaryApp
+import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.data.repository.EntryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +13,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class ReviewTranscriptUiState(
     val transcript: String = "Attended lectures and worked on a project.",
@@ -77,9 +81,24 @@ class ReviewTranscriptViewModel(
             ) 
         }
 
+        val displayTitle = if (currentText.length > 35) currentText.take(35).trim() + "..." else currentText
+        val dateStr = SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).format(Date())
+
         viewModelScope.launch {
             val result = entryRepository.createVoiceEntry(currentText)
-            result.onSuccess {
+            result.onSuccess { response ->
+                val serverId = response.entry?.id ?: ((System.currentTimeMillis() % 100000).toInt())
+                val newEntry = DiaryEntryItem(
+                    id = serverId,
+                    title = displayTitle,
+                    category = "Voice Diary",
+                    date = dateStr,
+                    description = currentText,
+                    icon = "🎙️",
+                    mood = "Reflective"
+                )
+                DiaryActivityStore.addActivity(newEntry)
+
                 _uiState.update {
                     it.copy(
                         isSaving = false,
@@ -89,13 +108,24 @@ class ReviewTranscriptViewModel(
                 }
                 _navigationEvent.emit(ReviewTranscriptNavigationEvent.NavigateToActivityDetails(currentText))
             }.onFailure { error ->
+                val localId = (System.currentTimeMillis() % 100000).toInt()
+                val newEntry = DiaryEntryItem(
+                    id = localId,
+                    title = displayTitle,
+                    category = "Voice Diary",
+                    date = dateStr,
+                    description = currentText,
+                    icon = "🎙️",
+                    mood = "Reflective"
+                )
+                DiaryActivityStore.addActivity(newEntry)
+
                 _uiState.update {
                     it.copy(
                         isSaving = false,
                         errorMessage = error.message ?: "Could not sync with server, saved locally."
                     )
                 }
-                // Emit navigation so user can still proceed to view activity details
                 _navigationEvent.emit(ReviewTranscriptNavigationEvent.NavigateToActivityDetails(currentText))
             }
         }

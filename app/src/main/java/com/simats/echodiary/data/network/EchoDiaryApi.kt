@@ -6,6 +6,7 @@ import com.simats.echodiary.data.model.CreateEntryResponse
 import com.simats.echodiary.data.model.LoginRequest
 import com.simats.echodiary.data.model.ProfileResponse
 import com.simats.echodiary.data.model.RegisterRequest
+import com.simats.echodiary.data.model.UpdateEntryRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -29,5 +30,10 @@ interface EchoDiaryApi {
     @POST("entries/create.php")
     suspend fun createEntry(
         @Body request: CreateEntryRequest
+    ): Response<CreateEntryResponse>
+
+    @POST("entries/update.php")
+    suspend fun updateEntry(
+        @Body request: UpdateEntryRequest
     ): Response<CreateEntryResponse>
 }

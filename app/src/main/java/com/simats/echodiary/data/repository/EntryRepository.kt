@@ -2,6 +2,7 @@ package com.simats.echodiary.data.repository
 
 import com.simats.echodiary.data.model.CreateEntryRequest
 import com.simats.echodiary.data.model.CreateEntryResponse
+import com.simats.echodiary.data.model.UpdateEntryRequest
 import com.simats.echodiary.data.network.EchoDiaryApi
 import org.json.JSONObject
 import java.io.IOException
@@ -18,6 +19,14 @@ interface EntryRepository {
         date: String? = null,
         category: String? = "College",
         mood: String? = "Not specified"
+    ): Result<CreateEntryResponse>
+    suspend fun updateEntry(
+        id: Int,
+        title: String,
+        description: String,
+        date: String? = null,
+        category: String? = null,
+        mood: String? = null
     ): Result<CreateEntryResponse>
 }
 
@@ -92,6 +101,68 @@ class EntryRepositoryImpl(
         )
 
         return executeCreateEntry(request)
+    }
+
+    override suspend fun updateEntry(
+        id: Int,
+        title: String,
+        description: String,
+        date: String?,
+        category: String?,
+        mood: String?
+    ): Result<CreateEntryResponse> {
+        val cleanTitle = title.trim()
+        val cleanDesc = description.trim()
+
+        val formattedDate = when {
+            !date.isNullOrBlank() -> {
+                try {
+                    if (date.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
+                        date
+                    } else {
+                        val parsed = SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).parse(date)
+                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(parsed ?: Date())
+                    }
+                } catch (_: Exception) {
+                    date
+                }
+            }
+            else -> null
+        }
+
+        val request = UpdateEntryRequest(
+            id = id,
+            title = cleanTitle,
+            description = cleanDesc,
+            entryDate = formattedDate,
+            category = category,
+            mood = mood
+        )
+
+        return try {
+            val response = api.updateEntry(request)
+            if (response.isSuccessful && response.body()?.success == true) {
+                Result.success(response.body()!!)
+            } else {
+                val errorMsg = try {
+                    val rawError = response.errorBody()?.string()
+                    if (!rawError.isNullOrBlank()) {
+                        JSONObject(rawError).optString("message", "Failed to update entry.")
+                    } else {
+                        response.body()?.message ?: "Failed to update entry."
+                    }
+                } catch (_: Exception) {
+                    "Failed to update entry."
+                }
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: SocketTimeoutException) {
+            Result.failure(Exception("Connection timed out while updating entry."))
+        } catch (e: IOException) {
+            Result.failure(Exception("Network error while updating entry."))
+        } catch (e: Exception) {
+            Result.failure(Exception(e.message ?: "An unexpected error occurred."))
+        }
     }
 
     private suspend fun executeCreateEntry(request: CreateEntryRequest): Result<CreateEntryResponse> {

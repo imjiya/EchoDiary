@@ -1,6 +1,7 @@
 package com.simats.echodiary.ui.home
 
 import com.simats.echodiary.ui.common.EchoBottomBar
+import com.simats.echodiary.ui.activity.DiaryEntryItem
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -53,7 +54,7 @@ fun HomeScreen(
     onNavigateToMemories: () -> Unit,
     onNavigateToYourWeeklySummary: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
-    onNavigateToActivityDetails: () -> Unit = {},
+    onNavigateToActivityDetails: (DiaryEntryItem?) -> Unit = {},
     onNavigateToPhotoMemories: () -> Unit = {},
     onNavigateToInsights: () -> Unit = {},
     onNavigateToChooseCategory: () -> Unit = {},
@@ -357,117 +358,74 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Activity Item 1
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .clickable { onNavigateToActivityDetails() }
-                    .padding(16.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+            // Dynamic Recent Activities List
+            if (state.recentActivities.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
                 ) {
+                    Text(
+                        text = "No recent activities yet. Record or write your first entry!",
+                        fontSize = 14.sp,
+                        color = Color(0xFF94A3B8)
+                    )
+                }
+            } else {
+                state.recentActivities.forEach { entry ->
                     Box(
                         modifier = Modifier
-                            .size(44.dp)
-                            .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center
+                            .fillMaxWidth()
+                            .background(
+                                color = Color.White,
+                                shape = RoundedCornerShape(16.dp)
+                            )
+                            .clickable { onNavigateToActivityDetails(entry) }
+                            .padding(16.dp)
                     ) {
-                        Canvas(modifier = Modifier.size(20.dp)) {
-                            val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
-                            val path = Path().apply {
-                                moveTo(size.width * 0.1f, size.height * 0.5f)
-                                lineTo(size.width * 0.5f, size.height * 0.15f)
-                                lineTo(size.width * 0.9f, size.height * 0.5f)
-                                moveTo(size.width * 0.25f, size.height * 0.45f)
-                                lineTo(size.width * 0.25f, size.height * 0.85f)
-                                lineTo(size.width * 0.75f, size.height * 0.85f)
-                                lineTo(size.width * 0.75f, size.height * 0.45f)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = entry.icon, fontSize = 20.sp)
                             }
-                            drawPath(path, color, style = stroke)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = entry.title,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1E293B)
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "${entry.category} · ${entry.date}",
+                                    fontSize = 13.sp,
+                                    color = Color(0xFF64748B)
+                                )
+                            }
+                            Text(
+                                text = "✏️",
+                                fontSize = 14.sp,
+                                modifier = Modifier.clickable { onNavigateToActivityDetails(entry) }
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = "Weekend with family",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "Family · Oct 10, 2026",
-                            fontSize = 13.sp,
-                            color = Color(0xFF64748B)
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Activity Item 2
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .clickable { onNavigateToActivityDetails() }
-                    .padding(16.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Canvas(modifier = Modifier.size(20.dp)) {
-                            val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
-                            val path = Path().apply {
-                                moveTo(size.width * 0.1f, size.height * 0.4f)
-                                lineTo(size.width * 0.5f, size.height * 0.2f)
-                                lineTo(size.width * 0.9f, size.height * 0.4f)
-                                lineTo(size.width * 0.5f, size.height * 0.6f)
-                                close()
-                            }
-                            drawPath(path, color, style = stroke)
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = "Lectures and project",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "College · Oct 5, 2026",
-                            fontSize = 13.sp,
-                            color = Color(0xFF64748B)
-                        )
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.height(4.dp))
 
             Spacer(modifier = Modifier.height(16.dp))
 

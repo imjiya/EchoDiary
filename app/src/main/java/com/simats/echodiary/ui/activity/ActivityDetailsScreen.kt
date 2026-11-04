@@ -49,15 +49,16 @@ fun ActivityDetailsScreen(
     initialDescription: String = "",
     initialDate: String = "",
     initialCategory: String = "",
+    initialMood: String = "",
     onNavigateBack: () -> Unit,
     onNavigateToEdit: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory) {
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood) {
         if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
-            viewModel.setEntryDetails(initialTitle, initialDescription, initialDate, initialCategory)
+            viewModel.setEntryDetails(initialTitle, initialDescription, initialDate, initialCategory, initialMood)
         }
     }
 
@@ -256,7 +257,7 @@ fun ActivityDetailsScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Edit Button
+            // Edit Memory Button
             Button(
                 onClick = { viewModel.onEditClicked() },
                 modifier = Modifier
@@ -268,7 +269,7 @@ fun ActivityDetailsScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "✏️ ", fontSize = 16.sp)
                     Text(
-                        text = "Edit",
+                        text = "Edit Memory",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White

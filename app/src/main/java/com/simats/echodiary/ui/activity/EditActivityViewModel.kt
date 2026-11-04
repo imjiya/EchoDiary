@@ -2,6 +2,9 @@ package com.simats.echodiary.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simats.echodiary.EchoDiaryApp
+import com.simats.echodiary.data.local.DiaryActivityStore
+import com.simats.echodiary.data.repository.EntryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -17,7 +20,11 @@ data class EditActivityUiState(
     val date: String = "Oct 5, 2026",
     val category: String = "College",
     val mood: String = "Not specified",
-    val hasPhoto: Boolean = false
+    val hasPhoto: Boolean = false,
+    val entryId: Int = 0,
+    val originalTitle: String = "Lectures and project",
+    val isSaving: Boolean = false,
+    val errorMessage: String? = null
 )
 
 sealed class EditActivityNavigationEvent {
@@ -25,13 +32,36 @@ sealed class EditActivityNavigationEvent {
     object NavigateToAllActivities : EditActivityNavigationEvent()
 }
 
-class EditActivityViewModel : ViewModel() {
+class EditActivityViewModel(
+    private val entryRepository: EntryRepository = EchoDiaryApp.getEntryRepository()
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditActivityUiState())
     val uiState: StateFlow<EditActivityUiState> = _uiState.asStateFlow()
 
     private val _navigationEvent = MutableSharedFlow<EditActivityNavigationEvent>()
     val navigationEvent: SharedFlow<EditActivityNavigationEvent> = _navigationEvent.asSharedFlow()
+
+    fun setInitialDetails(
+        title: String,
+        description: String,
+        date: String,
+        category: String,
+        mood: String = "Not specified",
+        id: Int = 0
+    ) {
+        _uiState.update {
+            it.copy(
+                title = if (title.isNotBlank()) title else it.title,
+                originalTitle = if (title.isNotBlank()) title else it.originalTitle,
+                description = if (description.isNotBlank()) description else it.description,
+                date = if (date.isNotBlank()) date else it.date,
+                category = if (category.isNotBlank()) category else it.category,
+                mood = if (mood.isNotBlank()) mood else it.mood,
+                entryId = if (id > 0) id else it.entryId
+            )
+        }
+    }
 
     fun onTitleChanged(newTitle: String) {
         _uiState.update { it.copy(title = newTitle) }
@@ -58,7 +88,35 @@ class EditActivityViewModel : ViewModel() {
     }
 
     fun onSaveClicked() {
+        val state = _uiState.value
+        val updatedTitle = state.title.trim().ifBlank { "Diary Entry" }
+        val updatedDesc = state.description.trim()
+
+        val updatedItem = DiaryEntryItem(
+            id = state.entryId,
+            title = updatedTitle,
+            category = state.category.trim().ifBlank { "College" },
+            date = state.date.trim().ifBlank { "Oct 11, 2026" },
+            description = updatedDesc,
+            icon = DiaryActivityStore.getCategoryIcon(state.category),
+            mood = state.mood.trim().ifBlank { "Not specified" },
+            hasPhoto = state.hasPhoto
+        )
+
+        // Save updated activity in memory of activities
+        DiaryActivityStore.updateActivity(state.originalTitle, updatedItem)
+
         viewModelScope.launch {
+            if (state.entryId > 0) {
+                entryRepository.updateEntry(
+                    id = state.entryId,
+                    title = updatedTitle,
+                    description = updatedDesc,
+                    date = state.date,
+                    category = state.category,
+                    mood = state.mood
+                )
+            }
             _navigationEvent.emit(EditActivityNavigationEvent.NavigateToAllActivities)
         }
     }
