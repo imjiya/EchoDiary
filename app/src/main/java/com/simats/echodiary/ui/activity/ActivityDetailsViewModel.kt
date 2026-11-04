@@ -8,16 +8,17 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ActivityDetailsUiState(
     val date: String = "Monday, Oct 5, 2026",
-    val title: String = "Lectures and project",
-    val category: String = "College",
+    val title: String = "Voice Diary Entry",
+    val category: String = "Daily",
     val description: String = "Attended lectures and worked on a project.",
     val mood: String = "Not specified",
     val photoStatus: String = "No photo attached",
-    val entryId: String = "Entry A1 · Included in your Oct 5–11 memory"
+    val entryId: String = "Entry A1 · Saved voice translation"
 )
 
 sealed class ActivityDetailsNavigationEvent {
@@ -33,6 +34,22 @@ class ActivityDetailsViewModel : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<ActivityDetailsNavigationEvent>()
     val navigationEvent: SharedFlow<ActivityDetailsNavigationEvent> = _navigationEvent.asSharedFlow()
+
+    fun setDescription(description: String) {
+        if (description.isNotBlank()) {
+            val titleSnippet = if (description.length > 35) {
+                description.substring(0, 35).trim() + "..."
+            } else {
+                description
+            }
+            _uiState.update { 
+                it.copy(
+                    description = description,
+                    title = titleSnippet
+                ) 
+            }
+        }
+    }
 
     fun onEditClicked() {
         viewModelScope.launch {

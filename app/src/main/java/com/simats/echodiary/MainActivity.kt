@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             EchoDiaryTheme {
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
+                var recordedTranscript by remember { mutableStateOf("Attended lectures and worked on a project.") }
                 val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
 
                 when (currentScreen) {
@@ -204,20 +205,23 @@ class MainActivity : ComponentActivity() {
                             onNavigateBack = {
                                 currentScreen = Screen.AddActivity
                             },
-                            onNavigateToReviewTranscript = {
+                            onNavigateToReviewTranscript = { transcript ->
+                                recordedTranscript = transcript
                                 currentScreen = Screen.ReviewTranscript
                             }
                         )
                     }
                     is Screen.ReviewTranscript -> {
                         ReviewTranscriptScreen(
+                            initialTranscript = recordedTranscript,
                             onNavigateBack = {
                                 currentScreen = Screen.VoiceRecording
                             },
                             onNavigateToVoiceRecording = {
                                 currentScreen = Screen.VoiceRecording
                             },
-                            onNavigateToActivityDetails = {
+                            onNavigateToActivityDetails = { transcript ->
+                                recordedTranscript = transcript
                                 currentScreen = Screen.ActivityDetails
                             }
                         )
@@ -238,6 +242,7 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.ActivityDetails -> {
                         ActivityDetailsScreen(
+                            initialDescription = recordedTranscript,
                             onNavigateBack = {
                                 currentScreen = Screen.Home
                             },

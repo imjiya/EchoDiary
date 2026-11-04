@@ -45,11 +45,18 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ActivityDetailsScreen(
     viewModel: ActivityDetailsViewModel = remember { ActivityDetailsViewModel() },
+    initialDescription: String = "",
     onNavigateBack: () -> Unit,
     onNavigateToEdit: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(initialDescription) {
+        if (initialDescription.isNotBlank()) {
+            viewModel.setDescription(initialDescription)
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
@@ -175,7 +182,7 @@ fun ActivityDetailsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Details Card (Mood & Photo)
+            // Metadata Card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

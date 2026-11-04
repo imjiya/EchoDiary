@@ -51,18 +51,23 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ReviewTranscriptScreen(
     viewModel: ReviewTranscriptViewModel = remember { ReviewTranscriptViewModel() },
+    initialTranscript: String = "Attended lectures and worked on a project.",
     onNavigateBack: () -> Unit,
     onNavigateToVoiceRecording: () -> Unit,
-    onNavigateToActivityDetails: () -> Unit
+    onNavigateToActivityDetails: (String) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(initialTranscript) {
+        viewModel.setInitialTranscript(initialTranscript)
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 is ReviewTranscriptNavigationEvent.NavigateBack -> onNavigateBack()
                 is ReviewTranscriptNavigationEvent.NavigateToVoiceRecording -> onNavigateToVoiceRecording()
-                is ReviewTranscriptNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails()
+                is ReviewTranscriptNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails(event.transcript)
             }
         }
     }
@@ -155,7 +160,7 @@ fun ReviewTranscriptScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "00:24 - Voice transcript preview",
+                        text = "Voice transcript · Proper English translation",
                         fontSize = 12.sp,
                         color = Color(0xFF64748B),
                         fontWeight = FontWeight.Medium

@@ -18,7 +18,7 @@ data class ReviewTranscriptUiState(
 sealed class ReviewTranscriptNavigationEvent {
     object NavigateBack : ReviewTranscriptNavigationEvent()
     object NavigateToVoiceRecording : ReviewTranscriptNavigationEvent()
-    object NavigateToActivityDetails : ReviewTranscriptNavigationEvent()
+    data class NavigateToActivityDetails(val transcript: String) : ReviewTranscriptNavigationEvent()
 }
 
 class ReviewTranscriptViewModel : ViewModel() {
@@ -29,13 +29,19 @@ class ReviewTranscriptViewModel : ViewModel() {
     private val _navigationEvent = MutableSharedFlow<ReviewTranscriptNavigationEvent>()
     val navigationEvent: SharedFlow<ReviewTranscriptNavigationEvent> = _navigationEvent.asSharedFlow()
 
+    fun setInitialTranscript(text: String) {
+        if (text.isNotBlank()) {
+            _uiState.update { it.copy(transcript = text) }
+        }
+    }
+
     fun onTranscriptChanged(newText: String) {
         _uiState.update { it.copy(transcript = newText) }
     }
 
     fun onContinueToEntryClicked() {
         viewModelScope.launch {
-            _navigationEvent.emit(ReviewTranscriptNavigationEvent.NavigateToActivityDetails)
+            _navigationEvent.emit(ReviewTranscriptNavigationEvent.NavigateToActivityDetails(_uiState.value.transcript))
         }
     }
 
