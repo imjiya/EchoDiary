@@ -2,6 +2,8 @@ package com.simats.echodiary.data.repository
 
 import com.simats.echodiary.data.model.CreateEntryRequest
 import com.simats.echodiary.data.model.CreateEntryResponse
+import com.simats.echodiary.data.model.DeleteEntryRequest
+import com.simats.echodiary.data.model.DeleteEntryResponse
 import com.simats.echodiary.data.model.UpdateEntryRequest
 import com.simats.echodiary.data.network.EchoDiaryApi
 import org.json.JSONObject
@@ -28,6 +30,7 @@ interface EntryRepository {
         category: String? = null,
         mood: String? = null
     ): Result<CreateEntryResponse>
+    suspend fun deleteEntry(id: Int): Result<DeleteEntryResponse>
 }
 
 class EntryRepositoryImpl(
@@ -160,6 +163,33 @@ class EntryRepositoryImpl(
             Result.failure(Exception("Connection timed out while updating entry."))
         } catch (e: IOException) {
             Result.failure(Exception("Network error while updating entry."))
+        } catch (e: Exception) {
+            Result.failure(Exception(e.message ?: "An unexpected error occurred."))
+        }
+    }
+
+    override suspend fun deleteEntry(id: Int): Result<DeleteEntryResponse> {
+        return try {
+            val response = api.deleteEntry(DeleteEntryRequest(id))
+            if (response.isSuccessful && response.body()?.success == true) {
+                Result.success(response.body()!!)
+            } else {
+                val errorMsg = try {
+                    val rawError = response.errorBody()?.string()
+                    if (!rawError.isNullOrBlank()) {
+                        JSONObject(rawError).optString("message", "Failed to delete entry.")
+                    } else {
+                        response.body()?.message ?: "Failed to delete entry."
+                    }
+                } catch (_: Exception) {
+                    "Failed to delete entry."
+                }
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: SocketTimeoutException) {
+            Result.failure(Exception("Connection timed out while deleting entry."))
+        } catch (e: IOException) {
+            Result.failure(Exception("Network error while deleting entry."))
         } catch (e: Exception) {
             Result.failure(Exception(e.message ?: "An unexpected error occurred."))
         }

@@ -311,6 +311,28 @@ fun EditActivityScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Delete Entry Button
+            Button(
+                onClick = { viewModel.onDeleteClicked() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+                shape = RoundedCornerShape(27.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFF1F2))
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "🗑️ ", fontSize = 16.sp)
+                    Text(
+                        text = "Delete Entry",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFFEF4444)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             // Cancel Button
             Box(
                 modifier = Modifier

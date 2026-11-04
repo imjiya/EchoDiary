@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -50,15 +51,16 @@ fun ActivityDetailsScreen(
     initialDate: String = "",
     initialCategory: String = "",
     initialMood: String = "",
+    entryId: Int = 0,
     onNavigateBack: () -> Unit,
     onNavigateToEdit: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood) {
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId) {
         if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
-            viewModel.setEntryDetails(initialTitle, initialDescription, initialDate, initialCategory, initialMood)
+            viewModel.setEntryDetails(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId)
         }
     }
 
@@ -111,135 +113,129 @@ fun ActivityDetailsScreen(
         ) {
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Illustration Header Card
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp)
-                    .background(
-                        color = Color(0xFFF0F4FF),
-                        shape = RoundedCornerShape(24.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "🎓", fontSize = 48.sp)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Date
+            // Subtitle
             Text(
                 text = state.date,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 fontWeight = FontWeight.Medium
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Title
             Text(
                 text = state.title,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1E293B)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Category Pill
+            // Category Card
             Box(
                 modifier = Modifier
-                    .background(
-                        color = Color(0xFFEEF2FF),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                    .fillMaxWidth()
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
             ) {
-                Text(
-                    text = state.category,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
-                )
+                Column {
+                    Text(
+                        text = "Category",
+                        fontSize = 12.sp,
+                        color = Color(0xFF94A3B8)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = state.category,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1E293B)
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Description Card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .padding(20.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
             ) {
-                Text(
-                    text = state.description,
-                    fontSize = 15.sp,
-                    color = Color(0xFF1E293B),
-                    lineHeight = 22.sp
-                )
+                Column {
+                    Text(
+                        text = "Description",
+                        fontSize = 12.sp,
+                        color = Color(0xFF94A3B8)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = state.description,
+                        fontSize = 14.sp,
+                        color = Color(0xFF64748B),
+                        lineHeight = 20.sp
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // Metadata Card
+            // Mood Card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .padding(20.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
             ) {
                 Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = "Mood",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = state.mood,
-                                fontSize = 13.sp,
-                                color = Color(0xFF94A3B8)
-                            )
-                        }
-                        Text(text = "—", fontSize = 16.sp, color = Color(0xFF94A3B8))
+                    Text(
+                        text = "Mood",
+                        fontSize = 12.sp,
+                        color = Color(0xFF94A3B8)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = state.mood,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1E293B)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(text = "😊", fontSize = 16.sp)
                     }
+                }
+            }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
+            // Photo Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "Photo",
+                        fontSize = 12.sp,
+                        color = Color(0xFF94A3B8)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text(
-                                text = "Photo",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = state.photoStatus,
-                                fontSize = 13.sp,
-                                color = Color(0xFF94A3B8)
-                            )
-                        }
+                        Text(
+                            text = state.photoStatus,
+                            fontSize = 14.sp,
+                            color = Color(0xFF64748B)
+                        )
                         Text(text = "🖼️", fontSize = 16.sp)
                     }
                 }
@@ -249,7 +245,7 @@ fun ActivityDetailsScreen(
 
             // Entry ID Footer
             Text(
-                text = state.entryId,
+                text = state.entryIdText,
                 fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 modifier = Modifier.fillMaxWidth()

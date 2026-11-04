@@ -101,6 +101,18 @@ object DiaryActivityStore {
         _selectedActivity.value = updatedItem
     }
 
+    fun deleteActivity(id: Int, title: String) {
+        val current = _activities.value.toMutableList()
+        val cleanTitle = title.trim()
+        current.removeAll {
+            (id > 0 && it.id == id) || (cleanTitle.isNotBlank() && it.title.equals(cleanTitle, ignoreCase = true))
+        }
+        _activities.value = current
+        if (_selectedActivity.value?.id == id || (cleanTitle.isNotBlank() && _selectedActivity.value?.title.equals(cleanTitle, ignoreCase = true))) {
+            _selectedActivity.value = current.firstOrNull()
+        }
+    }
+
     fun getCategoryIcon(category: String?): String {
         return when (category?.trim()?.lowercase(Locale.ROOT)) {
             "college" -> "🎓"

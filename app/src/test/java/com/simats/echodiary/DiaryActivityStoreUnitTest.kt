@@ -3,6 +3,7 @@ package com.simats.echodiary
 import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.ui.activity.DiaryEntryItem
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -71,6 +72,27 @@ class DiaryActivityStoreUnitTest {
         assertEquals("Health", found?.category)
         assertEquals("❤️", found?.icon)
         assertEquals("Reflective", found?.mood)
+    }
+
+    @Test
+    fun testDeleteActivityRemovesEntryFromMemory() {
+        val deleteCandidate = DiaryEntryItem(
+            id = 101,
+            title = "Entry to Delete",
+            category = "Other",
+            date = "Oct 14, 2026",
+            description = "This entry will be deleted.",
+            icon = "📝",
+            mood = "Sad"
+        )
+        DiaryActivityStore.addActivity(deleteCandidate)
+        assertTrue(DiaryActivityStore.activities.value.any { it.id == 101 })
+
+        DiaryActivityStore.deleteActivity(101, "Entry to Delete")
+        assertFalse(
+            "Entry should be removed from memory after deletion",
+            DiaryActivityStore.activities.value.any { it.id == 101 || it.title == "Entry to Delete" }
+        )
     }
 
     @Test

@@ -121,6 +121,17 @@ class EditActivityViewModel(
         }
     }
 
+    fun onDeleteClicked() {
+        val state = _uiState.value
+        DiaryActivityStore.deleteActivity(state.entryId, state.originalTitle)
+        viewModelScope.launch {
+            if (state.entryId > 0) {
+                entryRepository.deleteEntry(state.entryId)
+            }
+            _navigationEvent.emit(EditActivityNavigationEvent.NavigateToAllActivities)
+        }
+    }
+
     fun onCancelClicked() {
         viewModelScope.launch {
             _navigationEvent.emit(EditActivityNavigationEvent.NavigateBack)

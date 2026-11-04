@@ -2,6 +2,9 @@ package com.simats.echodiary.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simats.echodiary.EchoDiaryApp
+import com.simats.echodiary.data.local.DiaryActivityStore
+import com.simats.echodiary.data.repository.EntryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,7 +21,8 @@ data class ActivityDetailsUiState(
     val description: String = "Attended lectures and worked on a project.",
     val mood: String = "Not specified",
     val photoStatus: String = "No photo attached",
-    val entryId: String = "Entry · Stored in memory of activities"
+    val entryIdText: String = "Entry · Stored in memory of activities",
+    val entryId: Int = 0
 )
 
 sealed class ActivityDetailsNavigationEvent {
@@ -27,7 +31,9 @@ sealed class ActivityDetailsNavigationEvent {
     object NavigateToDelete : ActivityDetailsNavigationEvent()
 }
 
-class ActivityDetailsViewModel : ViewModel() {
+class ActivityDetailsViewModel(
+    private val entryRepository: EntryRepository = EchoDiaryApp.getEntryRepository()
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ActivityDetailsUiState())
     val uiState: StateFlow<ActivityDetailsUiState> = _uiState.asStateFlow()
@@ -35,7 +41,14 @@ class ActivityDetailsViewModel : ViewModel() {
     private val _navigationEvent = MutableSharedFlow<ActivityDetailsNavigationEvent>()
     val navigationEvent: SharedFlow<ActivityDetailsNavigationEvent> = _navigationEvent.asSharedFlow()
 
-    fun setEntryDetails(title: String, description: String, date: String, category: String, mood: String = "Not specified") {
+    fun setEntryDetails(
+        title: String,
+        description: String,
+        date: String,
+        category: String,
+        mood: String = "Not specified",
+        id: Int = 0
+    ) {
         _uiState.update {
             it.copy(
                 title = if (title.isNotBlank()) title else it.title,
@@ -43,7 +56,8 @@ class ActivityDetailsViewModel : ViewModel() {
                 date = if (date.isNotBlank()) date else it.date,
                 category = if (category.isNotBlank()) category else it.category,
                 mood = if (mood.isNotBlank()) mood else it.mood,
-                entryId = "Entry · Stored in memory of activities"
+                entryId = if (id > 0) id else it.entryId,
+                entryIdText = "Entry · Stored in memory of activities"
             )
         }
     }
@@ -71,7 +85,12 @@ class ActivityDetailsViewModel : ViewModel() {
     }
 
     fun onDeleteClicked() {
+        val state = _uiState.value
+        DiaryActivityStore.deleteActivity(state.entryId, state.title)
         viewModelScope.launch {
+            if (state.entryId > 0) {
+                entryRepository.deleteEntry(state.entryId)
+            }
             _navigationEvent.emit(ActivityDetailsNavigationEvent.NavigateToDelete)
         }
     }

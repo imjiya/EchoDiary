@@ -283,6 +283,7 @@ class MainActivity : ComponentActivity() {
                             initialDate = entryDate,
                             initialCategory = entryCategory,
                             initialMood = entryMood,
+                            entryId = entryId,
                             onNavigateBack = {
                                 currentScreen = Screen.Home
                             },
@@ -290,7 +291,7 @@ class MainActivity : ComponentActivity() {
                                 currentScreen = Screen.EditActivity
                             },
                             onNavigateToHome = {
-                                currentScreen = Screen.Home
+                                currentScreen = Screen.AllActivities
                             }
                         )
                     }

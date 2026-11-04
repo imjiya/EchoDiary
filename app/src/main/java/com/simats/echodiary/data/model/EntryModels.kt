@@ -34,6 +34,20 @@ data class UpdateEntryRequest(
     val mood: String? = null
 )
 
+data class DeleteEntryRequest(
+    @SerializedName("id")
+    val id: Int
+)
+
+data class DeleteEntryResponse(
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String? = null,
+    @SerializedName("deleted_id")
+    val deletedId: Int? = null
+)
+
 data class CreateEntryResponse(
     @SerializedName("success")
     val success: Boolean,
