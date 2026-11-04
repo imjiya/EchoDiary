@@ -1,5 +1,7 @@
 package com.simats.echodiary.ui.profile
 
+import com.simats.echodiary.ui.common.EchoBottomBar
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,68 +60,22 @@ fun ProfileScreen(
 
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = Color.White,
-                tonalElevation = 8.dp
-            ) {
-                val tabs = listOf("Home", "Calendar", "Memories", "Profile")
-                tabs.forEachIndexed { index, title ->
-                    NavigationBarItem(
-                        selected = state.selectedTab == index,
-                        onClick = {
-                            viewModel.onTabSelected(index)
-                            when (index) {
-                                0 -> onNavigateToHome()
-                                1 -> onNavigateToCalendar()
-                                2 -> onNavigateToMemories()
-                            }
-                        },
-                        icon = {
-                            Canvas(modifier = Modifier.size(24.dp)) {
-                                val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                                val color = if (state.selectedTab == index) Color(0xFF5165F6) else Color(0xFF94A3B8)
-                                when (index) {
-                                    0 -> { // Home
-                                        val path = Path().apply {
-                                            moveTo(size.width * 0.1f, size.height * 0.5f)
-                                            lineTo(size.width * 0.5f, size.height * 0.15f)
-                                            lineTo(size.width * 0.9f, size.height * 0.5f)
-                                            moveTo(size.width * 0.2f, size.height * 0.45f)
-                                            lineTo(size.width * 0.2f, size.height * 0.85f)
-                                            lineTo(size.width * 0.8f, size.height * 0.85f)
-                                            lineTo(size.width * 0.8f, size.height * 0.45f)
-                                        }
-                                        drawPath(path, color, style = stroke)
-                                    }
-                                    1 -> { // Calendar
-                                        drawRect(color, topLeft = Offset(2f, size.height * 0.2f), size = Size(size.width - 4f, size.height * 0.7f), style = stroke)
-                                        drawLine(color, Offset(2f, size.height * 0.4f), Offset(size.width - 2f, size.height * 0.4f), strokeWidth = stroke.width)
-                                    }
-                                    2 -> { // Memories
-                                        drawRect(color, topLeft = Offset(size.width * 0.2f, size.height * 0.2f), size = Size(size.width * 0.6f, size.height * 0.65f), style = stroke)
-                                        drawLine(color, Offset(size.width * 0.5f, size.height * 0.2f), Offset(size.width * 0.5f, size.height * 0.85f), strokeWidth = stroke.width)
-                                    }
-                                    3 -> { // Profile
-                                        drawCircle(color, radius = size.width * 0.2f, center = Offset(size.width * 0.5f, size.height * 0.35f), style = stroke)
-                                        drawArc(color, 0f, 180f, false, topLeft = Offset(size.width * 0.15f, size.height * 0.55f), size = Size(size.width * 0.7f, size.height * 0.4f), style = stroke)
-                                    }
-                                }
-                            }
-                        },
-                        label = {
-                            Text(
-                                text = title,
-                                fontSize = 11.sp,
-                                fontWeight = if (state.selectedTab == index) FontWeight.Bold else FontWeight.Normal,
-                                color = if (state.selectedTab == index) Color(0xFF5165F6) else Color(0xFF94A3B8)
-                            )
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = Color(0xFFEEF2FF)
-                        )
-                    )
-                }
-            }
+            EchoBottomBar(
+                selectedIndex = state.selectedTab,
+                onNavigateToHome = {
+                    viewModel.onTabSelected(0)
+                    onNavigateToHome()
+                },
+                onNavigateToCalendar = {
+                    viewModel.onTabSelected(1)
+                    onNavigateToCalendar()
+                },
+                onNavigateToMemories = {
+                    viewModel.onTabSelected(2)
+                    onNavigateToMemories()
+                },
+                onNavigateToProfile = { viewModel.onTabSelected(3) }
+            )
         },
         containerColor = Color(0xFFFAFBFC)
     ) { innerPadding ->
