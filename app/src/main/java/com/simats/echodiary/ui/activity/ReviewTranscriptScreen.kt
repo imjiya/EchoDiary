@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -50,8 +52,8 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewTranscriptScreen(
-    viewModel: ReviewTranscriptViewModel = remember { ReviewTranscriptViewModel() },
     initialTranscript: String = "Attended lectures and worked on a project.",
+    viewModel: ReviewTranscriptViewModel = remember(initialTranscript) { ReviewTranscriptViewModel(initialTranscript) },
     onNavigateBack: () -> Unit,
     onNavigateToVoiceRecording: () -> Unit,
     onNavigateToActivityDetails: (String) -> Unit = {}
@@ -120,7 +122,7 @@ fun ReviewTranscriptScreen(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Check the transcript and make any edits before creating your entry.",
+                text = "Check the recorded voice translation and make any edits before creating your entry.",
                 fontSize = 14.sp,
                 color = Color(0xFF64748B),
                 lineHeight = 20.sp
@@ -160,79 +162,177 @@ fun ReviewTranscriptScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "Voice transcript · Proper English translation",
+                        text = "🎙️ Voice transcription recorded · Proper English translation ready",
                         fontSize = 12.sp,
-                        color = Color(0xFF64748B),
-                        fontWeight = FontWeight.Medium
+                        color = Color(0xFF4338CA),
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Transcript Field
+            // Transcript Box with live translation
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = "Transcript",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B),
-                    modifier = Modifier.padding(bottom = 6.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Transcript",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1E293B)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFFEEF2FF), shape = RoundedCornerShape(10.dp))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = "✓ Voice Translation Recorded",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF5165F6)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
                     value = state.transcript,
                     onValueChange = { viewModel.onTranscriptChanged(it) },
+                    placeholder = {
+                        Text(
+                            text = "Your translated English voice transcript will appear here...",
+                            color = Color(0xFF94A3B8),
+                            fontSize = 14.sp
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(110.dp),
+                        .height(130.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFE2E8F0),
+                        unfocusedBorderColor = Color(0xFFCBD5E1),
                         focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        unfocusedContainerColor = Color.White,
+                        focusedTextColor = Color(0xFF1E293B),
+                        unfocusedTextColor = Color(0xFF1E293B)
                     )
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "Editable transcript · review for accuracy.",
+                    text = "Editable transcript · saved as your diary entry description.",
                     fontSize = 12.sp,
                     color = Color(0xFF94A3B8)
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Status / Error / Success Message
+            if (state.isSaving) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFEEF2FF), shape = RoundedCornerShape(12.dp))
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                        color = Color(0xFF5165F6)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Saving entry to your diary...",
+                        fontSize = 13.sp,
+                        color = Color(0xFF5165F6),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            } else if (state.saveSuccess) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFECFDF5), shape = RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFF6EE7B7), shape = RoundedCornerShape(12.dp))
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = "✓ Entry saved successfully!",
+                        fontSize = 13.sp,
+                        color = Color(0xFF047857),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            } else if (!state.errorMessage.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFFEF2F2), shape = RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFFFECACA), shape = RoundedCornerShape(12.dp))
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = state.errorMessage ?: "",
+                        fontSize = 13.sp,
+                        color = Color(0xFFDC2626),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             Text(
-                text = "This becomes your description. You can add a title and category next.",
+                text = "This becomes your diary description. You can review details next.",
                 fontSize = 13.sp,
                 color = Color(0xFF64748B),
                 lineHeight = 18.sp
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            // Continue to Entry Button
+            // Save Entry & Continue Button
             Button(
-                onClick = { viewModel.onContinueToEntryClicked() },
+                onClick = { viewModel.onSaveClicked() },
+                enabled = !state.isSaving,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
             ) {
-                Text(
-                    text = "Continue to Entry",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
+                if (state.isSaving) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = Color.White
+                    )
+                } else {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "💾 ", fontSize = 16.sp)
+                        Text(
+                            text = "Save Entry & Continue",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -255,9 +355,28 @@ fun ReviewTranscriptScreen(
                         Canvas(modifier = Modifier.size(14.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round)
                             val color = Color(0xFF5165F6)
-                            drawRoundRect(color, topLeft = Offset(size.width * 0.35f, 0f), size = Size(size.width * 0.3f, size.height * 0.6f), cornerRadius = CornerRadius(size.width * 0.15f), style = stroke)
-                            drawArc(color, 0f, 180f, false, topLeft = Offset(size.width * 0.2f, size.height * 0.4f), size = Size(size.width * 0.6f, size.height * 0.5f), style = stroke)
-                            drawLine(color, Offset(size.width * 0.5f, size.height * 0.85f), Offset(size.width * 0.5f, size.height), strokeWidth = stroke.width)
+                            drawRoundRect(
+                                color = color,
+                                topLeft = Offset(size.width * 0.35f, 0f),
+                                size = Size(size.width * 0.3f, size.height * 0.6f),
+                                cornerRadius = CornerRadius(size.width * 0.15f),
+                                style = stroke
+                            )
+                            drawArc(
+                                color = color,
+                                startAngle = 0f,
+                                sweepAngle = 180f,
+                                useCenter = false,
+                                topLeft = Offset(size.width * 0.2f, size.height * 0.4f),
+                                size = Size(size.width * 0.6f, size.height * 0.5f),
+                                style = stroke
+                            )
+                            drawLine(
+                                color = color,
+                                start = Offset(size.width * 0.5f, size.height * 0.85f),
+                                end = Offset(size.width * 0.5f, size.height),
+                                strokeWidth = stroke.width
+                            )
                         }
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(

@@ -81,5 +81,22 @@ class AuthUnitTest {
         assertEquals(5, response.profile?.diaryEntriesCount)
         assertEquals(1, response.profile?.savedMemoriesCount)
     }
+
+    @Test
+    fun testCreateEntryRequestSerialization() {
+        val request = com.simats.echodiary.data.model.CreateEntryRequest(
+            title = "Voice Entry",
+            description = "Attended lectures today.",
+            transcript = "Attended lectures today.",
+            entryDate = "2026-11-04",
+            category = "Voice Diary",
+            mood = "Reflective",
+            sourceType = "voice"
+        )
+        val json = gson.toJson(request)
+        assertTrue(json.contains("\"title\":\"Voice Entry\""))
+        assertTrue(json.contains("\"transcript\":\"Attended lectures today.\""))
+        assertTrue(json.contains("\"source_type\":\"voice\""))
+    }
 }
 

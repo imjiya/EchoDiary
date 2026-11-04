@@ -128,7 +128,15 @@ class VoiceRecordingViewModel : ViewModel() {
 
             val transcript = when {
                 _uiState.value.translatedText.isNotBlank() -> _uiState.value.translatedText
-                _uiState.value.spokenText.isNotBlank() -> EnglishTranslator.polishEnglish(_uiState.value.spokenText)
+                _uiState.value.spokenText.isNotBlank() -> {
+                    try {
+                        val result = EnglishTranslator.translateToProperEnglish(_uiState.value.spokenText)
+                        if (result.translatedEnglish.isNotBlank()) result.translatedEnglish 
+                        else EnglishTranslator.polishEnglish(_uiState.value.spokenText)
+                    } catch (_: Exception) {
+                        EnglishTranslator.polishEnglish(_uiState.value.spokenText)
+                    }
+                }
                 _uiState.value.recordedText.isNotBlank() -> _uiState.value.recordedText
                 else -> "Attended lectures and worked on a project."
             }

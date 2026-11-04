@@ -1,6 +1,8 @@
 package com.simats.echodiary.data.network
 
 import com.simats.echodiary.data.model.AuthResponse
+import com.simats.echodiary.data.model.CreateEntryRequest
+import com.simats.echodiary.data.model.CreateEntryResponse
 import com.simats.echodiary.data.model.LoginRequest
 import com.simats.echodiary.data.model.ProfileResponse
 import com.simats.echodiary.data.model.RegisterRequest
@@ -23,5 +25,9 @@ interface EchoDiaryApi {
 
     @GET("auth/profiles.php")
     suspend fun getProfile(): Response<ProfileResponse>
-}
 
+    @POST("entries/create.php")
+    suspend fun createEntry(
+        @Body request: CreateEntryRequest
+    ): Response<CreateEntryResponse>
+}
