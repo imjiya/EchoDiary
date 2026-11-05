@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,10 +90,10 @@ fun MonthlyMemoryScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -118,7 +119,7 @@ fun MonthlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
                     .clickable { viewModel.onMonthDropdownClicked() }
                     .padding(16.dp)
             ) {
@@ -148,7 +149,7 @@ fun MonthlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFF0F4FF), shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
                 Row(
@@ -175,7 +176,7 @@ fun MonthlyMemoryScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -183,7 +184,7 @@ fun MonthlyMemoryScreen(
                             text = "${state.diaryEntriesCount}",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -197,7 +198,7 @@ fun MonthlyMemoryScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -205,7 +206,7 @@ fun MonthlyMemoryScreen(
                             text = "${state.categoriesCount}",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -223,7 +224,7 @@ fun MonthlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                     .clickable { viewModel.onSummaryCardClicked() }
                     .padding(20.dp)
             ) {
@@ -250,7 +251,7 @@ fun MonthlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -282,8 +283,8 @@ fun MonthlyMemoryScreen(
                                     .weight(1f)
                                     .height(8.dp)
                                     .clip(RoundedCornerShape(4.dp)),
-                                color = Color(0xFF5165F6),
-                                trackColor = Color(0xFFEEF2FF),
+                                color = EchoTheme.primary,
+                                trackColor = EchoTheme.container,
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
@@ -316,7 +317,7 @@ fun MonthlyMemoryScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "✨ Generate monthly memory",

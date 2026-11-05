@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simats.echodiary.ui.common.EchoBottomBar
+import com.simats.echodiary.ui.theme.EchoTheme
 
 @Composable
 fun CalendarScreen(
@@ -64,7 +65,7 @@ fun CalendarScreen(
                 }
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -90,7 +91,7 @@ fun CalendarScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(24.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(24.dp))
                     .padding(20.dp)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -155,7 +156,7 @@ fun CalendarScreen(
                                         modifier = Modifier
                                             .size(36.dp)
                                             .background(
-                                                color = if (isSelected) Color(0xFF5165F6) else Color.Transparent,
+                                                color = if (isSelected) EchoTheme.primary else Color.Transparent,
                                                 shape = CircleShape
                                             )
                                             .clickable {
@@ -170,7 +171,7 @@ fun CalendarScreen(
                                                 fontWeight = if (isSelected || isToday) FontWeight.Bold else FontWeight.Normal,
                                                 color = when {
                                                     isSelected -> Color.White
-                                                    isToday -> Color(0xFF5165F6)
+                                                    isToday -> EchoTheme.primary
                                                     else -> Color(0xFF1E293B)
                                                 }
                                             )
@@ -179,7 +180,7 @@ fun CalendarScreen(
                                                 Box(
                                                     modifier = Modifier
                                                         .size(4.dp)
-                                                        .background(Color(0xFF5165F6), shape = CircleShape)
+                                                        .background(EchoTheme.primary, shape = CircleShape)
                                                 )
                                             }
                                         }
@@ -210,7 +211,7 @@ fun CalendarScreen(
                 Text(
                     text = "Selected: ${state.selectedActivityDate}",
                     fontSize = 12.sp,
-                    color = Color(0xFF5165F6),
+                    color = EchoTheme.primary,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -231,7 +232,7 @@ fun CalendarScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                     .clickable { onNavigateToActivityDetails() }
                     .padding(16.dp)
             ) {
@@ -275,7 +276,7 @@ fun CalendarScreen(
                     .fillMaxWidth()
                     .height(50.dp),
                 shape = RoundedCornerShape(25.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "✏️ ", fontSize = 15.sp)
@@ -283,7 +284,7 @@ fun CalendarScreen(
                         text = "Write Diary for ${state.selectedActivityDate}",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -301,14 +302,14 @@ fun CalendarScreen(
                     text = "View activities for ${state.selectedActivityDate}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = "→",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
             }
 

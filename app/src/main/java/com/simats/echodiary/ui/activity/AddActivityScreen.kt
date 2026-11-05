@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +53,7 @@ fun AddActivityScreen(
     onNavigateToFilterActivities: () -> Unit,
     onNavigateToChooseCategory: () -> Unit = {}
 ) {
+    val primaryColor = EchoTheme.primary
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
@@ -88,10 +90,10 @@ fun AddActivityScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -124,7 +126,7 @@ fun AddActivityScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.container,
                         shape = RoundedCornerShape(24.dp)
                     )
                     .clickable { viewModel.onRecordByVoiceClicked() }
@@ -141,7 +143,7 @@ fun AddActivityScreen(
                     ) {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = primaryColor
                             drawRoundRect(
                                 color = color,
                                 topLeft = Offset(size.width * 0.35f, size.height * 0.1f),
@@ -189,14 +191,14 @@ fun AddActivityScreen(
                             text = "Start a voice entry",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "→",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -221,12 +223,12 @@ fun AddActivityScreen(
                     Box(
                         modifier = Modifier
                             .size(44.dp)
-                            .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                            .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = primaryColor
                             val path = Path().apply {
                                 moveTo(size.width * 0.2f, size.height * 0.8f)
                                 lineTo(size.width * 0.35f, size.height * 0.85f)
@@ -266,14 +268,14 @@ fun AddActivityScreen(
                             text = "Open your diary",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "→",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }

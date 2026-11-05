@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.home
 
 import com.simats.echodiary.ui.common.EchoBottomBar
 import com.simats.echodiary.ui.activity.DiaryEntryItem
+import com.simats.echodiary.ui.theme.EchoTheme
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -23,9 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,18 +47,19 @@ import androidx.compose.ui.unit.sp
 fun HomeScreen(
     viewModel: HomeViewModel = remember { HomeViewModel() },
     onNavigateToAddActivity: () -> Unit,
+    onNavigateToWriteDiary: () -> Unit,
     onNavigateToAllActivities: () -> Unit,
+    onNavigateToActivityDetails: (DiaryEntryItem) -> Unit,
     onNavigateToCalendar: () -> Unit,
     onNavigateToMemories: () -> Unit,
-    onNavigateToYourWeeklySummary: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {},
-    onNavigateToActivityDetails: (DiaryEntryItem?) -> Unit = {},
-    onNavigateToPhotoMemories: () -> Unit = {},
-    onNavigateToInsights: () -> Unit = {},
-    onNavigateToChooseCategory: () -> Unit = {},
-    onNavigateToWriteDiary: () -> Unit = onNavigateToAddActivity
+    onNavigateToProfile: () -> Unit,
+    onNavigateToYourWeeklySummary: () -> Unit,
+    onNavigateToChooseCategory: () -> Unit,
+    onNavigateToPhotoMemories: () -> Unit,
+    onNavigateToInsights: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val primaryColor = EchoTheme.primary
 
     Scaffold(
         bottomBar = {
@@ -81,7 +80,7 @@ fun HomeScreen(
                 }
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -117,7 +116,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .size(44.dp)
-                        .background(color = Color(0xFFEEF2FF), shape = CircleShape)
+                        .background(color = EchoTheme.container, shape = CircleShape)
                         .clickable { onNavigateToProfile() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -125,7 +124,7 @@ fun HomeScreen(
                         text = "AM",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -151,7 +150,7 @@ fun HomeScreen(
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(26.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
                 ) {
                     Text(
                         text = "Add Voice Entry",
@@ -167,13 +166,13 @@ fun HomeScreen(
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(26.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                 ) {
                     Text(
                         text = "Write a Diary",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -196,7 +195,7 @@ fun HomeScreen(
                     text = "Choose →",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6),
+                    color = EchoTheme.primary,
                     modifier = Modifier.clickable { onNavigateToChooseCategory() }
                 )
             }
@@ -209,7 +208,7 @@ fun HomeScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .clickable { onNavigateToChooseCategory() }
                         .padding(horizontal = 14.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
@@ -223,7 +222,7 @@ fun HomeScreen(
 
                 Box(
                     modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .clickable { onNavigateToChooseCategory() }
                         .padding(horizontal = 14.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
@@ -237,7 +236,7 @@ fun HomeScreen(
 
                 Box(
                     modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .clickable { onNavigateToChooseCategory() }
                         .padding(horizontal = 14.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
@@ -257,7 +256,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.container,
                         shape = RoundedCornerShape(24.dp)
                     )
                     .padding(20.dp)
@@ -270,7 +269,7 @@ fun HomeScreen(
                     ) {
                         Canvas(modifier = Modifier.size(16.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = primaryColor
                             val path = Path().apply {
                                 moveTo(size.width * 0.5f, 0f)
                                 quadraticTo(size.width * 0.5f, size.height * 0.5f, size.width, size.height * 0.5f)
@@ -286,7 +285,7 @@ fun HomeScreen(
                             text = "WEEKLY MEMORY · OCT 5–11",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6),
+                            color = EchoTheme.primary,
                             letterSpacing = 0.5.sp
                         )
                     }
@@ -319,14 +318,14 @@ fun HomeScreen(
                             text = "Revisit your week",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "→",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -351,7 +350,7 @@ fun HomeScreen(
                     text = "See All",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6),
+                    color = EchoTheme.primary,
                     modifier = Modifier.clickable { onNavigateToAllActivities() }
                 )
             }
@@ -363,7 +362,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -379,7 +378,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
-                                color = Color.White,
+                                color = EchoTheme.surface,
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .clickable { onNavigateToActivityDetails(entry) }
@@ -392,7 +391,7 @@ fun HomeScreen(
                             Box(
                                 modifier = Modifier
                                     .size(44.dp)
-                                    .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                                    .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(text = entry.icon, fontSize = 20.sp)
@@ -437,7 +436,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
                         .clickable { onNavigateToPhotoMemories() }
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
@@ -447,7 +446,7 @@ fun HomeScreen(
                     ) {
                         Canvas(modifier = Modifier.size(18.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = primaryColor
                             drawRect(color, topLeft = Offset(0f, size.height * 0.2f), size = Size(size.width, size.height * 0.7f), style = stroke)
                             drawCircle(color, radius = size.width * 0.2f, center = center)
                         }
@@ -456,7 +455,7 @@ fun HomeScreen(
                             text = "Photos",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -464,7 +463,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
                         .clickable { onNavigateToInsights() }
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
@@ -474,7 +473,7 @@ fun HomeScreen(
                     ) {
                         Canvas(modifier = Modifier.size(18.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = primaryColor
                             drawLine(color, Offset(2f, size.height * 0.8f), Offset(size.width * 0.3f, size.height * 0.4f), strokeWidth = stroke.width)
                             drawLine(color, Offset(size.width * 0.3f, size.height * 0.4f), Offset(size.width * 0.6f, size.height * 0.6f), strokeWidth = stroke.width)
                             drawLine(color, Offset(size.width * 0.6f, size.height * 0.6f), Offset(size.width - 2f, size.height * 0.2f), strokeWidth = stroke.width)
@@ -484,7 +483,7 @@ fun HomeScreen(
                             text = "Insights",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }

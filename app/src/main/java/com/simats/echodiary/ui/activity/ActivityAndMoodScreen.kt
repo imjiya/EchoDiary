@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,10 +85,10 @@ fun ActivityAndMoodScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -110,7 +111,7 @@ fun ActivityAndMoodScreen(
                         modifier = Modifier
                             .weight(1f)
                             .background(
-                                color = if (isSelected) Color(0xFFEEF2FF) else Color.White,
+                                color = if (isSelected) EchoTheme.container else Color.White,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .clickable { viewModel.onTabSelected(tab) }
@@ -121,7 +122,7 @@ fun ActivityAndMoodScreen(
                             text = tab,
                             fontSize = 14.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color(0xFF5165F6) else Color(0xFF64748B)
+                            color = if (isSelected) EchoTheme.primary else Color(0xFF64748B)
                         )
                     }
                 }
@@ -154,7 +155,7 @@ fun ActivityAndMoodScreen(
                             text = "${state.activitiesCount}",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -176,7 +177,7 @@ fun ActivityAndMoodScreen(
                             text = "${state.categoriesCount}",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -226,8 +227,8 @@ fun ActivityAndMoodScreen(
                                     .weight(1f)
                                     .height(8.dp)
                                     .clip(RoundedCornerShape(4.dp)),
-                                color = Color(0xFF5165F6),
-                                trackColor = Color(0xFFEEF2FF),
+                                color = EchoTheme.primary,
+                                trackColor = EchoTheme.container,
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
@@ -279,8 +280,8 @@ fun ActivityAndMoodScreen(
                                     .weight(1f)
                                     .height(8.dp)
                                     .clip(RoundedCornerShape(4.dp)),
-                                color = Color(0xFF5165F6),
-                                trackColor = Color(0xFFEEF2FF),
+                                color = EchoTheme.primary,
+                                trackColor = EchoTheme.container,
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
@@ -309,7 +310,7 @@ fun ActivityAndMoodScreen(
                 text = state.sourceText,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 modifier = Modifier
                     .clickable { viewModel.onSourceClicked() }
                     .padding(vertical = 4.dp)

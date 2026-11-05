@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,10 +87,10 @@ fun YearlyMemoryScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -145,7 +146,7 @@ fun YearlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFF0F4FF), shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
                 Row(
@@ -251,7 +252,7 @@ fun YearlyMemoryScreen(
                                 text = record.date,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF5165F6)
+                                color = EchoTheme.primary
                             )
                         }
                     }
@@ -277,7 +278,7 @@ fun YearlyMemoryScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "✨ Generate yearly memory",

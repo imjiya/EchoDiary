@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 
 private enum class SettingsIconType {
     ACCOUNT, APPEARANCE, PRIVACY, NOTIFICATIONS, STORAGE, HELP
@@ -58,9 +59,10 @@ fun SettingsScreen(
     onNavigateToLogin: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    val primaryColor = EchoTheme.primary
 
     Scaffold(
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -205,8 +207,8 @@ fun SettingsScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(26.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFEEF2FF),
-                    contentColor = Color(0xFF5165F6)
+                    containerColor = EchoTheme.container,
+                    contentColor = EchoTheme.primary
                 )
             ) {
                 Row(
@@ -215,7 +217,7 @@ fun SettingsScreen(
                 ) {
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF5165F6)
+                        val color = primaryColor
                         // Door / Exit outline
                         val path = Path().apply {
                             moveTo(size.width * 0.5f, size.height * 0.2f)
@@ -241,7 +243,7 @@ fun SettingsScreen(
                         text = "Log out",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -269,6 +271,7 @@ private fun SettingsMenuItem(
     iconType: SettingsIconType,
     onClick: () -> Unit
 ) {
+    val iconColor = EchoTheme.primary
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -280,12 +283,12 @@ private fun SettingsMenuItem(
         Box(
             modifier = Modifier
                 .size(44.dp)
-                .background(color = Color(0xFFEEF2FF), shape = CircleShape),
+                .background(color = EchoTheme.container, shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier.size(22.dp)) {
                 val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                val color = Color(0xFF5165F6)
+                val color = iconColor
 
                 when (iconType) {
                     SettingsIconType.ACCOUNT -> {

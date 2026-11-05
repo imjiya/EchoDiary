@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 
 @Composable
 fun EditYourMemoryScreen(
@@ -45,9 +46,10 @@ fun EditYourMemoryScreen(
     onNavigateBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val primaryColor = EchoTheme.primary
 
     Scaffold(
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -121,7 +123,7 @@ fun EditYourMemoryScreen(
                 singleLine = true,
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
+                    focusedBorderColor = EchoTheme.primary,
                     unfocusedBorderColor = Color(0xFFE2E8F0),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White
@@ -148,7 +150,7 @@ fun EditYourMemoryScreen(
                 maxLines = 8,
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
+                    focusedBorderColor = EchoTheme.primary,
                     unfocusedBorderColor = Color(0xFFE2E8F0),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White
@@ -169,13 +171,13 @@ fun EditYourMemoryScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp),
                 verticalAlignment = Alignment.Top
             ) {
                 Canvas(modifier = Modifier.size(20.dp).padding(top = 2.dp)) {
                     val stroke = Stroke(width = 1.6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                    val color = Color(0xFF5165F6)
+                    val color = primaryColor
                     drawCircle(color, radius = size.width * 0.42f, center = Offset(size.width * 0.5f, size.height * 0.5f), style = stroke)
                     drawCircle(color, radius = 1.2.dp.toPx(), center = Offset(size.width * 0.5f, size.height * 0.32f))
                     drawLine(color, Offset(size.width * 0.5f, size.height * 0.48f), Offset(size.width * 0.5f, size.height * 0.72f), strokeWidth = stroke.width)
@@ -214,7 +216,7 @@ fun EditYourMemoryScreen(
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Save",
@@ -236,7 +238,7 @@ fun EditYourMemoryScreen(
                     text = "Cancel",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
             }
 

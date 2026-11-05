@@ -61,12 +61,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val themeMode by DiaryActivityStore.themeMode.collectAsState()
+            val themePalette by DiaryActivityStore.themePalette.collectAsState()
             val isDark = when (themeMode) {
                 "Dark" -> true
                 "Light" -> false
                 else -> androidx.compose.foundation.isSystemInDarkTheme()
             }
-            EchoDiaryTheme(darkTheme = isDark) {
+            EchoDiaryTheme(darkTheme = isDark, paletteName = themePalette) {
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
                 var previousProfileScreen by remember { mutableStateOf<Screen>(Screen.Profile) }
                 var recordedTranscript by remember { mutableStateOf("Attended lectures and worked on a project.") }

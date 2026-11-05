@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -55,6 +56,7 @@ fun EditProfileScreen(
     onNavigateBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val primaryColor = EchoTheme.primary
 
     LaunchedEffect(key1 = true) {
         viewModel.events.collectLatest { event ->
@@ -65,7 +67,7 @@ fun EditProfileScreen(
     }
 
     Scaffold(
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -121,14 +123,14 @@ fun EditProfileScreen(
                 Box(
                     modifier = Modifier
                         .size(88.dp)
-                        .background(color = Color(0xFFEEF2FF), shape = CircleShape),
+                        .background(color = EchoTheme.container, shape = CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = state.userInitials,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
 
@@ -144,7 +146,7 @@ fun EditProfileScreen(
                 ) {
                     Canvas(modifier = Modifier.size(18.dp)) {
                         val stroke = Stroke(width = 1.6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF5165F6)
+                        val color = primaryColor
                         drawRoundRect(
                             color = color,
                             topLeft = Offset(0f, size.height * 0.25f),
@@ -173,7 +175,7 @@ fun EditProfileScreen(
                         text = "Change avatar",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -219,7 +221,7 @@ fun EditProfileScreen(
                 isError = state.nameError != null,
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
+                    focusedBorderColor = EchoTheme.primary,
                     unfocusedBorderColor = Color(0xFFE2E8F0),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -275,7 +277,7 @@ fun EditProfileScreen(
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
+                    focusedBorderColor = EchoTheme.primary,
                     unfocusedBorderColor = Color(0xFFE2E8F0),
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
@@ -330,7 +332,7 @@ fun EditProfileScreen(
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 if (state.isSaving) {
                     CircularProgressIndicator(
@@ -367,7 +369,7 @@ fun EditProfileScreen(
                     text = "Cancel",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
             }
 

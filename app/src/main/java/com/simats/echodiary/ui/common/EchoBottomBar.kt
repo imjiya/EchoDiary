@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 
 data class NavigationTabItem(
     val title: String,
@@ -61,7 +62,7 @@ fun EchoBottomBar(
     )
 
     NavigationBar(
-        containerColor = Color.White,
+        containerColor = EchoTheme.surface,
         tonalElevation = 8.dp
     ) {
         tabs.forEachIndexed { index, item ->
@@ -82,7 +83,7 @@ fun EchoBottomBar(
                     Icon(
                         imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
                         contentDescription = item.title,
-                        tint = if (isSelected) Color(0xFF5165F6) else Color(0xFF94A3B8),
+                        tint = if (isSelected) EchoTheme.primary else Color(0xFF94A3B8),
                         modifier = Modifier.size(24.dp)
                     )
                 },
@@ -91,18 +92,17 @@ fun EchoBottomBar(
                         text = item.title,
                         fontSize = 11.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (isSelected) Color(0xFF5165F6) else Color(0xFF94A3B8)
+                        color = if (isSelected) EchoTheme.primary else Color(0xFF94A3B8)
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = Color(0xFFEEF2FF),
-                    selectedIconColor = Color(0xFF5165F6),
+                    indicatorColor = EchoTheme.container,
+                    selectedIconColor = EchoTheme.primary,
                     unselectedIconColor = Color(0xFF94A3B8),
-                    selectedTextColor = Color(0xFF5165F6),
+                    selectedTextColor = EchoTheme.primary,
                     unselectedTextColor = Color(0xFF94A3B8)
                 )
             )
         }
     }
 }
-

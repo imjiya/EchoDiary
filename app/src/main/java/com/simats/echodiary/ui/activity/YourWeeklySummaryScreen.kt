@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,10 +89,10 @@ fun YourWeeklySummaryScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -108,7 +109,7 @@ fun YourWeeklySummaryScreen(
                 text = state.dateRange,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 letterSpacing = 0.5.sp
             )
 
@@ -138,7 +139,7 @@ fun YourWeeklySummaryScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -146,7 +147,7 @@ fun YourWeeklySummaryScreen(
                             text = "${state.diaryEntriesCount}",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -160,7 +161,7 @@ fun YourWeeklySummaryScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -168,7 +169,7 @@ fun YourWeeklySummaryScreen(
                             text = "${state.categoriesCount}",
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -186,7 +187,7 @@ fun YourWeeklySummaryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(24.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(24.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -215,7 +216,7 @@ fun YourWeeklySummaryScreen(
                                 Box(
                                     modifier = Modifier
                                         .size(40.dp)
-                                        .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                                        .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(text = entry.icon, fontSize = 16.sp)
@@ -262,7 +263,7 @@ fun YourWeeklySummaryScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "✨ ", fontSize = 16.sp)
@@ -284,13 +285,13 @@ fun YourWeeklySummaryScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
             ) {
                 Text(
                     text = "View Analysis",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
             }
 

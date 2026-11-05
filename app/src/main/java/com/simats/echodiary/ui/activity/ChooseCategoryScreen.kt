@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,10 +86,10 @@ fun ChooseCategoryScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -100,23 +101,16 @@ fun ChooseCategoryScreen(
         ) {
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Header
+            // Subtitle
             Text(
-                text = "A little context.",
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Choose the category that fits this entry.",
+                text = "Pick the category that fits best.",
                 fontSize = 14.sp,
                 color = Color(0xFF64748B)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Categories Grid (2 columns)
+            // Category Grid (2 columns)
             val chunkedCategories = state.categories.chunked(2)
             chunkedCategories.forEach { rowItems ->
                 Row(
@@ -130,12 +124,12 @@ fun ChooseCategoryScreen(
                                 .weight(1f)
                                 .height(64.dp)
                                 .background(
-                                    color = if (isSelected) Color(0xFFF0F4FF) else Color.White,
+                                    color = if (isSelected) EchoTheme.container else Color.White,
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .border(
                                     width = if (isSelected) 1.5.dp else 1.dp,
-                                    color = if (isSelected) Color(0xFF5165F6) else Color(0xFFE2E8F0),
+                                    color = if (isSelected) EchoTheme.primary else Color(0xFFE2E8F0),
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .clickable { viewModel.selectCategory(cat.name) }
@@ -162,7 +156,7 @@ fun ChooseCategoryScreen(
                                         text = "✓",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF5165F6)
+                                        color = EchoTheme.primary
                                     )
                                 }
                             }
@@ -184,7 +178,7 @@ fun ChooseCategoryScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Use ${state.selectedCategory}",

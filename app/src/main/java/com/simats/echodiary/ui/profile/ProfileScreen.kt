@@ -1,6 +1,7 @@
 package com.simats.echodiary.ui.profile
 
 import com.simats.echodiary.ui.common.EchoBottomBar
+import com.simats.echodiary.ui.theme.EchoTheme
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -20,9 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -77,7 +75,7 @@ fun ProfileScreen(
                 onNavigateToProfile = { viewModel.onTabSelected(3) }
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -89,7 +87,7 @@ fun ProfileScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Screen Title
+            // Title
             Text(
                 text = "Profile",
                 fontSize = 26.sp,
@@ -107,14 +105,14 @@ fun ProfileScreen(
                 Box(
                     modifier = Modifier
                         .size(88.dp)
-                        .background(color = Color(0xFFEEF2FF), shape = CircleShape),
+                        .background(color = EchoTheme.container, shape = CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = state.userInitials,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
 
@@ -147,7 +145,7 @@ fun ProfileScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(Color.White, RoundedCornerShape(20.dp))
+                        .background(EchoTheme.surface, RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -155,7 +153,7 @@ fun ProfileScreen(
                             text = state.diaryEntriesCount.toString(),
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
@@ -170,7 +168,7 @@ fun ProfileScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(Color.White, RoundedCornerShape(20.dp))
+                        .background(EchoTheme.surface, RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -178,7 +176,7 @@ fun ProfileScreen(
                             text = state.savedMemoriesCount.toString(),
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
@@ -196,7 +194,7 @@ fun ProfileScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 // Edit Profile Option
@@ -255,6 +253,7 @@ private fun ProfileMenuItem(
     iconType: ProfileIconType,
     onClick: () -> Unit
 ) {
+    val iconColor = EchoTheme.primary
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -266,12 +265,12 @@ private fun ProfileMenuItem(
         Box(
             modifier = Modifier
                 .size(44.dp)
-                .background(color = Color(0xFFEEF2FF), shape = CircleShape),
+                .background(color = EchoTheme.container, shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier.size(22.dp)) {
                 val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                val color = Color(0xFF5165F6)
+                val color = iconColor
 
                 when (iconType) {
                     ProfileIconType.EDIT_PROFILE -> {

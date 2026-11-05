@@ -1,6 +1,7 @@
 package com.simats.echodiary.ui.activity
 
 import com.simats.echodiary.ui.common.EchoBottomBar
+import com.simats.echodiary.ui.theme.EchoTheme
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -19,9 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,7 +66,7 @@ fun MemoriesScreen(
                 }
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -123,7 +115,7 @@ fun MemoriesScreen(
                         modifier = Modifier
                             .weight(1f)
                             .background(
-                                color = if (isSelected) Color(0xFFEEF2FF) else Color.White,
+                                color = if (isSelected) EchoTheme.container else EchoTheme.surface,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .clickable {
@@ -143,7 +135,7 @@ fun MemoriesScreen(
                             text = tab,
                             fontSize = 14.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color(0xFF5165F6) else Color(0xFF64748B)
+                            color = if (isSelected) EchoTheme.primary else Color(0xFF64748B)
                         )
                     }
                 }
@@ -156,7 +148,7 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.container,
                         shape = RoundedCornerShape(24.dp)
                     )
                     .padding(20.dp)
@@ -168,7 +160,7 @@ fun MemoriesScreen(
                         text = state.memoryCardHeader,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5165F6),
+                        color = EchoTheme.primary,
                         letterSpacing = 0.5.sp
                     )
 
@@ -206,14 +198,14 @@ fun MemoriesScreen(
                             text = "View memory",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "→",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -235,7 +227,7 @@ fun MemoriesScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
                     .clickable { onNavigateToMonthlyMemory() }
                     .padding(16.dp)
             ) {
@@ -248,7 +240,7 @@ fun MemoriesScreen(
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                                .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(text = "📅", fontSize = 16.sp)
@@ -278,7 +270,7 @@ fun MemoriesScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
                     .clickable { onNavigateToYearlyMemory() }
                     .padding(16.dp)
             ) {
@@ -291,7 +283,7 @@ fun MemoriesScreen(
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                                .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(text = "📅", fontSize = 16.sp)
@@ -321,7 +313,7 @@ fun MemoriesScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
                     .clickable { onNavigateToPhotoMemories() }
                     .padding(16.dp)
             ) {
@@ -334,7 +326,7 @@ fun MemoriesScreen(
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                                .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(text = "🖼️", fontSize = 16.sp)

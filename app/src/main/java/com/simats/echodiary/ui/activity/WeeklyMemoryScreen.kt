@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,10 +92,10 @@ fun WeeklyMemoryScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -111,7 +112,7 @@ fun WeeklyMemoryScreen(
                 text = state.dateRangeText,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 letterSpacing = 0.5.sp
             )
 
@@ -128,12 +129,12 @@ fun WeeklyMemoryScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Summary Card (Light blue)
+            // Summary Card (Light theme container)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.container,
                         shape = RoundedCornerShape(24.dp)
                     )
                     .padding(20.dp)
@@ -205,7 +206,7 @@ fun WeeklyMemoryScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🔖 ", fontSize = 16.sp)
@@ -231,13 +232,13 @@ fun WeeklyMemoryScreen(
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(26.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                 ) {
                     Text(
                         text = "Edit Summary",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
 
@@ -247,15 +248,15 @@ fun WeeklyMemoryScreen(
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(26.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "↗ ", fontSize = 16.sp, color = Color(0xFF5165F6))
+                        Text(text = "↗ ", fontSize = 16.sp, color = EchoTheme.primary)
                         Text(
                             text = "Share",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -274,7 +275,7 @@ fun WeeklyMemoryScreen(
                     text = "View Details",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
             }
 
