@@ -51,6 +51,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = remember { SettingsViewModel() },
     onNavigateBack: () -> Unit,
     onNavigateToAccount: () -> Unit = {},
+    onNavigateToAppearance: () -> Unit = {},
     onNavigateToPrivacyAndData: () -> Unit = {},
     onNavigateToNotifications: () -> Unit = {},
     onNavigateToHelpAndSupport: () -> Unit = {},
@@ -138,7 +139,7 @@ fun SettingsScreen(
                     title = "Appearance",
                     subtitle = state.appearanceSummary,
                     iconType = SettingsIconType.APPEARANCE,
-                    onClick = { }
+                    onClick = onNavigateToAppearance
                 )
             }
 

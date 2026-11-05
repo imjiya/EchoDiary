@@ -80,6 +80,15 @@ object DiaryActivityStore {
     val userInitials: StateFlow<String> = _userInitials.asStateFlow()
 
     // ------------------------------------------------------------------------
+    // Appearance & Theme State
+    // ------------------------------------------------------------------------
+    private val _themeMode = MutableStateFlow("Light")
+    val themeMode: StateFlow<String> = _themeMode.asStateFlow()
+
+    private val _themePalette = MutableStateFlow("Calm Blue")
+    val themePalette: StateFlow<String> = _themePalette.asStateFlow()
+
+    // ------------------------------------------------------------------------
     // Weekly Memory State
     // ------------------------------------------------------------------------
     private val _weeklyMemoryTitle = MutableStateFlow("A week of progress and connection.")
@@ -186,6 +195,8 @@ object DiaryActivityStore {
             if (!email.isNullOrBlank()) {
                 _userEmail.value = email
             }
+            _themeMode.value = session.getThemeMode()
+            _themePalette.value = session.getThemePalette()
         } catch (_: Exception) {}
         generateWeeklySummary(null)
         generateMonthlySummary(null)
@@ -211,6 +222,15 @@ object DiaryActivityStore {
         if (cleanEmail.isNotBlank()) {
             _userEmail.value = cleanEmail
         }
+    }
+
+    fun setTheme(mode: String, palette: String) {
+        _themeMode.value = mode
+        _themePalette.value = palette
+        try {
+            EchoDiaryApp.getSessionManager().setThemeMode(mode)
+            EchoDiaryApp.getSessionManager().setThemePalette(palette)
+        } catch (_: Exception) {}
     }
 
     fun synthesizeMoodSummary(entries: List<DiaryEntryItem>): String {

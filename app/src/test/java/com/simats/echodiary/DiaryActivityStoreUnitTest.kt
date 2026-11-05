@@ -168,4 +168,15 @@ class DiaryActivityStoreUnitTest {
         assertEquals("AL", DiaryActivityStore.computeInitials("Alex"))
         assertEquals("AM", DiaryActivityStore.computeInitials(""))
     }
+
+    @Test
+    fun testSetTheme() {
+        DiaryActivityStore.setTheme("Dark", "Serene Lavender")
+        assertEquals("Dark", DiaryActivityStore.themeMode.value)
+        assertEquals("Serene Lavender", DiaryActivityStore.themePalette.value)
+
+        DiaryActivityStore.setTheme("Light", "Emerald Forest")
+        assertEquals("Light", DiaryActivityStore.themeMode.value)
+        assertEquals("Emerald Forest", DiaryActivityStore.themePalette.value)
+    }
 }

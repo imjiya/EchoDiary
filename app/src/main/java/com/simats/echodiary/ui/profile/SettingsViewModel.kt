@@ -7,8 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 data class SettingsUiState(
     val userName: String = "Alex Morgan",
@@ -24,6 +26,13 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch {
             DiaryActivityStore.userFullName.collectLatest { name ->
                 _uiState.update { it.copy(userName = name) }
+            }
+        }
+        viewModelScope.launch {
+            combine(DiaryActivityStore.themeMode, DiaryActivityStore.themePalette) { mode, palette ->
+                "$mode · ${palette.lowercase(Locale.ROOT)}"
+            }.collectLatest { summary ->
+                _uiState.update { it.copy(appearanceSummary = summary) }
             }
         }
         viewModelScope.launch {

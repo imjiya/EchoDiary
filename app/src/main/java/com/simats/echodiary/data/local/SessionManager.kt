@@ -46,6 +46,18 @@ class SessionManager(context: Context) {
         }
     }
 
+    fun getThemeMode(): String = prefs.getString(KEY_THEME_MODE, "Light") ?: "Light"
+
+    fun setThemeMode(mode: String) {
+        prefs.edit().putString(KEY_THEME_MODE, mode).apply()
+    }
+
+    fun getThemePalette(): String = prefs.getString(KEY_THEME_PALETTE, "Calm Blue") ?: "Calm Blue"
+
+    fun setThemePalette(palette: String) {
+        prefs.edit().putString(KEY_THEME_PALETTE, palette).apply()
+    }
+
     fun getToken(): String? = prefs.getString(KEY_TOKEN, null)
 
     fun getUserId(): Int = prefs.getInt(KEY_USER_ID, -1)
@@ -67,6 +79,8 @@ class SessionManager(context: Context) {
         private const val KEY_USER_ID = "user_id"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_THEME_MODE = "theme_mode"
+        private const val KEY_THEME_PALETTE = "theme_palette"
 
         @Volatile
         private var INSTANCE: SessionManager? = null
