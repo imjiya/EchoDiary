@@ -58,6 +58,56 @@ class SessionManager(context: Context) {
         prefs.edit().putString(KEY_THEME_PALETTE, palette).apply()
     }
 
+    // ------------------------------------------------------------------------
+    // Notifications Settings
+    // ------------------------------------------------------------------------
+    fun getDiaryRemindersEnabled(): Boolean = prefs.getBoolean(KEY_DIARY_REMINDERS, true)
+
+    fun setDiaryRemindersEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_DIARY_REMINDERS, enabled).apply()
+    }
+
+    fun getWeeklyRemindersEnabled(): Boolean = prefs.getBoolean(KEY_WEEKLY_REMINDERS, true)
+
+    fun setWeeklyRemindersEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_WEEKLY_REMINDERS, enabled).apply()
+    }
+
+    fun getSummaryUpdatesEnabled(): Boolean = prefs.getBoolean(KEY_SUMMARY_UPDATES, false)
+
+    fun setSummaryUpdatesEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_SUMMARY_UPDATES, enabled).apply()
+    }
+
+    fun getDailyReminderTime(): String = prefs.getString(KEY_DAILY_REMINDER_TIME, "8:00 PM") ?: "8:00 PM"
+
+    fun setDailyReminderTime(time: String) {
+        prefs.edit().putString(KEY_DAILY_REMINDER_TIME, time).apply()
+    }
+
+    fun getWeeklyReminderTime(): String = prefs.getString(KEY_WEEKLY_REMINDER_TIME, "Sunday · 8:00 PM") ?: "Sunday · 8:00 PM"
+
+    fun setWeeklyReminderTime(time: String) {
+        prefs.edit().putString(KEY_WEEKLY_REMINDER_TIME, time).apply()
+    }
+
+    fun saveNotificationPreferences(
+        diaryReminders: Boolean,
+        weeklyReminders: Boolean,
+        summaryUpdates: Boolean,
+        dailyTime: String,
+        weeklyTime: String
+    ) {
+        prefs.edit().apply {
+            putBoolean(KEY_DIARY_REMINDERS, diaryReminders)
+            putBoolean(KEY_WEEKLY_REMINDERS, weeklyReminders)
+            putBoolean(KEY_SUMMARY_UPDATES, summaryUpdates)
+            putString(KEY_DAILY_REMINDER_TIME, dailyTime)
+            putString(KEY_WEEKLY_REMINDER_TIME, weeklyTime)
+            apply()
+        }
+    }
+
     fun getToken(): String? = prefs.getString(KEY_TOKEN, null)
 
     fun getUserId(): Int = prefs.getInt(KEY_USER_ID, -1)
@@ -81,6 +131,11 @@ class SessionManager(context: Context) {
         private const val KEY_USER_EMAIL = "user_email"
         private const val KEY_THEME_MODE = "theme_mode"
         private const val KEY_THEME_PALETTE = "theme_palette"
+        private const val KEY_DIARY_REMINDERS = "diary_reminders_enabled"
+        private const val KEY_WEEKLY_REMINDERS = "weekly_reminders_enabled"
+        private const val KEY_SUMMARY_UPDATES = "summary_updates_enabled"
+        private const val KEY_DAILY_REMINDER_TIME = "daily_reminder_time"
+        private const val KEY_WEEKLY_REMINDER_TIME = "weekly_reminder_time"
 
         @Volatile
         private var INSTANCE: SessionManager? = null

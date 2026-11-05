@@ -15,7 +15,8 @@ import java.util.Locale
 data class SettingsUiState(
     val userName: String = "Alex Morgan",
     val appearanceSummary: String = "Light · calm blue",
-    val storageSummary: String = "5 entries · 1 saved memory"
+    val storageSummary: String = "5 entries · 1 saved memory",
+    val notificationsSummary: String = "Daily at 8:00 PM"
 )
 
 class SettingsViewModel : ViewModel() {
@@ -38,6 +39,11 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch {
             DiaryActivityStore.activities.collectLatest { entries ->
                 _uiState.update { it.copy(storageSummary = "${entries.size} entries · 1 saved memory") }
+            }
+        }
+        viewModelScope.launch {
+            DiaryActivityStore.notificationSummary.collectLatest { summary ->
+                _uiState.update { it.copy(notificationsSummary = summary) }
             }
         }
     }

@@ -89,6 +89,27 @@ object DiaryActivityStore {
     val themePalette: StateFlow<String> = _themePalette.asStateFlow()
 
     // ------------------------------------------------------------------------
+    // Notifications State
+    // ------------------------------------------------------------------------
+    private val _diaryRemindersEnabled = MutableStateFlow(true)
+    val diaryRemindersEnabled: StateFlow<Boolean> = _diaryRemindersEnabled.asStateFlow()
+
+    private val _weeklyMemoryRemindersEnabled = MutableStateFlow(true)
+    val weeklyMemoryRemindersEnabled: StateFlow<Boolean> = _weeklyMemoryRemindersEnabled.asStateFlow()
+
+    private val _summaryUpdatesEnabled = MutableStateFlow(false)
+    val summaryUpdatesEnabled: StateFlow<Boolean> = _summaryUpdatesEnabled.asStateFlow()
+
+    private val _dailyReminderTime = MutableStateFlow("8:00 PM")
+    val dailyReminderTime: StateFlow<String> = _dailyReminderTime.asStateFlow()
+
+    private val _weeklyReminderTime = MutableStateFlow("Sunday · 8:00 PM")
+    val weeklyReminderTime: StateFlow<String> = _weeklyReminderTime.asStateFlow()
+
+    private val _notificationSummary = MutableStateFlow("Daily at 8:00 PM")
+    val notificationSummary: StateFlow<String> = _notificationSummary.asStateFlow()
+
+    // ------------------------------------------------------------------------
     // Weekly Memory State
     // ------------------------------------------------------------------------
     private val _weeklyMemoryTitle = MutableStateFlow("A week of progress and connection.")
@@ -197,10 +218,61 @@ object DiaryActivityStore {
             }
             _themeMode.value = session.getThemeMode()
             _themePalette.value = session.getThemePalette()
+
+            _diaryRemindersEnabled.value = session.getDiaryRemindersEnabled()
+            _weeklyMemoryRemindersEnabled.value = session.getWeeklyRemindersEnabled()
+            _summaryUpdatesEnabled.value = session.getSummaryUpdatesEnabled()
+            _dailyReminderTime.value = session.getDailyReminderTime()
+            _weeklyReminderTime.value = session.getWeeklyReminderTime()
+
+            val diary = _diaryRemindersEnabled.value
+            val weekly = _weeklyMemoryRemindersEnabled.value
+            val summary = _summaryUpdatesEnabled.value
+            val dailyTime = _dailyReminderTime.value
+            val weeklyTime = _weeklyReminderTime.value
+            _notificationSummary.value = when {
+                diary && weekly -> "Daily at $dailyTime · Sunday"
+                diary -> "Daily at $dailyTime"
+                weekly -> "Weekly: $weeklyTime"
+                summary -> "Summary updates"
+                else -> "Reminders paused"
+            }
         } catch (_: Exception) {}
         generateWeeklySummary(null)
         generateMonthlySummary(null)
         generateYearlySummary(null)
+    }
+
+    fun updateNotificationSettings(
+        diary: Boolean,
+        weekly: Boolean,
+        summary: Boolean,
+        dailyTime: String,
+        weeklyTime: String
+    ) {
+        _diaryRemindersEnabled.value = diary
+        _weeklyMemoryRemindersEnabled.value = weekly
+        _summaryUpdatesEnabled.value = summary
+        _dailyReminderTime.value = dailyTime
+        _weeklyReminderTime.value = weeklyTime
+
+        _notificationSummary.value = when {
+            diary && weekly -> "Daily at $dailyTime · Sunday"
+            diary -> "Daily at $dailyTime"
+            weekly -> "Weekly: $weeklyTime"
+            summary -> "Summary updates"
+            else -> "Reminders paused"
+        }
+
+        try {
+            EchoDiaryApp.getSessionManager().saveNotificationPreferences(
+                diaryReminders = diary,
+                weeklyReminders = weekly,
+                summaryUpdates = summary,
+                dailyTime = dailyTime,
+                weeklyTime = weeklyTime
+            )
+        } catch (_: Exception) {}
     }
 
     fun computeInitials(name: String): String {

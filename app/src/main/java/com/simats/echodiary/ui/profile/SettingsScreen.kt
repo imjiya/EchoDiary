@@ -165,7 +165,7 @@ fun SettingsScreen(
 
                 SettingsMenuItem(
                     title = "Notifications",
-                    subtitle = "Reminder schedules",
+                    subtitle = state.notificationsSummary,
                     iconType = SettingsIconType.NOTIFICATIONS,
                     onClick = onNavigateToNotifications
                 )
