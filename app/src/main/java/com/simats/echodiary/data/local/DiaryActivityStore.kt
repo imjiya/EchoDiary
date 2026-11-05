@@ -68,6 +68,18 @@ object DiaryActivityStore {
     val selectedActivity: StateFlow<DiaryEntryItem?> = _selectedActivity.asStateFlow()
 
     // ------------------------------------------------------------------------
+    // User Profile & Account State
+    // ------------------------------------------------------------------------
+    private val _userFullName = MutableStateFlow("Alex Morgan")
+    val userFullName: StateFlow<String> = _userFullName.asStateFlow()
+
+    private val _userEmail = MutableStateFlow("alex.morgan@example.com")
+    val userEmail: StateFlow<String> = _userEmail.asStateFlow()
+
+    private val _userInitials = MutableStateFlow("AM")
+    val userInitials: StateFlow<String> = _userInitials.asStateFlow()
+
+    // ------------------------------------------------------------------------
     // Weekly Memory State
     // ------------------------------------------------------------------------
     private val _weeklyMemoryTitle = MutableStateFlow("A week of progress and connection.")
@@ -163,9 +175,42 @@ object DiaryActivityStore {
     val yearlyFooterText: StateFlow<String> = _yearlyFooterText.asStateFlow()
 
     init {
+        try {
+            val session = EchoDiaryApp.getSessionManager()
+            val name = session.getUserName()
+            val email = session.getUserEmail()
+            if (!name.isNullOrBlank()) {
+                _userFullName.value = name
+                _userInitials.value = computeInitials(name)
+            }
+            if (!email.isNullOrBlank()) {
+                _userEmail.value = email
+            }
+        } catch (_: Exception) {}
         generateWeeklySummary(null)
         generateMonthlySummary(null)
         generateYearlySummary(null)
+    }
+
+    fun computeInitials(name: String): String {
+        val parts = name.trim().split("\\s+".toRegex()).filter { it.isNotBlank() }
+        return when {
+            parts.isEmpty() -> "AM"
+            parts.size == 1 -> parts[0].take(2).uppercase(Locale.ROOT)
+            else -> "${parts[0].first()}${parts[1].first()}".uppercase(Locale.ROOT)
+        }
+    }
+
+    fun setProfile(name: String, email: String) {
+        val cleanName = name.trim()
+        val cleanEmail = email.trim()
+        if (cleanName.isNotBlank()) {
+            _userFullName.value = cleanName
+            _userInitials.value = computeInitials(cleanName)
+        }
+        if (cleanEmail.isNotBlank()) {
+            _userEmail.value = cleanEmail
+        }
     }
 
     fun synthesizeMoodSummary(entries: List<DiaryEntryItem>): String {
@@ -221,8 +266,7 @@ object DiaryActivityStore {
                 response.onSuccess { data ->
                     data.title?.let { if (it.isNotBlank()) _weeklyMemoryTitle.value = it }
                     data.narrative?.let { if (it.isNotBlank()) _weeklyMemoryNarrative.value = it }
-                    data.highlights?.let { if (it.isNotEmpty()) _weeklyHighlights.value = it }
-                    data.moodSummary?.let { if (it.isNotBlank()) _weeklyMoodSummary.value = it }
+                    data.dateRange?.let { if (it.isNotBlank()) _weeklyMemoryDateRange.value = "$it · WEEKLY DRAFT" }
                 }
             } catch (_: Exception) {}
         }
@@ -231,29 +275,21 @@ object DiaryActivityStore {
     fun generateMonthlySummary(scope: CoroutineScope? = null) {
         val entries = _activities.value
         val count = entries.size
-        val categoriesGrouped = entries.groupingBy { it.category }.eachCount()
-        val categories = categoriesGrouped.keys.toList()
-
-        val breakdown = if (categoriesGrouped.isNotEmpty()) {
-            val maxCount = categoriesGrouped.values.maxOrNull() ?: 1
-            categoriesGrouped.map { (cat, cnt) ->
-                CategoryBreakdownItem(
-                    name = cat,
-                    count = cnt,
-                    progress = cnt.toFloat() / maxCount.toFloat()
-                )
-            }
-        } else {
-            listOf(CategoryBreakdownItem("General", 0, 0f))
-        }
+        val categories = entries.map { it.category }.distinct()
+        val moodSummary = synthesizeMoodSummary(entries)
 
         val title = "October, in your words"
-        val moodSummary = synthesizeMoodSummary(entries)
         val narrative = if (count > 0) {
-            val topTitles = entries.take(4).joinToString(", ") { it.title }
-            "In October, you captured $count moments across ${categories.size} categories: ${categories.joinToString(", ")}. Key moments included $topTitles. $moodSummary"
+            val highlightsList = entries.take(4).joinToString(", ") { it.title }
+            "This month, you logged $count entries spanning ${categories.joinToString(", ")}. Notable moments included $highlightsList. $moodSummary"
         } else {
-            "No entries recorded for this month yet. Your monthly memory will shape as you write."
+            "No entries recorded for this month yet. Capture your days to reveal your monthly story."
+        }
+
+        val breakdown = categories.map { cat ->
+            val catCount = entries.count { it.category.equals(cat, ignoreCase = true) }
+            val progress = if (count > 0) catCount.toFloat() / count.toFloat() else 0f
+            CategoryBreakdownItem(name = cat, count = catCount, progress = progress)
         }
 
         _monthlySummaryTitle.value = title

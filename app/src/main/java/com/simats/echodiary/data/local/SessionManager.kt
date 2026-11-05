@@ -38,6 +38,14 @@ class SessionManager(context: Context) {
         }
     }
 
+    fun updateUserDetails(fullName: String, email: String) {
+        prefs.edit().apply {
+            putString(KEY_USER_NAME, fullName)
+            putString(KEY_USER_EMAIL, email)
+            apply()
+        }
+    }
+
     fun getToken(): String? = prefs.getString(KEY_TOKEN, null)
 
     fun getUserId(): Int = prefs.getInt(KEY_USER_ID, -1)
@@ -70,4 +78,3 @@ class SessionManager(context: Context) {
         }
     }
 }
-

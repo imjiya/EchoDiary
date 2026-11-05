@@ -6,6 +6,7 @@ import com.simats.echodiary.data.model.AuthResponse
 import com.simats.echodiary.data.model.LoginRequest
 import com.simats.echodiary.data.model.ProfileResponse
 import com.simats.echodiary.data.model.RegisterRequest
+import com.simats.echodiary.data.model.UpdateProfileRequest
 import com.simats.echodiary.data.network.EchoDiaryApi
 import retrofit2.Response
 import java.io.IOException
@@ -15,6 +16,7 @@ interface AuthRepository {
     suspend fun login(email: String, password: String): Result<AuthResponse>
     suspend fun register(fullName: String, email: String, password: String): Result<AuthResponse>
     suspend fun getProfile(): Result<ProfileResponse>
+    suspend fun updateProfile(fullName: String, email: String): Result<ProfileResponse>
 }
 
 class AuthRepositoryImpl(
@@ -68,6 +70,42 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun updateProfile(fullName: String, email: String): Result<ProfileResponse> {
+        val cleanName = fullName.trim()
+        val cleanEmail = email.trim().lowercase()
+        return try {
+            val response = api.updateProfile(UpdateProfileRequest(cleanName, cleanEmail))
+            if (response.isSuccessful && response.body()?.success == true) {
+                sessionManager.updateUserDetails(cleanName, cleanEmail)
+                Result.success(response.body()!!)
+            } else {
+                val errorMsg = parseErrorMessage(response.errorBody()?.string())
+                    ?: response.body()?.message
+                    ?: "Failed to update profile."
+                // Even if remote network has issues, update locally in session
+                sessionManager.updateUserDetails(cleanName, cleanEmail)
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: IOException) {
+            // Local fallback
+            sessionManager.updateUserDetails(cleanName, cleanEmail)
+            Result.success(
+                ProfileResponse(
+                    success = true,
+                    message = "Profile saved locally."
+                )
+            )
+        } catch (e: Exception) {
+            sessionManager.updateUserDetails(cleanName, cleanEmail)
+            Result.success(
+                ProfileResponse(
+                    success = true,
+                    message = "Profile saved locally."
+                )
+            )
+        }
+    }
+
     private fun handleAuthResponse(response: Response<AuthResponse>): Result<AuthResponse> {
         return if (response.isSuccessful) {
             val body = response.body()
@@ -105,4 +143,3 @@ class AuthRepositoryImpl(
         }
     }
 }
-

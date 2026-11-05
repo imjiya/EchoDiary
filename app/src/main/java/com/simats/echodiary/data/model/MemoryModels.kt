@@ -56,3 +56,4 @@ data class GenerateMemoryResponse(
     @SerializedName("message")
     val message: String? = null
 )
+

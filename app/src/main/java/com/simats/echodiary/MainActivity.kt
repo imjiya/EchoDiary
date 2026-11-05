@@ -60,6 +60,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             EchoDiaryTheme {
                 var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
+                var previousProfileScreen by remember { mutableStateOf<Screen>(Screen.Profile) }
                 var recordedTranscript by remember { mutableStateOf("Attended lectures and worked on a project.") }
                 var entryTitle by remember { mutableStateOf("Diary Entry") }
                 var entryDescription by remember { mutableStateOf("Attended lectures and worked on a project.") }
@@ -569,6 +570,7 @@ class MainActivity : ComponentActivity() {
                                 currentScreen = Screen.Memories
                             },
                             onNavigateToEditProfile = {
+                                previousProfileScreen = Screen.Profile
                                 currentScreen = Screen.EditProfile
                             },
                             onNavigateToSettings = {
@@ -582,7 +584,7 @@ class MainActivity : ComponentActivity() {
                     is Screen.EditProfile -> {
                         EditProfileScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Profile
+                                currentScreen = previousProfileScreen
                             }
                         )
                     }
@@ -592,6 +594,7 @@ class MainActivity : ComponentActivity() {
                                 currentScreen = Screen.Profile
                             },
                             onNavigateToAccount = {
+                                previousProfileScreen = Screen.Settings
                                 currentScreen = Screen.EditProfile
                             },
                             onNavigateToPrivacyAndData = {

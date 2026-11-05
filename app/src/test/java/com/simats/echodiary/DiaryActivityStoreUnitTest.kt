@@ -156,4 +156,16 @@ class DiaryActivityStoreUnitTest {
         assertTrue("Yearly chapter text should not be blank", text.isNotBlank())
         assertTrue("Yearly supporting records should be populated", supporting.isNotEmpty())
     }
+
+    @Test
+    fun testSetProfileAndComputeInitials() {
+        DiaryActivityStore.setProfile("Jane Doe", "jane.doe@example.com")
+        assertEquals("Jane Doe", DiaryActivityStore.userFullName.value)
+        assertEquals("jane.doe@example.com", DiaryActivityStore.userEmail.value)
+        assertEquals("JD", DiaryActivityStore.userInitials.value)
+
+        assertEquals("JD", DiaryActivityStore.computeInitials("Jane Doe"))
+        assertEquals("AL", DiaryActivityStore.computeInitials("Alex"))
+        assertEquals("AM", DiaryActivityStore.computeInitials(""))
+    }
 }

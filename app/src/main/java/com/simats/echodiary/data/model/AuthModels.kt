@@ -64,3 +64,9 @@ data class UserProfile(
     val savedMemoriesCount: Int = 0
 )
 
+data class UpdateProfileRequest(
+    @SerializedName("full_name")
+    val fullName: String,
+    @SerializedName("email")
+    val email: String
+)

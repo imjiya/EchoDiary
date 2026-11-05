@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -27,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -41,8 +44,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun EditProfileScreen(
@@ -50,6 +55,14 @@ fun EditProfileScreen(
     onNavigateBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.events.collectLatest { event ->
+            when (event) {
+                is EditProfileEvent.SavedSuccessfully -> onNavigateBack()
+            }
+        }
+    }
 
     Scaffold(
         containerColor = Color(0xFFFAFBFC)
@@ -165,7 +178,28 @@ fun EditProfileScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Status / Error message banner
+            if (state.feedbackMessage != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = if (state.isSuccess) Color(0xFFF0FDF4) else Color(0xFFFEF2F2),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = state.feedbackMessage ?: "",
+                        fontSize = 13.sp,
+                        color = if (state.isSuccess) Color(0xFF15803D) else Color(0xFFB91C1C),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             // Full Name Input
             Text(
@@ -182,14 +216,25 @@ fun EditProfileScreen(
                 onValueChange = { viewModel.onFullNameChanged(it) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
+                isError = state.nameError != null,
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF5165F6),
                     unfocusedBorderColor = Color(0xFFE2E8F0),
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedContainerColor = Color.White,
+                    errorBorderColor = Color(0xFFEF4444)
                 )
             )
+
+            if (state.nameError != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = state.nameError ?: "",
+                    fontSize = 12.sp,
+                    color = Color(0xFFEF4444)
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -208,6 +253,8 @@ fun EditProfileScreen(
                 onValueChange = { viewModel.onEmailChanged(it) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                isError = state.emailError != null,
                 shape = RoundedCornerShape(14.dp),
                 trailingIcon = {
                     Canvas(modifier = Modifier.size(20.dp)) {
@@ -231,35 +278,81 @@ fun EditProfileScreen(
                     focusedBorderColor = Color(0xFF5165F6),
                     unfocusedBorderColor = Color(0xFFE2E8F0),
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedContainerColor = Color.White,
+                    errorBorderColor = Color(0xFFEF4444)
                 )
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            if (state.emailError != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = state.emailError ?: "",
+                    fontSize = 12.sp,
+                    color = Color(0xFFEF4444)
+                )
+            }
 
-            Text(
-                text = "Your profile details don't change your diary content.",
-                fontSize = 12.sp,
-                color = Color(0xFF64748B)
-            )
+            Spacer(modifier = Modifier.height(14.dp))
 
-            Spacer(modifier = Modifier.height(60.dp))
+            // Account details note card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(0xFFF1F5F9), shape = RoundedCornerShape(14.dp))
+                    .padding(14.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "🔒 Account Details",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF334155)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Updating your name and email will reflect across Settings, Profile, and your diary memories.",
+                        fontSize = 12.sp,
+                        color = Color(0xFF64748B),
+                        lineHeight = 16.sp
+                    )
+                }
+            }
 
-            // Action Buttons
+            Spacer(modifier = Modifier.height(36.dp))
+
+            // Save Changes Action Button
             Button(
-                onClick = onNavigateBack,
+                onClick = {
+                    viewModel.saveProfile(onSuccess = onNavigateBack)
+                },
+                enabled = !state.isSaving,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(26.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
             ) {
-                Text(
-                    text = "Save Changes",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (state.isSaving) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Saving...",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                } else {
+                    Text(
+                        text = "Save Changes",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
