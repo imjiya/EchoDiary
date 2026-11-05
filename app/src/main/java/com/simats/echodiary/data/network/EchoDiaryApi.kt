@@ -5,6 +5,8 @@ import com.simats.echodiary.data.model.CreateEntryRequest
 import com.simats.echodiary.data.model.CreateEntryResponse
 import com.simats.echodiary.data.model.DeleteEntryRequest
 import com.simats.echodiary.data.model.DeleteEntryResponse
+import com.simats.echodiary.data.model.GenerateMemoryRequest
+import com.simats.echodiary.data.model.GenerateMemoryResponse
 import com.simats.echodiary.data.model.LoginRequest
 import com.simats.echodiary.data.model.ProfileResponse
 import com.simats.echodiary.data.model.RegisterRequest
@@ -43,4 +45,9 @@ interface EchoDiaryApi {
     suspend fun deleteEntry(
         @Body request: DeleteEntryRequest
     ): Response<DeleteEntryResponse>
+
+    @POST("memories/generate.php")
+    suspend fun generateMemory(
+        @Body request: GenerateMemoryRequest
+    ): Response<GenerateMemoryResponse>
 }

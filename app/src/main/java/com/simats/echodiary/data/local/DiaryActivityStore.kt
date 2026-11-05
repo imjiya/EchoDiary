@@ -1,9 +1,14 @@
 package com.simats.echodiary.data.local
 
+import com.simats.echodiary.EchoDiaryApp
+import com.simats.echodiary.ui.activity.CategoryBreakdownItem
 import com.simats.echodiary.ui.activity.DiaryEntryItem
+import com.simats.echodiary.ui.activity.SupportingRecord
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 object DiaryActivityStore {
@@ -62,7 +67,9 @@ object DiaryActivityStore {
     private val _selectedActivity = MutableStateFlow<DiaryEntryItem?>(defaultActivities.first())
     val selectedActivity: StateFlow<DiaryEntryItem?> = _selectedActivity.asStateFlow()
 
-    // Weekly memory summary
+    // ------------------------------------------------------------------------
+    // Weekly Memory State
+    // ------------------------------------------------------------------------
     private val _weeklyMemoryTitle = MutableStateFlow("A week of progress and connection.")
     val weeklyMemoryTitle: StateFlow<String> = _weeklyMemoryTitle.asStateFlow()
 
@@ -70,6 +77,234 @@ object DiaryActivityStore {
         "This week, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend."
     )
     val weeklyMemoryNarrative: StateFlow<String> = _weeklyMemoryNarrative.asStateFlow()
+
+    private val _weeklyMemoryDateRange = MutableStateFlow("OCT 5–11, 2026 · WEEKLY DRAFT")
+    val weeklyMemoryDateRange: StateFlow<String> = _weeklyMemoryDateRange.asStateFlow()
+
+    private val _weeklyHighlights = MutableStateFlow<List<String>>(
+        listOf("College project", "Friends & family", "Presentation prep", "Calm walk")
+    )
+    val weeklyHighlights: StateFlow<List<String>> = _weeklyHighlights.asStateFlow()
+
+    private val _weeklyMoodSummary = MutableStateFlow("1 explicitly recorded mood: Calm, on Oct 7. The other 4 entries have no mood specified.")
+    val weeklyMoodSummary: StateFlow<String> = _weeklyMoodSummary.asStateFlow()
+
+    private val _weeklyEntriesCount = MutableStateFlow(5)
+    val weeklyEntriesCount: StateFlow<Int> = _weeklyEntriesCount.asStateFlow()
+
+    private val _weeklyCategoriesCount = MutableStateFlow(5)
+    val weeklyCategoriesCount: StateFlow<Int> = _weeklyCategoriesCount.asStateFlow()
+
+    // ------------------------------------------------------------------------
+    // Monthly Memory State
+    // ------------------------------------------------------------------------
+    private val _monthlyMonthLabel = MutableStateFlow("October 2026")
+    val monthlyMonthLabel: StateFlow<String> = _monthlyMonthLabel.asStateFlow()
+
+    private val _monthlySummaryTitle = MutableStateFlow("October, in your words")
+    val monthlySummaryTitle: StateFlow<String> = _monthlySummaryTitle.asStateFlow()
+
+    private val _monthlySummaryText = MutableStateFlow(
+        "This month, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend."
+    )
+    val monthlySummaryText: StateFlow<String> = _monthlySummaryText.asStateFlow()
+
+    private val _monthlyCategoryBreakdown = MutableStateFlow<List<CategoryBreakdownItem>>(
+        listOf(
+            CategoryBreakdownItem("College", 1, 1f),
+            CategoryBreakdownItem("Friends", 1, 1f),
+            CategoryBreakdownItem("Health", 1, 1f),
+            CategoryBreakdownItem("Work", 1, 1f),
+            CategoryBreakdownItem("Family", 1, 1f)
+        )
+    )
+    val monthlyCategoryBreakdown: StateFlow<List<CategoryBreakdownItem>> = _monthlyCategoryBreakdown.asStateFlow()
+
+    private val _monthlyEntriesCount = MutableStateFlow(5)
+    val monthlyEntriesCount: StateFlow<Int> = _monthlyEntriesCount.asStateFlow()
+
+    private val _monthlyCategoriesCount = MutableStateFlow(5)
+    val monthlyCategoriesCount: StateFlow<Int> = _monthlyCategoriesCount.asStateFlow()
+
+    private val _monthlyFooterText = MutableStateFlow("Highlights: project work, lunch with friends, a Calm walk, presentation preparation and family time.")
+    val monthlyFooterText: StateFlow<String> = _monthlyFooterText.asStateFlow()
+
+    // ------------------------------------------------------------------------
+    // Yearly Memory State
+    // ------------------------------------------------------------------------
+    private val _yearlyYearLabel = MutableStateFlow("2026")
+    val yearlyYearLabel: StateFlow<String> = _yearlyYearLabel.asStateFlow()
+
+    private val _yearlyChapterTitle = MutableStateFlow("One small chapter of 2026.")
+    val yearlyChapterTitle: StateFlow<String> = _yearlyChapterTitle.asStateFlow()
+
+    private val _yearlyChapterText = MutableStateFlow(
+        "Across 2026, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend."
+    )
+    val yearlyChapterText: StateFlow<String> = _yearlyChapterText.asStateFlow()
+
+    private val _yearlyCategories = MutableStateFlow<List<String>>(
+        listOf("College", "Friends", "Health", "Work", "Family")
+    )
+    val yearlyCategories: StateFlow<List<String>> = _yearlyCategories.asStateFlow()
+
+    private val _yearlySupportingRecords = MutableStateFlow<List<SupportingRecord>>(
+        listOf(
+            SupportingRecord("Lectures and project", "Oct 5"),
+            SupportingRecord("Lunch with friends", "Oct 6"),
+            SupportingRecord("Evening walk", "Oct 7"),
+            SupportingRecord("Presentation preparation", "Oct 8"),
+            SupportingRecord("Weekend with family", "Oct 10")
+        )
+    )
+    val yearlySupportingRecords: StateFlow<List<SupportingRecord>> = _yearlySupportingRecords.asStateFlow()
+
+    private val _yearlyFooterText = MutableStateFlow("Topics come from these 5 records; grounded directly in what you recorded.")
+    val yearlyFooterText: StateFlow<String> = _yearlyFooterText.asStateFlow()
+
+    init {
+        generateWeeklySummary(null)
+        generateMonthlySummary(null)
+        generateYearlySummary(null)
+    }
+
+    fun synthesizeMoodSummary(entries: List<DiaryEntryItem>): String {
+        val moods = entries.map { it.mood.trim() }
+            .filter { it.isNotBlank() && !it.equals("Not specified", ignoreCase = true) && !it.equals("Unspecified", ignoreCase = true) }
+        return if (moods.isNotEmpty()) {
+            val grouped = moods.groupingBy { it }.eachCount()
+            val parts = grouped.map { "${it.value} recorded feeling ${it.key}" }.joinToString(", ")
+            val unspecified = entries.size - moods.size
+            if (unspecified > 0) {
+                "$parts. The other $unspecified entries have no mood specified."
+            } else {
+                "$parts. All entries had moods recorded."
+            }
+        } else {
+            "Recorded reflections across ${entries.size} entries with a calm, balanced tone."
+        }
+    }
+
+    fun generateWeeklySummary(scope: CoroutineScope? = null) {
+        val entries = _activities.value
+        val count = entries.size
+        val categories = entries.map { it.category }.distinct()
+        val titles = entries.map { it.title }
+        val moodSummary = synthesizeMoodSummary(entries)
+
+        val title = if (entries.isNotEmpty()) {
+            "A week of progress and connection."
+        } else {
+            "Your weekly memory"
+        }
+
+        val narrative = if (count > 0) {
+            val highlightsList = titles.take(4).joinToString(", ")
+            "This week, you recorded $count entries across ${categories.joinToString(", ")}. You logged $highlightsList. $moodSummary"
+        } else {
+            "No entries recorded for this week yet. Add daily diary entries to see your story come together."
+        }
+
+        val highlights = (categories.take(2) + titles.take(2)).distinct()
+
+        _weeklyMemoryTitle.value = title
+        _weeklyMemoryNarrative.value = narrative
+        _weeklyHighlights.value = highlights
+        _weeklyMoodSummary.value = moodSummary
+        _weeklyEntriesCount.value = count
+        _weeklyCategoriesCount.value = categories.size
+        _weeklyMemoryDateRange.value = "OCT 5–11, 2026 · WEEKLY DRAFT"
+
+        scope?.launch {
+            try {
+                val response = EchoDiaryApp.getMemoryRepository().generateMemory(type = "weekly", save = true)
+                response.onSuccess { data ->
+                    data.title?.let { if (it.isNotBlank()) _weeklyMemoryTitle.value = it }
+                    data.narrative?.let { if (it.isNotBlank()) _weeklyMemoryNarrative.value = it }
+                    data.highlights?.let { if (it.isNotEmpty()) _weeklyHighlights.value = it }
+                    data.moodSummary?.let { if (it.isNotBlank()) _weeklyMoodSummary.value = it }
+                }
+            } catch (_: Exception) {}
+        }
+    }
+
+    fun generateMonthlySummary(scope: CoroutineScope? = null) {
+        val entries = _activities.value
+        val count = entries.size
+        val categoriesGrouped = entries.groupingBy { it.category }.eachCount()
+        val categories = categoriesGrouped.keys.toList()
+
+        val breakdown = if (categoriesGrouped.isNotEmpty()) {
+            val maxCount = categoriesGrouped.values.maxOrNull() ?: 1
+            categoriesGrouped.map { (cat, cnt) ->
+                CategoryBreakdownItem(
+                    name = cat,
+                    count = cnt,
+                    progress = cnt.toFloat() / maxCount.toFloat()
+                )
+            }
+        } else {
+            listOf(CategoryBreakdownItem("General", 0, 0f))
+        }
+
+        val title = "October, in your words"
+        val moodSummary = synthesizeMoodSummary(entries)
+        val narrative = if (count > 0) {
+            val topTitles = entries.take(4).joinToString(", ") { it.title }
+            "In October, you captured $count moments across ${categories.size} categories: ${categories.joinToString(", ")}. Key moments included $topTitles. $moodSummary"
+        } else {
+            "No entries recorded for this month yet. Your monthly memory will shape as you write."
+        }
+
+        _monthlySummaryTitle.value = title
+        _monthlySummaryText.value = narrative
+        _monthlyCategoryBreakdown.value = breakdown
+        _monthlyEntriesCount.value = count
+        _monthlyCategoriesCount.value = categories.size
+        _monthlyFooterText.value = "Highlights: ${entries.take(4).joinToString(", ") { it.title }}."
+
+        scope?.launch {
+            try {
+                val response = EchoDiaryApp.getMemoryRepository().generateMemory(type = "monthly", save = true)
+                response.onSuccess { data ->
+                    data.title?.let { if (it.isNotBlank()) _monthlySummaryTitle.value = it }
+                    data.summaryText?.let { if (it.isNotBlank()) _monthlySummaryText.value = it }
+                }
+            } catch (_: Exception) {}
+        }
+    }
+
+    fun generateYearlySummary(scope: CoroutineScope? = null) {
+        val entries = _activities.value
+        val count = entries.size
+        val categories = entries.map { it.category }.distinct()
+        val supporting = entries.map { SupportingRecord(it.title, it.date) }
+        val moodSummary = synthesizeMoodSummary(entries)
+
+        val title = "One small chapter of 2026."
+        val narrative = if (count > 0) {
+            val topTitles = entries.take(4).joinToString(", ") { it.title }
+            "Across 2026, your diary holds $count recorded reflections across ${categories.joinToString(", ")}. You revisited moments such as $topTitles. $moodSummary"
+        } else {
+            "No entries recorded for this year yet. Write or speak your entries to build your year in reflection."
+        }
+
+        _yearlyChapterTitle.value = title
+        _yearlyChapterText.value = narrative
+        _yearlyCategories.value = categories
+        _yearlySupportingRecords.value = supporting
+        _yearlyFooterText.value = "Topics come from these $count records; grounded directly in what you recorded."
+
+        scope?.launch {
+            try {
+                val response = EchoDiaryApp.getMemoryRepository().generateMemory(type = "yearly", save = true)
+                response.onSuccess { data ->
+                    data.title?.let { if (it.isNotBlank()) _yearlyChapterTitle.value = it }
+                    data.narrative?.let { if (it.isNotBlank()) _yearlyChapterText.value = it }
+                }
+            } catch (_: Exception) {}
+        }
+    }
 
     fun updateWeeklyMemory(title: String, narrative: String) {
         if (title.isNotBlank()) _weeklyMemoryTitle.value = title

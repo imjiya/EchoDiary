@@ -7,6 +7,8 @@ import com.simats.echodiary.data.repository.AuthRepository
 import com.simats.echodiary.data.repository.AuthRepositoryImpl
 import com.simats.echodiary.data.repository.EntryRepository
 import com.simats.echodiary.data.repository.EntryRepositoryImpl
+import com.simats.echodiary.data.repository.MemoryRepository
+import com.simats.echodiary.data.repository.MemoryRepositoryImpl
 
 class EchoDiaryApp : Application() {
 
@@ -28,6 +30,11 @@ class EchoDiaryApp : Application() {
         fun getEntryRepository(): EntryRepository {
             val api = RetrofitClient.getApi(instance)
             return EntryRepositoryImpl(api)
+        }
+
+        fun getMemoryRepository(): MemoryRepository {
+            val api = RetrofitClient.getApi(instance)
+            return MemoryRepositoryImpl(api)
         }
 
         fun getSessionManager(): SessionManager {

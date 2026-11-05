@@ -45,8 +45,35 @@ try {
         'end_date' => $endDate
     ]);
     $entries = $stmt->fetchAll();
-
     $entryCount = count($entries);
+
+    if ($entryCount === 0 && empty($input['start_date'])) {
+        $fallbackStmt = $pdo->prepare(
+            'SELECT MIN(entry_date) as min_date, MAX(entry_date) as max_date FROM diary_entries WHERE user_id = :user_id'
+        );
+        $fallbackStmt->execute(['user_id' => $userId]);
+        $dateBounds = $fallbackStmt->fetch();
+        if ($dateBounds && !empty($dateBounds['max_date'])) {
+            $maxTs = strtotime($dateBounds['max_date']);
+            if ($type === 'monthly') {
+                $startDate = date('Y-m-01', $maxTs);
+                $endDate = date('Y-m-t', $maxTs);
+            } elseif ($type === 'yearly') {
+                $startDate = date('Y-01-01', $maxTs);
+                $endDate = date('Y-12-31', $maxTs);
+            } else {
+                $startDate = date('Y-m-d', strtotime('monday this week', $maxTs));
+                $endDate = date('Y-m-d', strtotime('sunday this week', $maxTs));
+            }
+            $stmt->execute([
+                'user_id' => $userId,
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            $entries = $stmt->fetchAll();
+            $entryCount = count($entries);
+        }
+    }
     $categories = array_values(array_unique(array_filter(array_column($entries, 'category'))));
     $categoriesCount = count($categories);
 

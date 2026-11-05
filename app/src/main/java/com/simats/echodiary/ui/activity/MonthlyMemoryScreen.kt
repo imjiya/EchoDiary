@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -253,7 +255,7 @@ fun MonthlyMemoryScreen(
             ) {
                 Column {
                     Text(
-                        text = "Category breakdown · 1 each",
+                        text = "Category breakdown · ${state.categoriesCount} categories",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1E293B)
@@ -304,6 +306,25 @@ fun MonthlyMemoryScreen(
                 color = Color(0xFF64748B),
                 lineHeight = 18.sp
             )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Generate Monthly Memory Button
+            Button(
+                onClick = { viewModel.onGenerateMonthlyMemoryClicked() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+                shape = RoundedCornerShape(27.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+            ) {
+                Text(
+                    text = "✨ Generate monthly memory",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
+                )
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
         }

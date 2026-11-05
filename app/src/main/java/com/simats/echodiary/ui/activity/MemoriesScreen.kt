@@ -151,7 +151,7 @@ fun MemoriesScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Saved Weekly Memory Card
+            // Saved Memory Card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -165,7 +165,7 @@ fun MemoriesScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = "SAVED WEEKLY MEMORY",
+                        text = state.memoryCardHeader,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF5165F6),
@@ -194,7 +194,13 @@ fun MemoriesScreen(
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { onNavigateToYourWeeklySummary() }
+                        modifier = Modifier.clickable {
+                            when (state.activeFilterTab) {
+                                "Monthly" -> onNavigateToMonthlyMemory()
+                                "Yearly" -> onNavigateToYearlyMemory()
+                                else -> onNavigateToYourWeeklySummary()
+                            }
+                        }
                     ) {
                         Text(
                             text = "View memory",

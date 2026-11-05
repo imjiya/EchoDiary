@@ -120,4 +120,40 @@ class DiaryActivityStoreUnitTest {
         assertEquals(newTitle, DiaryActivityStore.weeklyMemoryTitle.value)
         assertEquals(newNarrative, DiaryActivityStore.weeklyMemoryNarrative.value)
     }
+
+    @Test
+    fun testGenerateWeeklySummary() {
+        DiaryActivityStore.generateWeeklySummary(null)
+        val title = DiaryActivityStore.weeklyMemoryTitle.value
+        val narrative = DiaryActivityStore.weeklyMemoryNarrative.value
+        val count = DiaryActivityStore.weeklyEntriesCount.value
+
+        assertTrue("Weekly summary title should not be blank", title.isNotBlank())
+        assertTrue("Weekly narrative should mention entries", narrative.contains("This week") || narrative.contains("No entries"))
+        assertTrue("Weekly entries count should be >= 0", count >= 0)
+    }
+
+    @Test
+    fun testGenerateMonthlySummary() {
+        DiaryActivityStore.generateMonthlySummary(null)
+        val title = DiaryActivityStore.monthlySummaryTitle.value
+        val text = DiaryActivityStore.monthlySummaryText.value
+        val breakdown = DiaryActivityStore.monthlyCategoryBreakdown.value
+
+        assertTrue("Monthly summary title should not be blank", title.isNotBlank())
+        assertTrue("Monthly summary text should not be blank", text.isNotBlank())
+        assertTrue("Monthly breakdown should be populated", breakdown.isNotEmpty())
+    }
+
+    @Test
+    fun testGenerateYearlySummary() {
+        DiaryActivityStore.generateYearlySummary(null)
+        val title = DiaryActivityStore.yearlyChapterTitle.value
+        val text = DiaryActivityStore.yearlyChapterText.value
+        val supporting = DiaryActivityStore.yearlySupportingRecords.value
+
+        assertTrue("Yearly chapter title should not be blank", title.isNotBlank())
+        assertTrue("Yearly chapter text should not be blank", text.isNotBlank())
+        assertTrue("Yearly supporting records should be populated", supporting.isNotEmpty())
+    }
 }
