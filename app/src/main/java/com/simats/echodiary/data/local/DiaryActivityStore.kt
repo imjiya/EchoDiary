@@ -439,6 +439,16 @@ object DiaryActivityStore {
         if (narrative.isNotBlank()) _weeklyMemoryNarrative.value = narrative
     }
 
+    fun resetToDefaults() {
+        _activities.value = defaultActivities
+        _selectedActivity.value = defaultActivities.firstOrNull()
+    }
+
+    fun setActivities(items: List<DiaryEntryItem>) {
+        _activities.value = items
+        _selectedActivity.value = items.firstOrNull()
+    }
+
     fun selectActivity(item: DiaryEntryItem) {
         _selectedActivity.value = item
     }

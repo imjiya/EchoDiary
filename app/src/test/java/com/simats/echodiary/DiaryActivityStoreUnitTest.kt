@@ -2,13 +2,25 @@ package com.simats.echodiary
 
 import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.ui.activity.DiaryEntryItem
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class DiaryActivityStoreUnitTest {
+
+    @Before
+    fun setup() {
+        DiaryActivityStore.resetToDefaults()
+    }
+
+    @After
+    fun tearDown() {
+        DiaryActivityStore.resetToDefaults()
+    }
 
     @Test
     fun testInitialActivitiesPresent() {

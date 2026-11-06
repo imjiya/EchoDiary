@@ -83,3 +83,4 @@ class NotificationsUnitTest {
         assertEquals("Reminders paused", DiaryActivityStore.notificationSummary.value)
     }
 }
+

@@ -563,6 +563,15 @@ class MainActivity : ComponentActivity() {
                                 currentScreen = Screen.Home
                             },
                             onNavigateToActivityDetails = {
+                                val item = DiaryActivityStore.selectedActivity.value
+                                if (item != null) {
+                                    entryTitle = item.title
+                                    entryDescription = item.description
+                                    entryDate = item.date
+                                    entryCategory = item.category
+                                    entryMood = item.mood
+                                    entryId = item.id
+                                }
                                 currentScreen = Screen.ActivityDetails
                             }
                         )

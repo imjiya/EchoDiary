@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
@@ -51,6 +52,11 @@ fun ActivityAndMoodScreen(
     onNavigateToActivityDetails: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val currentActivities by DiaryActivityStore.activities.collectAsState()
+
+    LaunchedEffect(currentActivities) {
+        viewModel.onActivitiesChanged(currentActivities)
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
@@ -207,36 +213,44 @@ fun ActivityAndMoodScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    state.categories.forEach { item ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = item.name,
-                                fontSize = 14.sp,
-                                color = Color(0xFF64748B),
-                                modifier = Modifier.width(80.dp)
-                            )
-                            LinearProgressIndicator(
-                                progress = { item.progress },
+                    if (state.categories.isEmpty()) {
+                        Text(
+                            text = "No activities recorded for this period.",
+                            fontSize = 13.sp,
+                            color = Color(0xFF94A3B8)
+                        )
+                    } else {
+                        state.categories.forEach { item ->
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = EchoTheme.primary,
-                                trackColor = EchoTheme.container,
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(
-                                text = "${item.count}",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1E293B)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = item.name,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF64748B),
+                                    modifier = Modifier.width(80.dp)
+                                )
+                                LinearProgressIndicator(
+                                    progress = { item.progress },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    color = EchoTheme.primary,
+                                    trackColor = EchoTheme.container,
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = "${item.count}",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF1E293B)
+                                )
+                            }
                         }
                     }
                 }
@@ -260,36 +274,44 @@ fun ActivityAndMoodScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    state.moodBreakdown.forEach { mood ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = mood.name,
-                                fontSize = 14.sp,
-                                color = Color(0xFF64748B),
-                                modifier = Modifier.width(90.dp)
-                            )
-                            LinearProgressIndicator(
-                                progress = { mood.progress },
+                    if (state.moodBreakdown.isEmpty()) {
+                        Text(
+                            text = "No mood records available for this period.",
+                            fontSize = 13.sp,
+                            color = Color(0xFF94A3B8)
+                        )
+                    } else {
+                        state.moodBreakdown.forEach { mood ->
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = EchoTheme.primary,
-                                trackColor = EchoTheme.container,
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(
-                                text = "${mood.count} / ${mood.total}",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1E293B)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = mood.name,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF64748B),
+                                    modifier = Modifier.width(90.dp)
+                                )
+                                LinearProgressIndicator(
+                                    progress = { mood.progress },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    color = EchoTheme.primary,
+                                    trackColor = EchoTheme.container,
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = "${mood.count} / ${mood.total}",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF1E293B)
+                                )
+                            }
                         }
                     }
 
