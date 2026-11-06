@@ -2,6 +2,7 @@ package com.simats.echodiary
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
@@ -10,7 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.simats.echodiary.data.local.DiaryActivityStore
+import com.simats.echodiary.navigation.EchoNavController
 import com.simats.echodiary.navigation.Screen
+import com.simats.echodiary.navigation.rememberEchoNavController
 import com.simats.echodiary.ui.activity.ActivityAndMoodScreen
 import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
@@ -68,8 +71,8 @@ class MainActivity : ComponentActivity() {
                 else -> androidx.compose.foundation.isSystemInDarkTheme()
             }
             EchoDiaryTheme(darkTheme = isDark, paletteName = themePalette) {
-                var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
-                var previousProfileScreen by remember { mutableStateOf<Screen>(Screen.Profile) }
+                val navController = rememberEchoNavController(Screen.Splash)
+                val currentScreen = navController.currentScreen
                 var recordedTranscript by remember { mutableStateOf("Attended lectures and worked on a project.") }
                 var entryTitle by remember { mutableStateOf("Diary Entry") }
                 var entryDescription by remember { mutableStateOf("Attended lectures and worked on a project.") }
@@ -79,14 +82,18 @@ class MainActivity : ComponentActivity() {
                 var entryId by remember { mutableStateOf(0) }
                 val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
 
+                BackHandler(enabled = navController.canPop) {
+                    navController.popBackStack()
+                }
+
                 when (currentScreen) {
                     is Screen.Splash -> {
                         SplashScreen(
                             onNavigateToOnboarding = {
                                 if (EchoDiaryApp.getSessionManager().isLoggedIn()) {
-                                    currentScreen = Screen.Home
+                                    navController.navigateRoot(Screen.Home)
                                 } else {
-                                    currentScreen = Screen.Onboarding
+                                    navController.navigateRoot(Screen.Onboarding)
                                 }
                             }
                         )
@@ -94,98 +101,98 @@ class MainActivity : ComponentActivity() {
                     is Screen.Onboarding -> {
                         OnboardingScreen(
                             onNavigateToSecondOnboarding = {
-                                currentScreen = Screen.SecondOnboarding
+                                navController.navigate(Screen.SecondOnboarding)
                             },
                             onNavigateToLogin = {
-                                currentScreen = Screen.Login
+                                navController.navigate(Screen.Login)
                             }
                         )
                     }
                     is Screen.SecondOnboarding -> {
                         SecondOnboardingScreen(
                             onNavigateToThirdOnboarding = {
-                                currentScreen = Screen.ThirdOnboarding
+                                navController.navigate(Screen.ThirdOnboarding)
                             },
                             onNavigateToLogin = {
-                                currentScreen = Screen.Login
+                                navController.navigate(Screen.Login)
                             }
                         )
                     }
                     is Screen.ThirdOnboarding -> {
                         ThirdOnboardingScreen(
                             onNavigateToFourthOnboarding = {
-                                currentScreen = Screen.FourthOnboarding
+                                navController.navigate(Screen.FourthOnboarding)
                             },
                             onNavigateToLogin = {
-                                currentScreen = Screen.Login
+                                navController.navigate(Screen.Login)
                             }
                         )
                     }
                     is Screen.FourthOnboarding -> {
                         FourthOnboardingScreen(
                             onNavigateToCreateAccount = {
-                                currentScreen = Screen.CreateAccount
+                                navController.navigate(Screen.CreateAccount)
                             }
                         )
                     }
                     is Screen.CreateAccount -> {
                         CreateAccountScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.FourthOnboarding
+                                navController.popBackStack()
                             },
                             onNavigateToLogin = {
-                                currentScreen = Screen.Login
+                                navController.navigate(Screen.Login)
                             },
                             onNavigateToHome = {
-                                currentScreen = Screen.Home
+                                navController.navigateRoot(Screen.Home)
                             }
                         )
                     }
                     is Screen.Login -> {
                         LoginScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.CreateAccount
+                                navController.popBackStack()
                             },
                             onNavigateToForgotPassword = {
-                                currentScreen = Screen.ResetPassword
+                                navController.navigate(Screen.ResetPassword)
                             },
                             onNavigateToCreateAccount = {
-                                currentScreen = Screen.CreateAccount
+                                navController.navigate(Screen.CreateAccount)
                             },
                             onNavigateToHome = {
-                                currentScreen = Screen.Home
+                                navController.navigateRoot(Screen.Home)
                             }
                         )
                     }
                     is Screen.ResetPassword -> {
                         ResetPasswordScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Login
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.Home -> {
                         HomeScreen(
                             onNavigateToAddActivity = {
-                                currentScreen = Screen.AddActivity
+                                navController.navigate(Screen.AddActivity)
                             },
                             onNavigateToWriteDiary = {
-                                currentScreen = Screen.WriteDiaryEntry
+                                navController.navigate(Screen.WriteDiaryEntry)
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                navController.navigate(Screen.AllActivities)
                             },
                             onNavigateToCalendar = {
-                                currentScreen = Screen.Calendar
+                                navController.navigateTab(Screen.Calendar)
                             },
                             onNavigateToMemories = {
-                                currentScreen = Screen.Memories
+                                navController.navigateTab(Screen.Memories)
                             },
                             onNavigateToYourWeeklySummary = {
-                                currentScreen = Screen.YourWeeklySummary
+                                navController.navigate(Screen.YourWeeklySummary)
                             },
                             onNavigateToProfile = {
-                                currentScreen = Screen.Profile
+                                navController.navigateTab(Screen.Profile)
                             },
                             onNavigateToActivityDetails = { activityItem ->
                                 if (activityItem != null) {
@@ -197,46 +204,46 @@ class MainActivity : ComponentActivity() {
                                     entryId = activityItem.id
                                     DiaryActivityStore.selectActivity(activityItem)
                                 }
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             },
                             onNavigateToPhotoMemories = {
-                                currentScreen = Screen.PhotoMemories
+                                navController.navigate(Screen.PhotoMemories)
                             },
                             onNavigateToInsights = {
-                                currentScreen = Screen.ActivityAndMood
+                                navController.navigate(Screen.ActivityAndMood)
                             },
                             onNavigateToChooseCategory = {
-                                currentScreen = Screen.ChooseCategory
+                                navController.navigate(Screen.ChooseCategory)
                             }
                         )
                     }
                     is Screen.AddActivity -> {
                         AddActivityScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Home
+                                navController.popBackStack()
                             },
                             onNavigateToVoiceRecording = {
-                                currentScreen = Screen.VoiceRecording
+                                navController.navigate(Screen.VoiceRecording)
                             },
                             onNavigateToWriteDiaryEntry = {
-                                currentScreen = Screen.WriteDiaryEntry
+                                navController.navigate(Screen.WriteDiaryEntry)
                             },
                             onNavigateToFilterActivities = {
-                                currentScreen = Screen.FilterActivities
+                                navController.navigate(Screen.FilterActivities)
                             },
                             onNavigateToChooseCategory = {
-                                currentScreen = Screen.ChooseCategory
+                                navController.navigate(Screen.ChooseCategory)
                             }
                         )
                     }
                     is Screen.VoiceRecording -> {
                         VoiceRecordingScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.AddActivity
+                                navController.popBackStack()
                             },
                             onNavigateToReviewTranscript = { transcript ->
                                 recordedTranscript = transcript
-                                currentScreen = Screen.ReviewTranscript
+                                navController.navigate(Screen.ReviewTranscript)
                             }
                         )
                     }
@@ -244,10 +251,10 @@ class MainActivity : ComponentActivity() {
                         ReviewTranscriptScreen(
                             initialTranscript = recordedTranscript,
                             onNavigateBack = {
-                                currentScreen = Screen.VoiceRecording
+                                navController.popBackStack()
                             },
                             onNavigateToVoiceRecording = {
-                                currentScreen = Screen.VoiceRecording
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = { transcript ->
                                 recordedTranscript = transcript
@@ -257,7 +264,7 @@ class MainActivity : ComponentActivity() {
                                 entryCategory = item?.category ?: "Voice Diary"
                                 entryMood = item?.mood ?: "Reflective"
                                 entryId = item?.id ?: 0
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigateAndPopUpTo(Screen.ActivityDetails, popUpTo = Screen.Home)
                             }
                         )
                     }
@@ -266,7 +273,7 @@ class MainActivity : ComponentActivity() {
                             viewModel = writeDiaryViewModel,
                             initialDate = entryDate,
                             onNavigateBack = {
-                                currentScreen = Screen.AddActivity
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = { title, description, date, category ->
                                 val item = DiaryActivityStore.selectedActivity.value
@@ -276,13 +283,13 @@ class MainActivity : ComponentActivity() {
                                 entryCategory = category
                                 entryMood = item?.mood ?: writeDiaryViewModel.uiState.value.mood
                                 entryId = item?.id ?: 0
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigateAndPopUpTo(Screen.ActivityDetails, popUpTo = Screen.Home)
                             },
                             onNavigateToChooseCategory = {
-                                currentScreen = Screen.ChooseCategory
+                                navController.navigate(Screen.ChooseCategory)
                             },
                             onNavigateToCalendar = {
-                                currentScreen = Screen.Calendar
+                                navController.navigate(Screen.Calendar)
                             }
                         )
                     }
@@ -295,13 +302,15 @@ class MainActivity : ComponentActivity() {
                             initialMood = entryMood,
                             entryId = entryId,
                             onNavigateBack = {
-                                currentScreen = Screen.Home
+                                navController.popBackStack()
                             },
                             onNavigateToEdit = {
-                                currentScreen = Screen.EditActivity
+                                navController.navigate(Screen.EditActivity)
                             },
                             onNavigateToHome = {
-                                currentScreen = Screen.AllActivities
+                                if (!navController.popBackStack()) {
+                                    navController.navigateTab(Screen.Home)
+                                }
                             }
                         )
                     }
@@ -314,20 +323,24 @@ class MainActivity : ComponentActivity() {
                             initialMood = entryMood,
                             entryId = entryId,
                             onNavigateBack = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.popBackStack()
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                if (!navController.popBackStack(Screen.AllActivities)) {
+                                    if (!navController.popBackStack(Screen.Home)) {
+                                        navController.popBackStack()
+                                    }
+                                }
                             }
                         )
                     }
                     is Screen.AllActivities -> {
                         AllActivitiesScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Home
+                                navController.popBackStack()
                             },
                             onNavigateToSearchDiary = {
-                                currentScreen = Screen.SearchDiary
+                                navController.navigate(Screen.SearchDiary)
                             },
                             onNavigateToActivityDetails = { activityItem ->
                                 entryTitle = activityItem.title
@@ -337,230 +350,232 @@ class MainActivity : ComponentActivity() {
                                 entryMood = activityItem.mood
                                 entryId = activityItem.id
                                 DiaryActivityStore.selectActivity(activityItem)
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             },
                             onNavigateToFilterActivities = {
-                                currentScreen = Screen.FilterActivities
+                                navController.navigate(Screen.FilterActivities)
                             }
                         )
                     }
                     is Screen.Calendar -> {
                         CalendarScreen(
                             onNavigateToHome = {
-                                currentScreen = Screen.Home
+                                navController.navigateTab(Screen.Home)
                             },
                             onNavigateToSelectedDate = {
-                                currentScreen = Screen.SelectedDate
+                                navController.navigate(Screen.SelectedDate)
                             },
                             onNavigateToMemories = {
-                                currentScreen = Screen.Memories
+                                navController.navigateTab(Screen.Memories)
                             },
                             onNavigateToProfile = {
-                                currentScreen = Screen.Profile
+                                navController.navigateTab(Screen.Profile)
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             },
                             onNavigateToWriteDiary = { selectedDate ->
                                 entryDate = selectedDate
                                 writeDiaryViewModel.onDateChanged(selectedDate)
-                                currentScreen = Screen.WriteDiaryEntry
+                                navController.navigate(Screen.WriteDiaryEntry)
                             }
                         )
                     }
                     is Screen.ChooseCategory -> {
                         ChooseCategoryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.WriteDiaryEntry
+                                navController.popBackStack()
                             },
                             onCategorySelected = { cat ->
                                 writeDiaryViewModel.onCategoryChanged(cat)
-                                currentScreen = Screen.WriteDiaryEntry
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.SearchDiary -> {
                         SearchDiaryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.AllActivities
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             }
                         )
                     }
                     is Screen.FilterActivities -> {
                         FilterActivitiesScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.AllActivities
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                if (!navController.popBackStack(Screen.AllActivities)) {
+                                    navController.navigate(Screen.AllActivities)
+                                }
                             }
                         )
                     }
                     is Screen.SelectedDate -> {
                         SelectedDateScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Calendar
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             },
                             onNavigateToAddEntry = {
-                                currentScreen = Screen.AddActivity
+                                navController.navigate(Screen.AddActivity)
                             }
                         )
                     }
                     is Screen.Memories -> {
                         MemoriesScreen(
                             onNavigateToHome = {
-                                currentScreen = Screen.Home
+                                navController.navigateTab(Screen.Home)
                             },
                             onNavigateToCalendar = {
-                                currentScreen = Screen.Calendar
+                                navController.navigateTab(Screen.Calendar)
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                navController.navigate(Screen.AllActivities)
                             },
                             onNavigateToYourWeeklySummary = {
-                                currentScreen = Screen.YourWeeklySummary
+                                navController.navigate(Screen.YourWeeklySummary)
                             },
                             onNavigateToMonthlyMemory = {
-                                currentScreen = Screen.MonthlyMemory
+                                navController.navigate(Screen.MonthlyMemory)
                             },
                             onNavigateToYearlyMemory = {
-                                currentScreen = Screen.YearlyMemory
+                                navController.navigate(Screen.YearlyMemory)
                             },
                             onNavigateToPhotoMemories = {
-                                currentScreen = Screen.PhotoMemories
+                                navController.navigate(Screen.PhotoMemories)
                             },
                             onNavigateToProfile = {
-                                currentScreen = Screen.Profile
+                                navController.navigateTab(Screen.Profile)
                             }
                         )
                     }
                     is Screen.YourWeeklySummary -> {
                         YourWeeklySummaryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Memories
+                                navController.popBackStack()
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                navController.navigate(Screen.AllActivities)
                             },
                             onNavigateToCreatingMemory = {
-                                currentScreen = Screen.CreatingYourMemory
+                                navController.navigate(Screen.CreatingYourMemory)
                             },
                             onNavigateToAnalysisResults = {
-                                currentScreen = Screen.AnalysisResults
+                                navController.navigate(Screen.AnalysisResults)
                             }
                         )
                     }
                     is Screen.CreatingYourMemory -> {
                         CreatingYourMemoryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.YourWeeklySummary
+                                navController.popBackStack()
                             },
                             onNavigateToWeeklyMemory = {
-                                currentScreen = Screen.WeeklyMemory
+                                navController.replaceTop(Screen.WeeklyMemory)
                             }
                         )
                     }
                     is Screen.WeeklyMemory -> {
                         WeeklyMemoryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.CreatingYourMemory
+                                navController.popBackStack()
                             },
                             onNavigateToMemories = {
-                                currentScreen = Screen.Memories
+                                navController.navigateTab(Screen.Memories)
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                navController.navigate(Screen.AllActivities)
                             },
                             onNavigateToActivityAndMood = {
-                                currentScreen = Screen.ActivityAndMood
+                                navController.navigate(Screen.ActivityAndMood)
                             },
                             onNavigateToEditYourMemory = {
-                                currentScreen = Screen.EditYourMemory
+                                navController.navigate(Screen.EditYourMemory)
                             },
                             onNavigateToMemoryDetails = {
-                                currentScreen = Screen.MemoryDetails
+                                navController.navigate(Screen.MemoryDetails)
                             }
                         )
                     }
                     is Screen.EditYourMemory -> {
                         EditYourMemoryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.WeeklyMemory
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.MemoryDetails -> {
                         MemoryDetailsScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.WeeklyMemory
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             }
                         )
                     }
                     is Screen.AnalysisResults -> {
                         AnalysisResultsScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.YourWeeklySummary
+                                navController.popBackStack()
                             },
                             onNavigateToWeeklyMemory = {
-                                currentScreen = Screen.WeeklyMemory
+                                navController.navigate(Screen.WeeklyMemory)
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             }
                         )
                     }
                     is Screen.MonthlyMemory -> {
                         MonthlyMemoryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Memories
+                                navController.popBackStack()
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                navController.navigate(Screen.AllActivities)
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             }
                         )
                     }
                     is Screen.YearlyMemory -> {
                         YearlyMemoryScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Memories
+                                navController.popBackStack()
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                navController.navigate(Screen.AllActivities)
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             }
                         )
                     }
                     is Screen.PhotoMemories -> {
                         PhotoMemoriesScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Memories
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = {
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             }
                         )
                     }
                     is Screen.ActivityAndMood -> {
                         ActivityAndMoodScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Home
+                                navController.popBackStack()
                             },
                             onNavigateToActivityDetails = {
                                 val item = DiaryActivityStore.selectedActivity.value
@@ -572,114 +587,112 @@ class MainActivity : ComponentActivity() {
                                     entryMood = item.mood
                                     entryId = item.id
                                 }
-                                currentScreen = Screen.ActivityDetails
+                                navController.navigate(Screen.ActivityDetails)
                             }
                         )
                     }
                     is Screen.Profile -> {
                         ProfileScreen(
                             onNavigateToHome = {
-                                currentScreen = Screen.Home
+                                navController.navigateTab(Screen.Home)
                             },
                             onNavigateToCalendar = {
-                                currentScreen = Screen.Calendar
+                                navController.navigateTab(Screen.Calendar)
                             },
                             onNavigateToMemories = {
-                                currentScreen = Screen.Memories
+                                navController.navigateTab(Screen.Memories)
                             },
                             onNavigateToEditProfile = {
-                                previousProfileScreen = Screen.Profile
-                                currentScreen = Screen.EditProfile
+                                navController.navigate(Screen.EditProfile)
                             },
                             onNavigateToSettings = {
-                                currentScreen = Screen.Settings
+                                navController.navigate(Screen.Settings)
                             },
                             onNavigateToInsights = {
-                                currentScreen = Screen.ActivityAndMood
+                                navController.navigate(Screen.ActivityAndMood)
                             }
                         )
                     }
                     is Screen.EditProfile -> {
                         EditProfileScreen(
                             onNavigateBack = {
-                                currentScreen = previousProfileScreen
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.Settings -> {
                         SettingsScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Profile
+                                navController.popBackStack()
                             },
                             onNavigateToAccount = {
-                                previousProfileScreen = Screen.Settings
-                                currentScreen = Screen.EditProfile
+                                navController.navigate(Screen.EditProfile)
                             },
                             onNavigateToAppearance = {
-                                currentScreen = Screen.Appearance
+                                navController.navigate(Screen.Appearance)
                             },
                             onNavigateToPrivacyAndData = {
-                                currentScreen = Screen.PrivacyAndData
+                                navController.navigate(Screen.PrivacyAndData)
                             },
                             onNavigateToNotifications = {
-                                currentScreen = Screen.Notifications
+                                navController.navigate(Screen.Notifications)
                             },
                             onNavigateToHelpAndSupport = {
-                                currentScreen = Screen.HelpAndSupport
+                                navController.navigate(Screen.HelpAndSupport)
                             },
                             onNavigateToLogin = {
-                                currentScreen = Screen.Login
+                                navController.navigateRoot(Screen.Login)
                             }
                         )
                     }
                     is Screen.Appearance -> {
                         AppearanceScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Settings
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.DialogsAndFeedback -> {
                         DialogsAndFeedbackScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Settings
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.Notifications -> {
                         NotificationsScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Settings
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.PrivacyAndData -> {
                         PrivacyAndDataScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Settings
+                                navController.popBackStack()
                             },
                             onNavigateToEmptyStates = {
-                                currentScreen = Screen.EmptyStates
+                                navController.navigate(Screen.EmptyStates)
                             }
                         )
                     }
                     is Screen.HelpAndSupport -> {
                         HelpAndSupportScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.Settings
+                                navController.popBackStack()
                             }
                         )
                     }
                     is Screen.EmptyStates -> {
                         EmptyStatesScreen(
                             onNavigateBack = {
-                                currentScreen = Screen.PrivacyAndData
+                                navController.popBackStack()
                             },
                             onNavigateToAddEntry = {
-                                currentScreen = Screen.AddActivity
+                                navController.navigate(Screen.AddActivity)
                             },
                             onNavigateToAllActivities = {
-                                currentScreen = Screen.AllActivities
+                                navController.navigate(Screen.AllActivities)
                             }
                         )
                     }
