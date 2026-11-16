@@ -50,10 +50,17 @@ class ProfileViewModel(
                 _uiState.update { it.copy(diaryEntriesCount = activities.size) }
             }
         }
-        loadUserProfile()
+        if (!DiaryActivityStore.isProfileLoadedFromBackend.value) {
+            loadUserProfile(forceRefresh = false)
+        }
     }
 
-    fun loadUserProfile() {
+    fun loadUserProfile(forceRefresh: Boolean = false) {
+        if (!forceRefresh && DiaryActivityStore.isProfileLoadedFromBackend.value) {
+            // Already cached in memory; do not hit API on repeated screen visits
+            return
+        }
+
         val session = EchoDiaryApp.getSessionManager()
         val localName = session.getUserName()
         val localEmail = session.getUserEmail()
@@ -64,12 +71,13 @@ class ProfileViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            val result = authRepository.getProfile()
+            val result = authRepository.getProfile(forceRefresh = forceRefresh)
             result.fold(
                 onSuccess = { resp ->
                     val prof = resp.profile
                     if (prof != null) {
                         DiaryActivityStore.setProfile(prof.fullName, prof.email)
+                        DiaryActivityStore.setProfileLoadedFromBackend(true)
                         _uiState.update {
                             it.copy(
                                 userName = prof.fullName,

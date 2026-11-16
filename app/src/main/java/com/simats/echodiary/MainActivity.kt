@@ -49,6 +49,7 @@ import com.simats.echodiary.ui.activity.YourWeeklySummaryScreen
 import com.simats.echodiary.ui.activity.WeeklyMemoryScreen
 import com.simats.echodiary.ui.calendar.CalendarScreen
 import com.simats.echodiary.ui.home.HomeScreen
+import com.simats.echodiary.ui.home.HomeViewModel
 import com.simats.echodiary.ui.profile.AppearanceScreen
 import com.simats.echodiary.ui.profile.DialogsAndFeedbackScreen
 import com.simats.echodiary.ui.profile.EditProfileScreen
@@ -57,6 +58,7 @@ import com.simats.echodiary.ui.profile.HelpAndSupportScreen
 import com.simats.echodiary.ui.profile.NotificationsScreen
 import com.simats.echodiary.ui.profile.PrivacyAndDataScreen
 import com.simats.echodiary.ui.profile.ProfileScreen
+import com.simats.echodiary.ui.profile.ProfileViewModel
 import com.simats.echodiary.ui.profile.SettingsScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.login.ResetPasswordScreen
@@ -135,6 +137,8 @@ class MainActivity : ComponentActivity() {
                 var entryPhotoUri by remember { mutableStateOf<String?>(null) }
                 var entryHasPhoto by remember { mutableStateOf(false) }
                 val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
+                val homeViewModel = remember { HomeViewModel() }
+                val profileViewModel = remember { ProfileViewModel() }
 
                 BackHandler(enabled = navController.canPop) {
                     navController.popBackStack()
@@ -227,6 +231,7 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.Home -> {
                         HomeScreen(
+                            viewModel = homeViewModel,
                             onNavigateToAddActivity = {
                                 navController.navigate(Screen.AddActivity)
                             },
@@ -679,6 +684,7 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.Profile -> {
                         ProfileScreen(
+                            viewModel = profileViewModel,
                             onNavigateToHome = {
                                 navController.navigateTab(Screen.Home)
                             },

@@ -44,7 +44,7 @@ class EntryRepositoryImpl(
 
     override suspend fun getEntries(forceRefresh: Boolean): Result<List<DiaryEntryItem>> {
         // Return cached entries without hitting API on every visit
-        if (!forceRefresh && isCacheValid && DiaryActivityStore.isLoadedFromBackend.value) {
+        if (!forceRefresh && DiaryActivityStore.isLoadedFromBackend.value) {
             return Result.success(DiaryActivityStore.activities.value)
         }
 
@@ -68,12 +68,13 @@ class EntryRepositoryImpl(
 
                 if (mapped.isNotEmpty()) {
                     DiaryActivityStore.setActivities(mapped)
-                    DiaryActivityStore.setLoadedFromBackend(true)
                 }
+                DiaryActivityStore.setLoadedFromBackend(true)
                 isCacheValid = true
                 Result.success(DiaryActivityStore.activities.value)
             } else {
                 // If API response is not successful, fall back to cached local store
+                DiaryActivityStore.setLoadedFromBackend(true)
                 Result.success(DiaryActivityStore.activities.value)
             }
         } catch (_: Exception) {

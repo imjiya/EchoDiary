@@ -87,6 +87,13 @@ object DiaryActivityStore {
     private val _userInitials = MutableStateFlow("AM")
     val userInitials: StateFlow<String> = _userInitials.asStateFlow()
 
+    private val _isProfileLoadedFromBackend = MutableStateFlow(false)
+    val isProfileLoadedFromBackend: StateFlow<Boolean> = _isProfileLoadedFromBackend.asStateFlow()
+
+    fun setProfileLoadedFromBackend(loaded: Boolean) {
+        _isProfileLoadedFromBackend.value = loaded
+    }
+
     // ------------------------------------------------------------------------
     // Appearance & Theme State
     // ------------------------------------------------------------------------
@@ -309,6 +316,7 @@ object DiaryActivityStore {
         if (cleanEmail.isNotBlank()) {
             _userEmail.value = cleanEmail
         }
+        _isProfileLoadedFromBackend.value = true
     }
 
     fun setTheme(mode: String, palette: String) {
@@ -428,6 +436,7 @@ object DiaryActivityStore {
         _activities.value = defaultActivities
         _selectedActivity.value = defaultActivities.firstOrNull()
         _isLoadedFromBackend.value = false
+        _isProfileLoadedFromBackend.value = false
     }
 
     fun setActivities(items: List<DiaryEntryItem>) {

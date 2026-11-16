@@ -65,13 +65,17 @@ class HomeViewModel(
         }
 
         // MVVM Cache: Only fetch from backend if not already loaded, avoiding repeated API hits on every visit
-        if (!DiaryActivityStore.isLoadedFromBackend.value) {
-            val repo = getRepository()
-            if (repo != null) {
-                executionScope.launch {
-                    repo.getEntries(forceRefresh = false)
-                }
-            }
+        loadEntries(forceRefresh = false)
+    }
+
+    fun loadEntries(forceRefresh: Boolean = false) {
+        if (!forceRefresh && DiaryActivityStore.isLoadedFromBackend.value) {
+            // Already cached in memory; do not hit API on repeated navigation
+            return
+        }
+        val repo = getRepository() ?: return
+        executionScope.launch {
+            repo.getEntries(forceRefresh = forceRefresh)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.simats.echodiary.data.repository
 
 import com.google.gson.Gson
+import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.data.local.SessionManager
 import com.simats.echodiary.data.model.AuthResponse
 import com.simats.echodiary.data.model.LoginRequest
@@ -15,16 +16,17 @@ import java.net.SocketTimeoutException
 interface AuthRepository {
     suspend fun login(email: String, password: String): Result<AuthResponse>
     suspend fun register(fullName: String, email: String, password: String): Result<AuthResponse>
-    suspend fun getProfile(): Result<ProfileResponse>
+    suspend fun getProfile(forceRefresh: Boolean = false): Result<ProfileResponse>
     suspend fun updateProfile(fullName: String, email: String): Result<ProfileResponse>
 }
 
 class AuthRepositoryImpl(
     private val api: EchoDiaryApi,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager? = null
 ) : AuthRepository {
 
     private val gson = Gson()
+    private var cachedProfile: ProfileResponse? = null
 
     override suspend fun login(email: String, password: String): Result<AuthResponse> {
         return try {
@@ -52,10 +54,16 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun getProfile(): Result<ProfileResponse> {
+    override suspend fun getProfile(forceRefresh: Boolean): Result<ProfileResponse> {
+        if (!forceRefresh && cachedProfile != null && DiaryActivityStore.isProfileLoadedFromBackend.value) {
+            return Result.success(cachedProfile!!)
+        }
+
         return try {
             val response = api.getProfile()
             if (response.isSuccessful && response.body()?.success == true) {
+                cachedProfile = response.body()
+                DiaryActivityStore.setProfileLoadedFromBackend(true)
                 Result.success(response.body()!!)
             } else {
                 val errorMsg = parseErrorMessage(response.errorBody()?.string())
@@ -76,19 +84,20 @@ class AuthRepositoryImpl(
         return try {
             val response = api.updateProfile(UpdateProfileRequest(cleanName, cleanEmail))
             if (response.isSuccessful && response.body()?.success == true) {
-                sessionManager.updateUserDetails(cleanName, cleanEmail)
+                sessionManager?.updateUserDetails(cleanName, cleanEmail)
+                cachedProfile = response.body()
                 Result.success(response.body()!!)
             } else {
                 val errorMsg = parseErrorMessage(response.errorBody()?.string())
                     ?: response.body()?.message
                     ?: "Failed to update profile."
                 // Even if remote network has issues, update locally in session
-                sessionManager.updateUserDetails(cleanName, cleanEmail)
+                sessionManager?.updateUserDetails(cleanName, cleanEmail)
                 Result.failure(Exception(errorMsg))
             }
         } catch (e: IOException) {
             // Local fallback
-            sessionManager.updateUserDetails(cleanName, cleanEmail)
+            sessionManager?.updateUserDetails(cleanName, cleanEmail)
             Result.success(
                 ProfileResponse(
                     success = true,
@@ -96,7 +105,7 @@ class AuthRepositoryImpl(
                 )
             )
         } catch (e: Exception) {
-            sessionManager.updateUserDetails(cleanName, cleanEmail)
+            sessionManager?.updateUserDetails(cleanName, cleanEmail)
             Result.success(
                 ProfileResponse(
                     success = true,
@@ -113,7 +122,7 @@ class AuthRepositoryImpl(
                 // Save session if token is provided
                 val token = body.token
                 if (!token.isNullOrBlank()) {
-                    sessionManager.saveAuth(token, body.user)
+                    sessionManager?.saveAuth(token, body.user)
                 }
                 Result.success(body)
             } else {

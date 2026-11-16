@@ -55,6 +55,7 @@ class RepositoryCachingUnitTest {
     class FakeEchoDiaryApi : EchoDiaryApi {
         var listEntriesCallCount = 0
         var listMemoriesCallCount = 0
+        var getProfileCallCount = 0
 
         override suspend fun listEntries(limit: Int, offset: Int): Response<EntryListResponse> {
             listEntriesCallCount++
@@ -68,8 +69,8 @@ class RepositoryCachingUnitTest {
                     categoryIcon = "💼",
                     icon = "💼",
                     date = "Oct 15, 2026",
-                    day_of_week = "THURSDAY",
-                    full_date = "October 15, 2026",
+                    dayOfWeek = "THURSDAY",
+                    fullDate = "October 15, 2026",
                     entryDate = "2026-10-15",
                     mood = "Focused",
                     hasPhoto = false,
@@ -97,7 +98,22 @@ class RepositoryCachingUnitTest {
 
         override suspend fun login(request: LoginRequest) = throw NotImplementedError()
         override suspend fun signup(request: RegisterRequest) = throw NotImplementedError()
-        override suspend fun getProfile(): Response<ProfileResponse> = throw NotImplementedError()
+        override suspend fun getProfile(): Response<ProfileResponse> {
+            getProfileCallCount++
+            return Response.success(
+                ProfileResponse(
+                    success = true,
+                    profile = com.simats.echodiary.data.model.UserProfile(
+                        id = 1,
+                        fullName = "Alex Morgan",
+                        email = "alex@example.com",
+                        initials = "AM",
+                        diaryEntriesCount = 5,
+                        savedMemoriesCount = 2
+                    )
+                )
+            )
+        }
         override suspend fun updateProfile(request: UpdateProfileRequest) = throw NotImplementedError()
         override suspend fun createEntry(request: CreateEntryRequest) = throw NotImplementedError()
         override suspend fun updateEntry(request: UpdateEntryRequest) = throw NotImplementedError()
@@ -173,6 +189,28 @@ class RepositoryCachingUnitTest {
         // Calling loadActivities without forceRefresh does NOT hit API
         viewModel.loadActivities(forceRefresh = false)
         assertEquals(1, fakeApi.listEntriesCallCount)
+    }
+
+    @Test
+    fun testAuthRepositoryCachesProfileAndDoesNotHitApiOnRepeatedVisits() = runBlocking {
+        val fakeApi = FakeEchoDiaryApi()
+        val authRepo = com.simats.echodiary.data.repository.AuthRepositoryImpl(fakeApi)
+
+        // First call: calls API once and caches profile
+        val result1 = authRepo.getProfile(forceRefresh = false)
+        assertTrue(result1.isSuccess)
+        assertEquals(1, fakeApi.getProfileCallCount)
+        assertEquals("Alex Morgan", result1.getOrNull()?.profile?.fullName)
+
+        // Second call (simulating navigation back to profile): should use cache, call count remains 1
+        val result2 = authRepo.getProfile(forceRefresh = false)
+        assertTrue(result2.isSuccess)
+        assertEquals(1, fakeApi.getProfileCallCount)
+
+        // Force refresh: should call API again
+        val result3 = authRepo.getProfile(forceRefresh = true)
+        assertTrue(result3.isSuccess)
+        assertEquals(2, fakeApi.getProfileCallCount)
     }
 }
 
