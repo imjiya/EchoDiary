@@ -284,7 +284,11 @@ fun EditActivityScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 trailingIcon = {
-                    Text(text = "😊", fontSize = 18.sp, modifier = Modifier.padding(end = 12.dp))
+                    Text(
+                        text = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(state.mood),
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF5165F6),
@@ -293,6 +297,41 @@ fun EditActivityScreen(
                     unfocusedContainerColor = Color.White
                 )
             )
+
+            // Quick mood suggestion chips
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                listOf(
+                    "😊 Happy" to "Happy",
+                    "😌 Calm" to "Calm",
+                    "🎯 Focused" to "Focused",
+                    "🤔 Reflective" to "Reflective",
+                    "😢 Sad" to "Sad"
+                ).forEach { (label, moodVal) ->
+                    val isSelected = state.mood.trim().equals(moodVal, ignoreCase = true)
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = if (isSelected) Color(0xFFE0E7FF) else Color(0xFFF1F5F9),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clickable { viewModel.onMoodChanged(moodVal) }
+                            .padding(horizontal = 8.dp, vertical = 5.dp)
+                    ) {
+                        Text(
+                            text = label,
+                            fontSize = 12.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = if (isSelected) Color(0xFF4338CA) else Color(0xFF475569)
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

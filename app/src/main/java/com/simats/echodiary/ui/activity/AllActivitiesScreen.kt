@@ -191,6 +191,25 @@ fun AllActivitiesScreen(
                                     color = Color(0xFF94A3B8)
                                 )
                             }
+                            val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
+                            val hasExplicitMood = entry.mood.isNotBlank() &&
+                                !entry.mood.equals("not specified", ignoreCase = true) &&
+                                !entry.mood.equals("unspecified", ignoreCase = true)
+                            if (hasExplicitMood) {
+                                Box(
+                                    modifier = Modifier
+                                        .background(Color(0xFFF1F5F9), shape = RoundedCornerShape(10.dp))
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = "$moodEmoji ${entry.mood}",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color(0xFF334155)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(6.dp))
+                            }
                             Text(
                                 text = "✏️",
                                 fontSize = 14.sp,

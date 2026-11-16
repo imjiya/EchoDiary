@@ -496,4 +496,25 @@ object DiaryActivityStore {
             else -> "📝"
         }
     }
+
+    fun getMoodEmoji(mood: String?): String {
+        val clean = mood?.trim()?.lowercase(Locale.ROOT) ?: return "⚪"
+        return when {
+            clean.contains("sad") || clean.contains("unhappy") || clean.contains("crying") || clean.contains("grief") || clean.contains("depress") -> "😢"
+            clean.contains("happy") || clean.contains("joy") || clean.contains("cheerful") || clean.contains("glad") -> "😊"
+            clean.contains("calm") || clean.contains("peace") || clean.contains("relax") || clean.contains("serene") -> "😌"
+            clean.contains("focus") || clean.contains("study") || clean.contains("work") || clean.contains("productiv") -> "🎯"
+            clean.contains("reflect") || clean.contains("thought") || clean.contains("ponder") || clean.contains("introspect") -> "🤔"
+            clean.contains("excite") || clean.contains("energetic") || clean.contains("thrill") || clean.contains("hyped") -> "🤩"
+            clean.contains("anxious") || clean.contains("stress") || clean.contains("nervous") || clean.contains("worr") || clean.contains("fear") -> "😰"
+            clean.contains("grate") || clean.contains("thank") || clean.contains("bless") -> "🙏"
+            clean.contains("tire") || clean.contains("exhaust") || clean.contains("sleep") || clean.contains("drain") -> "🥱"
+            clean.contains("angr") || clean.contains("frustrat") || clean.contains("mad") || clean.contains("annoy") -> "😠"
+            clean.contains("love") || clean.contains("romant") || clean.contains("sweet") -> "🥰"
+            clean.contains("motivat") || clean.contains("strong") || clean.contains("confiden") || clean.contains("empower") -> "💪"
+            clean.contains("bored") || clean.contains("neutral") -> "😐"
+            clean.isBlank() || clean == "unspecified" || clean == "not specified" -> "⚪"
+            else -> "💭"
+        }
+    }
 }

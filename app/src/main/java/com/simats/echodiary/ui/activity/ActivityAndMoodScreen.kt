@@ -289,12 +289,22 @@ fun ActivityAndMoodScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(
-                                    text = mood.name,
-                                    fontSize = 14.sp,
-                                    color = Color(0xFF64748B),
-                                    modifier = Modifier.width(90.dp)
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.width(110.dp)
+                                ) {
+                                    Text(
+                                        text = mood.emoji,
+                                        fontSize = 16.sp
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = mood.name,
+                                        fontSize = 14.sp,
+                                        color = Color(0xFF64748B),
+                                        maxLines = 1
+                                    )
+                                }
                                 LinearProgressIndicator(
                                     progress = { mood.progress },
                                     modifier = Modifier
@@ -322,6 +332,126 @@ fun ActivityAndMoodScreen(
                         fontSize = 12.sp,
                         color = Color(0xFF94A3B8)
                     )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Recorded Activities & Mood Status List
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Recorded activities & mood status",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1E293B)
+                        )
+                        Text(
+                            text = "${state.entries.size} logged",
+                            fontSize = 12.sp,
+                            color = Color(0xFF64748B)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    if (state.entries.isEmpty()) {
+                        Text(
+                            text = "No activities recorded for this period.",
+                            fontSize = 13.sp,
+                            color = Color(0xFF94A3B8)
+                        )
+                    } else {
+                        state.entries.forEach { entry ->
+                            val moodEmoji = DiaryActivityStore.getMoodEmoji(entry.mood)
+                            val hasExplicitMood = entry.mood.isNotBlank() &&
+                                !entry.mood.equals("not specified", ignoreCase = true) &&
+                                !entry.mood.equals("unspecified", ignoreCase = true)
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable {
+                                        DiaryActivityStore.selectActivity(entry)
+                                        onNavigateToActivityDetails()
+                                    }
+                                    .padding(vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(42.dp)
+                                            .background(
+                                                color = EchoTheme.container,
+                                                shape = RoundedCornerShape(12.dp)
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = entry.icon.ifBlank { "📝" },
+                                            fontSize = 20.sp
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Column {
+                                        Text(
+                                            text = entry.title,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color(0xFF1E293B),
+                                            maxLines = 1
+                                        )
+                                        Text(
+                                            text = "${entry.category} · ${entry.date}",
+                                            fontSize = 12.sp,
+                                            color = Color(0xFF64748B)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                // Mood Status Chip with Emoji
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color = if (hasExplicitMood) Color(0xFFF1F5F9) else Color(0xFFF8FAFC),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = moodEmoji,
+                                            fontSize = 15.sp
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = if (hasExplicitMood) entry.mood else "Unspecified",
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = if (hasExplicitMood) Color(0xFF334155) else Color(0xFF94A3B8)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 

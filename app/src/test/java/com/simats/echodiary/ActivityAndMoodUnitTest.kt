@@ -157,4 +157,42 @@ class ActivityAndMoodUnitTest {
         assertEquals("Year", viewModel.uiState.value.selectedTab)
         assertTrue(viewModel.uiState.value.dateRangeText.contains("2026"))
     }
+
+    @Test
+    fun testSadActivityDisplaysWithSadEmoji() {
+        val viewModel = ActivityAndMoodViewModel(scope = testScope)
+
+        val sadEntry = DiaryEntryItem(
+            id = 101,
+            title = "Rough Day at Work",
+            category = "Work",
+            date = "Oct 11, 2026",
+            description = "Difficult meeting and felt down",
+            icon = "💼",
+            mood = "Sad"
+        )
+        DiaryActivityStore.addActivity(sadEntry)
+        viewModel.onActivitiesChanged(DiaryActivityStore.activities.value)
+
+        val state = viewModel.uiState.value
+
+        // Sad mood in breakdown has sad emoji 😢
+        val sadMood = state.moodBreakdown.find { it.name == "Sad" }
+        assertNotNull("Sad mood must exist in breakdown", sadMood)
+        assertEquals("😢", sadMood?.emoji)
+        assertEquals(1, sadMood?.count)
+
+        // Helper getMoodEmoji returns 😢 for sad
+        assertEquals("😢", DiaryActivityStore.getMoodEmoji("Sad"))
+        assertEquals("😢", DiaryActivityStore.getMoodEmoji("feeling sad today"))
+        assertEquals("😊", DiaryActivityStore.getMoodEmoji("Happy"))
+        assertEquals("😌", DiaryActivityStore.getMoodEmoji("Calm"))
+        assertEquals("🎯", DiaryActivityStore.getMoodEmoji("Focused"))
+
+        // Entries list on state contains the entry with Sad mood
+        val foundEntry = state.entries.find { it.id == 101 }
+        assertNotNull(foundEntry)
+        assertEquals("Sad", foundEntry?.mood)
+        assertEquals("😢", DiaryActivityStore.getMoodEmoji(foundEntry?.mood))
+    }
 }

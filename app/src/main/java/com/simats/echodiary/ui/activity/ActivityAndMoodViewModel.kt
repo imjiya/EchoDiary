@@ -19,6 +19,7 @@ import java.util.Locale
 
 data class MoodBreakdownItem(
     val name: String,
+    val emoji: String = "✨",
     val count: Int,
     val total: Int,
     val progress: Float
@@ -31,6 +32,7 @@ data class ActivityAndMoodUiState(
     val categoriesCount: Int = 0,
     val categories: List<CategoryBreakdownItem> = emptyList(),
     val moodBreakdown: List<MoodBreakdownItem> = emptyList(),
+    val entries: List<DiaryEntryItem> = emptyList(),
     val moodNote: String = "",
     val sourceText: String = "",
     val featuredEntry: DiaryEntryItem? = null,
@@ -299,6 +301,7 @@ class ActivityAndMoodViewModel(
                 moodBreakdown.add(
                     MoodBreakdownItem(
                         name = moodName,
+                        emoji = DiaryActivityStore.getMoodEmoji(moodName),
                         count = count,
                         total = totalCount,
                         progress = progress
@@ -311,6 +314,7 @@ class ActivityAndMoodViewModel(
                 moodBreakdown.add(
                     MoodBreakdownItem(
                         name = "Unspecified",
+                        emoji = "⚪",
                         count = unspecifiedCount,
                         total = totalCount,
                         progress = progress
@@ -324,11 +328,11 @@ class ActivityAndMoodViewModel(
                     "All $totalCount ${if (totalCount == 1) "entry has" else "entries have"} no mood specified."
                 }
                 unspecifiedCount == 0 -> {
-                    val summary = sortedMoods.joinToString(", ") { "${it.key}: ${it.value}" }
+                    val summary = sortedMoods.joinToString(", ") { "${DiaryActivityStore.getMoodEmoji(it.key)} ${it.key}: ${it.value}" }
                     "$summary. All $totalCount entries have explicit recorded moods."
                 }
                 else -> {
-                    val summary = sortedMoods.joinToString(", ") { "${it.key}: ${it.value}" }
+                    val summary = sortedMoods.joinToString(", ") { "${DiaryActivityStore.getMoodEmoji(it.key)} ${it.key}: ${it.value}" }
                     "$summary. $unspecifiedCount ${if (unspecifiedCount == 1) "entry is" else "entries are"} unspecified."
                 }
             }
@@ -351,6 +355,7 @@ class ActivityAndMoodViewModel(
                 categoriesCount = uniqueCategoriesCount,
                 categories = categoryBreakdown,
                 moodBreakdown = moodBreakdown,
+                entries = entries,
                 moodNote = moodNote,
                 sourceText = sourceText,
                 featuredEntry = featuredEntry,

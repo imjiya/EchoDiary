@@ -248,7 +248,10 @@ fun ActivityDetailsScreen(
                             color = Color(0xFF1E293B)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "😊", fontSize = 16.sp)
+                        Text(
+                            text = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(state.mood),
+                            fontSize = 18.sp
+                        )
                     }
                 }
             }
