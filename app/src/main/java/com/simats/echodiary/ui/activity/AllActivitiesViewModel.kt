@@ -21,7 +21,8 @@ data class DiaryEntryItem(
     val icon: String,
     val id: Int = 0,
     val mood: String = "Not specified",
-    val hasPhoto: Boolean = false
+    val hasPhoto: Boolean = false,
+    val photoUri: String? = null
 )
 
 data class AllActivitiesUiState(

@@ -1,6 +1,14 @@
 package com.simats.echodiary.ui.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,14 +50,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.flow.collectLatest
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -66,7 +79,66 @@ fun WriteDiaryEntryScreen(
     onNavigateToCalendar: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     var showDatePicker by remember { mutableStateOf(false) }
+
+    // Launcher to select photo from gallery
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            viewModel.onPhotoSelected(uri.toString())
+        }
+    }
+
+    // Appropriate permissions based on Android API level
+    val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+        )
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+    } else {
+        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    // Launcher to request gallery access permission
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsMap ->
+        val isGranted = permissionsMap.values.any { it }
+        if (isGranted) {
+            // Permission granted: open gallery to import photo
+            photoPickerLauncher.launch("image/*")
+        } else {
+            viewModel.onPermissionDenied("Gallery permission is required to import photos.")
+        }
+    }
+
+    fun onPhotoButtonClicked() {
+        val hasPermission = permissionsToRequest.any { perm ->
+            ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED
+        }
+        if (hasPermission) {
+            photoPickerLauncher.launch("image/*")
+        } else {
+            permissionLauncher.launch(permissionsToRequest)
+        }
+    }
+
+    val photoBitmap = remember(state.photoUri) {
+        state.photoUri?.let { uriStr ->
+            try {
+                val uri = Uri.parse(uriStr)
+                context.contentResolver.openInputStream(uri)?.use { stream ->
+                    BitmapFactory.decodeStream(stream)
+                }?.asImageBitmap()
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
 
     LaunchedEffect(initialDate) {
         if (initialDate.isNotBlank()) {
@@ -354,19 +426,21 @@ fun WriteDiaryEntryScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Add photo button
+            // Add photo button - asks for gallery permission and imports photo
             Button(
-                onClick = { viewModel.onAddPhotoClicked() },
+                onClick = { onPhotoButtonClicked() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (state.hasPhoto) Color(0xFFE0E7FF) else Color(0xFFEEF2FF)
+                )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🖼️ ", fontSize = 16.sp)
                     Text(
-                        text = if (state.hasPhoto) "Photo attached ✓" else "Add photo · optional",
+                        text = if (state.hasPhoto) "Change photo from gallery" else "Import photo from gallery · optional",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF5165F6)
@@ -376,8 +450,70 @@ fun WriteDiaryEntryScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Photo Preview / Card Container
+            if (state.hasPhoto) {
+                if (photoBitmap != null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFE2E8F0))
+                    ) {
+                        Image(
+                            bitmap = photoBitmap,
+                            contentDescription = "Imported photo preview",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        IconButton(
+                            onClick = { viewModel.onRemovePhoto() },
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
+                                .size(32.dp)
+                                .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
+                        ) {
+                            Text(text = "✕", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFFEEF2FF), RoundedCornerShape(12.dp))
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = "🖼️", fontSize = 18.sp)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = "Photo imported from gallery ✓",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF1E293B)
+                                )
+                                Text(
+                                    text = "Attached to this diary entry",
+                                    fontSize = 11.sp,
+                                    color = Color(0xFF64748B)
+                                )
+                            }
+                        }
+                        TextButton(onClick = { viewModel.onRemovePhoto() }) {
+                            Text("Remove", color = Color(0xFFEF4444), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
             Text(
-                text = if (state.hasPhoto) "Photo added to this entry." else "No photo attached to this entry.",
+                text = if (state.hasPhoto) "Photo attached to this entry." else "Click above to grant gallery permission and import a photo.",
                 fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 modifier = Modifier.fillMaxWidth()
@@ -415,6 +551,22 @@ fun WriteDiaryEntryScreen(
                         fontSize = 13.sp,
                         color = Color(0xFF047857),
                         fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            } else if (!state.statusMessage.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFEFF6FF), shape = RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFFBFDBFE), shape = RoundedCornerShape(12.dp))
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = state.statusMessage ?: "",
+                        fontSize = 13.sp,
+                        color = Color(0xFF1D4ED8),
+                        fontWeight = FontWeight.Medium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))

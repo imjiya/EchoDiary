@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.EchoDiaryApp
 import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.data.repository.EntryRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,6 +25,7 @@ data class WriteDiaryEntryUiState(
     val category: String = "College",
     val mood: String = "Good",
     val hasPhoto: Boolean = false,
+    val photoUri: String? = null,
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false,
     val statusMessage: String? = null,
@@ -43,8 +45,19 @@ sealed class WriteDiaryEntryNavigationEvent {
 }
 
 class WriteDiaryEntryViewModel(
-    private val entryRepository: EntryRepository = EchoDiaryApp.getEntryRepository()
+    private val entryRepository: EntryRepository? = null,
+    scope: CoroutineScope? = null
 ) : ViewModel() {
+
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
+
+    private fun getRepository(): EntryRepository? {
+        return entryRepository ?: try {
+            EchoDiaryApp.getEntryRepository()
+        } catch (_: Exception) {
+            null
+        }
+    }
 
     private val _uiState = MutableStateFlow(
         WriteDiaryEntryUiState(
@@ -80,14 +93,41 @@ class WriteDiaryEntryViewModel(
         _uiState.update { it.copy(hasPhoto = true) }
     }
 
+    fun onPhotoSelected(uriString: String) {
+        _uiState.update {
+            it.copy(
+                hasPhoto = true,
+                photoUri = uriString,
+                statusMessage = "Photo imported from gallery ✓",
+                errorMessage = null
+            )
+        }
+    }
+
+    fun onRemovePhoto() {
+        _uiState.update {
+            it.copy(
+                hasPhoto = false,
+                photoUri = null,
+                statusMessage = null
+            )
+        }
+    }
+
+    fun onPermissionDenied(message: String) {
+        _uiState.update {
+            it.copy(errorMessage = message)
+        }
+    }
+
     fun onCategoryFieldClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(WriteDiaryEntryNavigationEvent.NavigateToChooseCategory)
         }
     }
 
     fun onCalendarClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(WriteDiaryEntryNavigationEvent.NavigateToCalendar)
         }
     }
@@ -117,25 +157,89 @@ class WriteDiaryEntryViewModel(
         val entryCategory = _uiState.value.category.ifBlank { "College" }
         val entryMood = _uiState.value.mood.ifBlank { "Good" }
 
-        viewModelScope.launch {
-            val result = entryRepository.createManualEntry(
-                title = title,
-                description = desc,
-                date = entryDate,
-                category = entryCategory,
-                mood = entryMood
-            )
+        executionScope.launch {
+            val repository = getRepository()
+            if (repository != null) {
+                val result = repository.createManualEntry(
+                    title = title,
+                    description = desc,
+                    date = entryDate,
+                    category = entryCategory,
+                    mood = entryMood
+                )
 
-            result.onSuccess { response ->
-                val serverId = response.entry?.id ?: ((System.currentTimeMillis() % 100000).toInt())
+                result.onSuccess { response ->
+                    val serverId = response.entry?.id ?: ((System.currentTimeMillis() % 100000).toInt())
+                    val newActivity = DiaryEntryItem(
+                        id = serverId,
+                        title = displayTitle,
+                        category = entryCategory,
+                        date = entryDate,
+                        description = displayDesc,
+                        icon = DiaryActivityStore.getCategoryIcon(entryCategory),
+                        mood = entryMood,
+                        hasPhoto = _uiState.value.hasPhoto,
+                        photoUri = _uiState.value.photoUri
+                    )
+                    DiaryActivityStore.addActivity(newActivity)
+
+                    _uiState.update {
+                        it.copy(
+                            isSaving = false,
+                            saveSuccess = true,
+                            statusMessage = "Diary entry stored successfully!"
+                        )
+                    }
+                    _navigationEvent.emit(
+                        WriteDiaryEntryNavigationEvent.NavigateToActivityDetails(
+                            title = displayTitle,
+                            description = displayDesc,
+                            date = entryDate,
+                            category = entryCategory
+                        )
+                    )
+                }.onFailure { error ->
+                    val localId = (System.currentTimeMillis() % 100000).toInt()
+                    val newActivity = DiaryEntryItem(
+                        id = localId,
+                        title = displayTitle,
+                        category = entryCategory,
+                        date = entryDate,
+                        description = displayDesc,
+                        icon = DiaryActivityStore.getCategoryIcon(entryCategory),
+                        mood = entryMood,
+                        hasPhoto = _uiState.value.hasPhoto,
+                        photoUri = _uiState.value.photoUri
+                    )
+                    DiaryActivityStore.addActivity(newActivity)
+
+                    _uiState.update {
+                        it.copy(
+                            isSaving = false,
+                            errorMessage = error.message ?: "Saved locally to memory of activities."
+                        )
+                    }
+                    _navigationEvent.emit(
+                        WriteDiaryEntryNavigationEvent.NavigateToActivityDetails(
+                            title = displayTitle,
+                            description = displayDesc,
+                            date = entryDate,
+                            category = entryCategory
+                        )
+                    )
+                }
+            } else {
+                val localId = (System.currentTimeMillis() % 100000).toInt()
                 val newActivity = DiaryEntryItem(
-                    id = serverId,
+                    id = localId,
                     title = displayTitle,
                     category = entryCategory,
                     date = entryDate,
                     description = displayDesc,
                     icon = DiaryActivityStore.getCategoryIcon(entryCategory),
-                    mood = entryMood
+                    mood = entryMood,
+                    hasPhoto = _uiState.value.hasPhoto,
+                    photoUri = _uiState.value.photoUri
                 )
                 DiaryActivityStore.addActivity(newActivity)
 
@@ -154,45 +258,18 @@ class WriteDiaryEntryViewModel(
                         category = entryCategory
                     )
                 )
-            }.onFailure { error ->
-                val localId = (System.currentTimeMillis() % 100000).toInt()
-                val newActivity = DiaryEntryItem(
-                    id = localId,
-                    title = displayTitle,
-                    category = entryCategory,
-                    date = entryDate,
-                    description = displayDesc,
-                    icon = DiaryActivityStore.getCategoryIcon(entryCategory),
-                    mood = entryMood
-                )
-                DiaryActivityStore.addActivity(newActivity)
-
-                _uiState.update {
-                    it.copy(
-                        isSaving = false,
-                        errorMessage = error.message ?: "Saved locally to memory of activities."
-                    )
-                }
-                _navigationEvent.emit(
-                    WriteDiaryEntryNavigationEvent.NavigateToActivityDetails(
-                        title = displayTitle,
-                        description = displayDesc,
-                        date = entryDate,
-                        category = entryCategory
-                    )
-                )
             }
         }
     }
 
     fun onCancelClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(WriteDiaryEntryNavigationEvent.NavigateBack)
         }
     }
 
     fun onBackClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(WriteDiaryEntryNavigationEvent.NavigateBack)
         }
     }

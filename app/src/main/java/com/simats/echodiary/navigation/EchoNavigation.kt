@@ -90,3 +90,4 @@ fun rememberEchoNavController(
 ): EchoNavController {
     return remember { EchoNavController(initialScreen) }
 }
+

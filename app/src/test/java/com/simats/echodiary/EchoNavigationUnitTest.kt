@@ -142,3 +142,4 @@ class EchoNavigationUnitTest {
         assertEquals(Screen.Home, navController.currentScreen)
     }
 }
+

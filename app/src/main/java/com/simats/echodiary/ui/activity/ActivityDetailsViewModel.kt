@@ -49,6 +49,8 @@ class ActivityDetailsViewModel(
         mood: String = "Not specified",
         id: Int = 0
     ) {
+        val hasAttachedPhoto = DiaryActivityStore.selectedActivity.value?.hasPhoto == true
+        val photoStatusText = if (hasAttachedPhoto) "1 photo attached" else "No photo attached"
         _uiState.update {
             it.copy(
                 title = if (title.isNotBlank()) title else it.title,
@@ -57,6 +59,7 @@ class ActivityDetailsViewModel(
                 category = if (category.isNotBlank()) category else it.category,
                 mood = if (mood.isNotBlank()) mood else it.mood,
                 entryId = if (id > 0) id else it.entryId,
+                photoStatus = photoStatusText,
                 entryIdText = "Entry · Stored in memory of activities"
             )
         }
