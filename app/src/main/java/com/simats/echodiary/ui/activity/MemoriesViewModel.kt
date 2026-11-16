@@ -15,7 +15,8 @@ data class MemoriesUiState(
     val activeFilterTab: String = "Weekly",
     val memoryCardHeader: String = "SAVED WEEKLY MEMORY",
     val memoryTitle: String = "A week of progress and connection.",
-    val memorySubtitle: String = "Oct 5–11, 2026 · 5 diary entries"
+    val memorySubtitle: String = "Oct 5–11, 2026 · 5 diary entries",
+    val photosSubtitle: String = "Lunch with friends · Oct 6"
 )
 
 class MemoriesViewModel : ViewModel() {
@@ -23,6 +24,18 @@ class MemoriesViewModel : ViewModel() {
     val uiState: StateFlow<MemoriesUiState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            DiaryActivityStore.activities.collectLatest { activities ->
+                val photoEntries = activities.filter { it.hasPhoto || !it.photoUri.isNullOrBlank() }
+                val sub = if (photoEntries.isNotEmpty()) {
+                    val first = photoEntries.first()
+                    "${first.title} · ${first.date}"
+                } else {
+                    "No photo memories yet"
+                }
+                _uiState.update { it.copy(photosSubtitle = sub) }
+            }
+        }
         viewModelScope.launch {
             DiaryActivityStore.weeklyMemoryTitle.collectLatest {
                 updateCardContent()

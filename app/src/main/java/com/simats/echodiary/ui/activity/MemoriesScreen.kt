@@ -340,7 +340,7 @@ fun MemoriesScreen(
                                 color = Color(0xFF1E293B)
                             )
                             Text(
-                                text = "Lunch with friends · Oct 6",
+                                text = state.photosSubtitle,
                                 fontSize = 13.sp,
                                 color = Color(0xFF64748B)
                             )

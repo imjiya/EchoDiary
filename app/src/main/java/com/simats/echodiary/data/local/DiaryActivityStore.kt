@@ -48,7 +48,8 @@ object DiaryActivityStore {
             description = "Had lunch with friends after class.",
             icon = "👥",
             id = 2,
-            mood = "Joyful"
+            mood = "Joyful",
+            hasPhoto = true
         ),
         DiaryEntryItem(
             title = "Lectures and project",

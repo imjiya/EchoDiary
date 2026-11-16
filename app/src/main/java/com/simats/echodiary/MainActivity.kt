@@ -587,7 +587,19 @@ class MainActivity : ComponentActivity() {
                             onNavigateBack = {
                                 navController.popBackStack()
                             },
-                            onNavigateToActivityDetails = {
+                            onNavigateToActivityDetails = { selectedItem ->
+                                val itemToOpen = selectedItem ?: DiaryActivityStore.selectedActivity.value
+                                if (itemToOpen != null) {
+                                    entryTitle = itemToOpen.title
+                                    entryDescription = itemToOpen.description
+                                    entryDate = itemToOpen.date
+                                    entryCategory = itemToOpen.category
+                                    entryMood = itemToOpen.mood
+                                    entryId = itemToOpen.id
+                                    entryPhotoUri = itemToOpen.photoUri
+                                    entryHasPhoto = itemToOpen.hasPhoto || !itemToOpen.photoUri.isNullOrBlank()
+                                    DiaryActivityStore.selectActivity(itemToOpen)
+                                }
                                 navController.navigate(Screen.ActivityDetails)
                             }
                         )
