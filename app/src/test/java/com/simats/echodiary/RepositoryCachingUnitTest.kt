@@ -68,8 +68,8 @@ class RepositoryCachingUnitTest {
                     categoryIcon = "💼",
                     icon = "💼",
                     date = "Oct 15, 2026",
-                    dayOfWeek = "THURSDAY",
-                    fullDate = "October 15, 2026",
+                    day_of_week = "THURSDAY",
+                    full_date = "October 15, 2026",
                     entryDate = "2026-10-15",
                     mood = "Focused",
                     hasPhoto = false,
@@ -175,3 +175,4 @@ class RepositoryCachingUnitTest {
         assertEquals(1, fakeApi.listEntriesCallCount)
     }
 }
+

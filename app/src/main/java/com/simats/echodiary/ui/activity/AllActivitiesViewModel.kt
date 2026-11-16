@@ -53,7 +53,7 @@ class AllActivitiesViewModel(
         }
     }
 
-    private val _uiState = MutableStateFlow(AllActivitiesUiState(entries = DiaryActivityStore.activities.value))
+    private val _uiState = MutableStateFlow(AllActivitiesUiState())
     val uiState: StateFlow<AllActivitiesUiState> = _uiState.asStateFlow()
 
     private val _navigationEvent = MutableSharedFlow<AllActivitiesNavigationEvent>()

@@ -155,3 +155,4 @@ object RagMemoryEngine {
         return "Notice how intentional moments in $cat contributed to your $emotionalArc. Carrying this awareness forward helps sustain your sense of direction."
     }
 }
+
