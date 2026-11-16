@@ -120,13 +120,6 @@ fun MemoriesScreen(
                             )
                             .clickable {
                                 viewModel.onFilterTabSelected(tab)
-                                if (tab == "Weekly") {
-                                    onNavigateToYourWeeklySummary()
-                                } else if (tab == "Monthly") {
-                                    onNavigateToMonthlyMemory()
-                                } else if (tab == "Yearly") {
-                                    onNavigateToYearlyMemory()
-                                }
                             }
                             .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center
@@ -182,7 +175,43 @@ fun MemoriesScreen(
                         color = Color(0xFF64748B)
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    if (state.memoryNarrative.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = state.memoryNarrative,
+                            fontSize = 14.sp,
+                            color = Color(0xFF334155),
+                            lineHeight = 20.sp
+                        )
+                    }
+
+                    if (state.highlights.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(14.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            state.highlights.take(3).forEach { highlight ->
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color = Color.White.copy(alpha = 0.85f),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                                ) {
+                                    Text(
+                                        text = highlight,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = EchoTheme.primary
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(18.dp))
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -195,7 +224,7 @@ fun MemoriesScreen(
                         }
                     ) {
                         Text(
-                            text = "View memory",
+                            text = "View full ${state.activeFilterTab.lowercase()} summary",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = EchoTheme.primary
@@ -207,6 +236,119 @@ fun MemoriesScreen(
                             fontWeight = FontWeight.Bold,
                             color = EchoTheme.primary
                         )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Dedicated Section: Saved Entries in this Memory
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Saved entries in this ${state.activeFilterTab.lowercase()} memory",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1E293B)
+                        )
+                        Text(
+                            text = "${state.entries.size} entries",
+                            fontSize = 12.sp,
+                            color = Color(0xFF64748B)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    if (state.entries.isEmpty()) {
+                        Text(
+                            text = "No diary entries saved for this ${state.activeFilterTab.lowercase()} memory yet.",
+                            fontSize = 13.sp,
+                            color = Color(0xFF94A3B8)
+                        )
+                    } else {
+                        state.entries.forEach { entry ->
+                            val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
+                            val hasExplicitMood = entry.mood.isNotBlank() &&
+                                !entry.mood.equals("not specified", ignoreCase = true) &&
+                                !entry.mood.equals("unspecified", ignoreCase = true)
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
+                                    .clickable {
+                                        com.simats.echodiary.data.local.DiaryActivityStore.selectActivity(entry)
+                                        onNavigateToAllActivities()
+                                    },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(text = entry.icon.ifBlank { "📝" }, fontSize = 18.sp)
+                                    }
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Column {
+                                        Text(
+                                            text = entry.title,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color(0xFF1E293B),
+                                            maxLines = 1
+                                        )
+                                        Text(
+                                            text = "${entry.category} · ${entry.date}",
+                                            fontSize = 12.sp,
+                                            color = Color(0xFF64748B)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                // Mood status pill
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color = if (hasExplicitMood) EchoTheme.container else Color(0xFFF1F5F9),
+                                            shape = RoundedCornerShape(10.dp)
+                                        )
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(text = moodEmoji, fontSize = 13.sp)
+                                        if (hasExplicitMood) {
+                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Text(
+                                                text = entry.mood,
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.Medium,
+                                                color = EchoTheme.primary
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

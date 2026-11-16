@@ -26,6 +26,7 @@ data class YearlyMemoryUiState(
     val chapterText: String = "Across 2026, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend.",
     val categories: List<String> = listOf("College", "Friends", "Health", "Work", "Family"),
     val supportingRecords: List<SupportingRecord> = emptyList(),
+    val entries: List<DiaryEntryItem> = emptyList(),
     val footerText: String = "Topics come from these records; grounded directly in what you recorded."
 )
 
@@ -81,6 +82,18 @@ class YearlyMemoryViewModel(
             DiaryActivityStore.yearlyFooterText.collectLatest { footer ->
                 _uiState.update { it.copy(footerText = footer) }
             }
+        }
+        executionScope.launch {
+            DiaryActivityStore.activities.collectLatest { list ->
+                _uiState.update { it.copy(entries = list) }
+            }
+        }
+    }
+
+    fun onEntryClicked(entry: DiaryEntryItem) {
+        DiaryActivityStore.selectActivity(entry)
+        executionScope.launch {
+            _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateToActivityDetails)
         }
     }
 

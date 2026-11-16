@@ -28,6 +28,7 @@ data class MonthlyMemoryUiState(
     val summaryTitle: String = "October, in your words",
     val summaryText: String = "This month, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend.",
     val categoryBreakdown: List<CategoryBreakdownItem> = emptyList(),
+    val entries: List<DiaryEntryItem> = emptyList(),
     val footerText: String = "Highlights: project work, lunch with friends, a Calm walk, presentation preparation and family time."
 )
 
@@ -83,6 +84,11 @@ class MonthlyMemoryViewModel(
         executionScope.launch {
             DiaryActivityStore.monthlyFooterText.collectLatest { footer ->
                 _uiState.update { it.copy(footerText = footer) }
+            }
+        }
+        executionScope.launch {
+            DiaryActivityStore.activities.collectLatest { list ->
+                _uiState.update { it.copy(entries = list) }
             }
         }
     }

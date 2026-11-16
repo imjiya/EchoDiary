@@ -437,11 +437,19 @@ object DiaryActivityStore {
         _selectedActivity.value = defaultActivities.firstOrNull()
         _isLoadedFromBackend.value = false
         _isProfileLoadedFromBackend.value = false
+        refreshMemories()
+    }
+
+    private fun refreshMemories() {
+        generateWeeklySummary(null)
+        generateMonthlySummary(null)
+        generateYearlySummary(null)
     }
 
     fun setActivities(items: List<DiaryEntryItem>) {
         _activities.value = items
         _selectedActivity.value = items.firstOrNull()
+        refreshMemories()
     }
 
     fun selectActivity(item: DiaryEntryItem) {
@@ -453,6 +461,7 @@ object DiaryActivityStore {
         current.add(0, item)
         _activities.value = current
         _selectedActivity.value = item
+        refreshMemories()
     }
 
     fun updateActivity(oldTitle: String, updatedItem: DiaryEntryItem) {
@@ -467,6 +476,7 @@ object DiaryActivityStore {
         }
         _activities.value = current
         _selectedActivity.value = updatedItem
+        refreshMemories()
     }
 
     fun deleteActivity(id: Int, title: String) {
@@ -479,6 +489,7 @@ object DiaryActivityStore {
         if (_selectedActivity.value?.id == id || (cleanTitle.isNotBlank() && _selectedActivity.value?.title.equals(cleanTitle, ignoreCase = true))) {
             _selectedActivity.value = current.firstOrNull()
         }
+        refreshMemories()
     }
 
     fun getCategoryIcon(category: String?): String {

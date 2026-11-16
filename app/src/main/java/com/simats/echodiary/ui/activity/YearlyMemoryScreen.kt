@@ -216,17 +216,28 @@ fun YearlyMemoryScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Supporting records header
-            Text(
-                text = "Supporting records · October",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
-            )
+            // Supporting records & saved entries header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Saved entries in yearly memory",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1E293B)
+                )
+                Text(
+                    text = "${if (state.entries.isNotEmpty()) state.entries.size else state.supportingRecords.size} entries",
+                    fontSize = 12.sp,
+                    color = Color(0xFF64748B)
+                )
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Supporting Records Card
+            // Saved Entries in Yearly Memory Card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -234,26 +245,91 @@ fun YearlyMemoryScreen(
                     .padding(16.dp)
             ) {
                 Column {
-                    state.supportingRecords.forEach { record ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { viewModel.onRecordClicked() }
-                                .padding(vertical = 10.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = record.title,
-                                fontSize = 14.sp,
-                                color = Color(0xFF1E293B)
-                            )
-                            Text(
-                                text = record.date,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = EchoTheme.primary
-                            )
+                    if (state.entries.isNotEmpty()) {
+                        state.entries.forEach { entry ->
+                            val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
+                            val hasExplicitMood = entry.mood.isNotBlank() &&
+                                !entry.mood.equals("not specified", ignoreCase = true) &&
+                                !entry.mood.equals("unspecified", ignoreCase = true)
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
+                                    .clickable { viewModel.onEntryClicked(entry) },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(text = entry.icon.ifBlank { "📝" }, fontSize = 18.sp)
+                                    }
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Column {
+                                        Text(
+                                            text = entry.title,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color(0xFF1E293B),
+                                            maxLines = 1
+                                        )
+                                        Text(
+                                            text = "${entry.category} · ${entry.date}",
+                                            fontSize = 12.sp,
+                                            color = Color(0xFF64748B)
+                                        )
+                                    }
+                                }
+
+                                if (hasExplicitMood) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                color = EchoTheme.container,
+                                                shape = RoundedCornerShape(12.dp)
+                                            )
+                                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(
+                                            text = "$moodEmoji ${entry.mood}",
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = EchoTheme.primary
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        state.supportingRecords.forEach { record ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { viewModel.onRecordClicked() }
+                                    .padding(vertical = 10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = record.title,
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF1E293B)
+                                )
+                                Text(
+                                    text = record.date,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = EchoTheme.primary
+                                )
+                            }
                         }
                     }
                 }
