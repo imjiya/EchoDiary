@@ -377,7 +377,7 @@ fun NotificationsScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "Notifications trigger gently according to your chosen schedule.",
+                text = "Notifications trigger gently according to your chosen schedule. Firebase Cloud Messaging delivers interactive daily memory reminders.",
                 fontSize = 12.sp,
                 color = Color(0xFF64748B)
             )
@@ -401,7 +401,7 @@ fun NotificationsScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🔔 ", fontSize = 16.sp)
                     Text(
-                        text = "Send test reminder",
+                        text = "Send interactive memory reminder",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = primaryColor

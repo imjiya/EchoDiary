@@ -1,19 +1,29 @@
 package com.simats.echodiary
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.messaging.FirebaseMessaging
+import com.simats.echodiary.data.model.RegisterTokenRequest
+import com.simats.echodiary.data.network.RetrofitClient
 import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.navigation.EchoNavController
 import com.simats.echodiary.navigation.Screen
 import com.simats.echodiary.navigation.rememberEchoNavController
+import com.simats.echodiary.util.NotificationHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import com.simats.echodiary.ui.activity.ActivityAndMoodScreen
 import com.simats.echodiary.ui.activity.ActivityDetailsScreen
 import com.simats.echodiary.ui.activity.AddActivityScreen
@@ -59,9 +69,42 @@ import com.simats.echodiary.ui.splash.SplashScreen
 import com.simats.echodiary.ui.theme.EchoDiaryTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val pendingNotificationDestination = MutableStateFlow<Screen?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        getDestinationScreen(intent)?.let {
+            pendingNotificationDestination.value = it
+        }
+
+        // Fetch Firebase FCM token & register with backend
+        try {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    if (!token.isNullOrBlank()) {
+                        DiaryActivityStore.setFcmToken(token)
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            try {
+                                val api = RetrofitClient.getApi(applicationContext)
+                                api.registerDeviceToken(RegisterTokenRequest(fcmToken = token))
+                            } catch (_: Exception) {}
+                        }
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+
+        // Cache initial entries from backend asynchronously without blocking UI
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                EchoDiaryApp.getEntryRepository().getEntries(forceRefresh = false)
+            } catch (_: Exception) {}
+        }
+
         setContent {
             val themeMode by DiaryActivityStore.themeMode.collectAsState()
             val themePalette by DiaryActivityStore.themePalette.collectAsState()
@@ -73,6 +116,15 @@ class MainActivity : ComponentActivity() {
             EchoDiaryTheme(darkTheme = isDark, paletteName = themePalette) {
                 val navController = rememberEchoNavController(Screen.Splash)
                 val currentScreen = navController.currentScreen
+                val pendingDestination by pendingNotificationDestination.collectAsState()
+
+                LaunchedEffect(pendingDestination) {
+                    pendingDestination?.let { target ->
+                        navController.navigate(target)
+                        pendingNotificationDestination.value = null
+                    }
+                }
+
                 var recordedTranscript by remember { mutableStateOf("Attended lectures and worked on a project.") }
                 var entryTitle by remember { mutableStateOf("Diary Entry") }
                 var entryDescription by remember { mutableStateOf("Attended lectures and worked on a project.") }
@@ -732,6 +784,25 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        getDestinationScreen(intent)?.let {
+            pendingNotificationDestination.value = it
+        }
+    }
+
+    private fun getDestinationScreen(intent: Intent?): Screen? {
+        val dest = intent?.getStringExtra(NotificationHelper.EXTRA_NAVIGATE_TO)
+        return when (dest) {
+            NotificationHelper.DESTINATION_WRITE_ENTRY -> Screen.WriteDiaryEntry
+            NotificationHelper.DESTINATION_VOICE_RECORD -> Screen.VoiceRecording
+            NotificationHelper.DESTINATION_PHOTO_MEMORIES -> Screen.PhotoMemories
+            NotificationHelper.DESTINATION_HOME -> Screen.Home
+            else -> null
         }
     }
 }

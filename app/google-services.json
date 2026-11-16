@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "429923063452",
+    "project_id": "echodiary-5a05e",
+    "storage_bucket": "echodiary-5a05e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429923063452:android:6b325944d2f184884f3f59",
+        "android_client_info": {
+          "package_name": "com.simats.echodiary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXft8pDJu_7bvmqR9wDhWfdfIg_7yEBM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

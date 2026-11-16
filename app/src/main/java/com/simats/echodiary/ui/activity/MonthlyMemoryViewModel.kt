@@ -3,6 +3,7 @@ package com.simats.echodiary.ui.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.data.local.DiaryActivityStore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -37,7 +38,11 @@ sealed class MonthlyMemoryNavigationEvent {
     object NavigateToActivityDetails : MonthlyMemoryNavigationEvent()
 }
 
-class MonthlyMemoryViewModel : ViewModel() {
+class MonthlyMemoryViewModel(
+    scope: CoroutineScope? = null
+) : ViewModel() {
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
+
     private val _uiState = MutableStateFlow(MonthlyMemoryUiState())
     val uiState: StateFlow<MonthlyMemoryUiState> = _uiState.asStateFlow()
 
@@ -45,22 +50,22 @@ class MonthlyMemoryViewModel : ViewModel() {
     val navigationEvent: SharedFlow<MonthlyMemoryNavigationEvent> = _navigationEvent.asSharedFlow()
 
     init {
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.monthlySummaryTitle.collectLatest { title ->
                 _uiState.update { it.copy(summaryTitle = title) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.monthlySummaryText.collectLatest { text ->
                 _uiState.update { it.copy(summaryText = text) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.monthlyCategoryBreakdown.collectLatest { breakdown ->
                 _uiState.update { it.copy(categoryBreakdown = breakdown) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.monthlyEntriesCount.collectLatest { count ->
                 _uiState.update {
                     it.copy(
@@ -70,12 +75,12 @@ class MonthlyMemoryViewModel : ViewModel() {
                 }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.monthlyCategoriesCount.collectLatest { count ->
                 _uiState.update { it.copy(categoriesCount = count) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.monthlyFooterText.collectLatest { footer ->
                 _uiState.update { it.copy(footerText = footer) }
             }
@@ -83,11 +88,11 @@ class MonthlyMemoryViewModel : ViewModel() {
     }
 
     fun onGenerateMonthlyMemoryClicked() {
-        DiaryActivityStore.generateMonthlySummary(viewModelScope)
+        DiaryActivityStore.generateMonthlySummary(executionScope)
     }
 
     fun onBackClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(MonthlyMemoryNavigationEvent.NavigateBack)
         }
     }
@@ -97,13 +102,13 @@ class MonthlyMemoryViewModel : ViewModel() {
     }
 
     fun onSummaryCardClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(MonthlyMemoryNavigationEvent.NavigateToActivityDetails)
         }
     }
 
     fun onEntryItemClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(MonthlyMemoryNavigationEvent.NavigateToAllActivities)
         }
     }

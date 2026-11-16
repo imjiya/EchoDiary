@@ -3,6 +3,7 @@ package com.simats.echodiary.ui.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.data.local.DiaryActivityStore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -34,7 +35,11 @@ sealed class YearlyMemoryNavigationEvent {
     object NavigateToActivityDetails : YearlyMemoryNavigationEvent()
 }
 
-class YearlyMemoryViewModel : ViewModel() {
+class YearlyMemoryViewModel(
+    scope: CoroutineScope? = null
+) : ViewModel() {
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
+
     private val _uiState = MutableStateFlow(YearlyMemoryUiState())
     val uiState: StateFlow<YearlyMemoryUiState> = _uiState.asStateFlow()
 
@@ -42,27 +47,27 @@ class YearlyMemoryViewModel : ViewModel() {
     val navigationEvent: SharedFlow<YearlyMemoryNavigationEvent> = _navigationEvent.asSharedFlow()
 
     init {
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.yearlyYearLabel.collectLatest { year ->
                 _uiState.update { it.copy(yearTitle = year) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.yearlyChapterTitle.collectLatest { title ->
                 _uiState.update { it.copy(chapterTitle = title) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.yearlyChapterText.collectLatest { text ->
                 _uiState.update { it.copy(chapterText = text) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.yearlyCategories.collectLatest { cats ->
                 _uiState.update { it.copy(categories = cats) }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.yearlySupportingRecords.collectLatest { records ->
                 _uiState.update {
                     it.copy(
@@ -72,7 +77,7 @@ class YearlyMemoryViewModel : ViewModel() {
                 }
             }
         }
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.yearlyFooterText.collectLatest { footer ->
                 _uiState.update { it.copy(footerText = footer) }
             }
@@ -80,11 +85,11 @@ class YearlyMemoryViewModel : ViewModel() {
     }
 
     fun onGenerateYearlyMemoryClicked() {
-        DiaryActivityStore.generateYearlySummary(viewModelScope)
+        DiaryActivityStore.generateYearlySummary(executionScope)
     }
 
     fun onBackClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateBack)
         }
     }
@@ -94,13 +99,13 @@ class YearlyMemoryViewModel : ViewModel() {
     }
 
     fun onChapterCardClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateToActivityDetails)
         }
     }
 
     fun onRecordClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateToActivityDetails)
         }
     }

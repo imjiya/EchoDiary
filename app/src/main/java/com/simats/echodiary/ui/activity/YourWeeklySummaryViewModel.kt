@@ -2,7 +2,10 @@ package com.simats.echodiary.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simats.echodiary.EchoDiaryApp
 import com.simats.echodiary.data.local.DiaryActivityStore
+import com.simats.echodiary.data.repository.MemoryRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -34,7 +37,20 @@ sealed class YourWeeklySummaryNavigationEvent {
     object NavigateToAnalysisResults : YourWeeklySummaryNavigationEvent()
 }
 
-class YourWeeklySummaryViewModel : ViewModel() {
+class YourWeeklySummaryViewModel(
+    private val memoryRepository: MemoryRepository? = null,
+    scope: CoroutineScope? = null
+) : ViewModel() {
+
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
+
+    private fun getRepository(): MemoryRepository? {
+        return memoryRepository ?: try {
+            EchoDiaryApp.getMemoryRepository()
+        } catch (_: Exception) {
+            null
+        }
+    }
 
     private val _uiState = MutableStateFlow(YourWeeklySummaryUiState())
     val uiState: StateFlow<YourWeeklySummaryUiState> = _uiState.asStateFlow()
@@ -43,7 +59,7 @@ class YourWeeklySummaryViewModel : ViewModel() {
     val navigationEvent: SharedFlow<YourWeeklySummaryNavigationEvent> = _navigationEvent.asSharedFlow()
 
     init {
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.activities.collectLatest { activities ->
                 val distinctCats = activities.map { it.category }.distinct()
                 val summaryEntries = activities.take(5).map {
@@ -66,21 +82,21 @@ class YourWeeklySummaryViewModel : ViewModel() {
     }
 
     fun onGenerateWeeklyMemoryClicked() {
-        // Automatically create memory summary of a week
-        DiaryActivityStore.generateWeeklySummary(viewModelScope)
-        viewModelScope.launch {
+        // Automatically create memory summary of a week using RAG & SLM synthesis
+        DiaryActivityStore.generateWeeklySummary(executionScope)
+        executionScope.launch {
             _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateToCreatingMemory)
         }
     }
 
     fun onViewAnalysisClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateToAnalysisResults)
         }
     }
 
     fun onBackClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateBack)
         }
     }

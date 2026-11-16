@@ -3,6 +3,7 @@ package com.simats.echodiary.ui.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.data.local.DiaryActivityStore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,8 +21,8 @@ data class CreatingYourMemoryUiState(
     val progressPercentageText: String = "85% · Drafting your source-based memory summary",
     val checklist: List<Pair<String, Boolean>> = listOf(
         "Gathering 5 diary entries" to true,
-        "Identifying recorded categories" to true,
-        "Drafting your weekly narrative" to true
+        "Retrieving grounded context & anchors" to true,
+        "Synthesizing narrative via RAG engine" to true
     )
 )
 
@@ -30,7 +31,11 @@ sealed class CreatingYourMemoryNavigationEvent {
     object NavigateToWeeklySummary : CreatingYourMemoryNavigationEvent()
 }
 
-class CreatingYourMemoryViewModel : ViewModel() {
+class CreatingYourMemoryViewModel(
+    scope: CoroutineScope? = null
+) : ViewModel() {
+
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
 
     private val _uiState = MutableStateFlow(CreatingYourMemoryUiState())
     val uiState: StateFlow<CreatingYourMemoryUiState> = _uiState.asStateFlow()
@@ -39,7 +44,7 @@ class CreatingYourMemoryViewModel : ViewModel() {
     val navigationEvent: SharedFlow<CreatingYourMemoryNavigationEvent> = _navigationEvent.asSharedFlow()
 
     init {
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.activities.collectLatest { activities ->
                 val distinctCats = activities.map { it.category }.distinct()
                 _uiState.update {
@@ -47,8 +52,8 @@ class CreatingYourMemoryViewModel : ViewModel() {
                         subtitle = "Bringing together your ${activities.size} entries,\nusing only what you recorded.",
                         checklist = listOf(
                             "Gathering ${activities.size} diary entries" to true,
-                            "Identifying ${distinctCats.size} recorded categories" to true,
-                            "Drafting your weekly narrative" to true
+                            "Retrieving grounded context & anchors" to true,
+                            "Synthesizing narrative via RAG engine" to true
                         )
                     )
                 }
@@ -57,7 +62,7 @@ class CreatingYourMemoryViewModel : ViewModel() {
     }
 
     fun onBackClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(CreatingYourMemoryNavigationEvent.NavigateBack)
         }
     }

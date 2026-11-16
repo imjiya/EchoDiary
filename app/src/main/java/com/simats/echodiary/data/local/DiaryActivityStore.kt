@@ -68,6 +68,13 @@ object DiaryActivityStore {
     private val _selectedActivity = MutableStateFlow<DiaryEntryItem?>(defaultActivities.first())
     val selectedActivity: StateFlow<DiaryEntryItem?> = _selectedActivity.asStateFlow()
 
+    private val _isLoadedFromBackend = MutableStateFlow(false)
+    val isLoadedFromBackend: StateFlow<Boolean> = _isLoadedFromBackend.asStateFlow()
+
+    fun setLoadedFromBackend(loaded: Boolean) {
+        _isLoadedFromBackend.value = loaded
+    }
+
     // ------------------------------------------------------------------------
     // User Profile & Account State
     // ------------------------------------------------------------------------
@@ -109,6 +116,13 @@ object DiaryActivityStore {
 
     private val _notificationSummary = MutableStateFlow("Daily at 8:00 PM")
     val notificationSummary: StateFlow<String> = _notificationSummary.asStateFlow()
+
+    private val _fcmToken = MutableStateFlow<String?>(null)
+    val fcmToken: StateFlow<String?> = _fcmToken.asStateFlow()
+
+    fun setFcmToken(token: String) {
+        _fcmToken.value = token
+    }
 
     // ------------------------------------------------------------------------
     // Weekly Memory State
@@ -327,28 +341,12 @@ object DiaryActivityStore {
         val entries = _activities.value
         val count = entries.size
         val categories = entries.map { it.category }.distinct()
-        val titles = entries.map { it.title }
-        val moodSummary = synthesizeMoodSummary(entries)
+        val ragResult = com.simats.echodiary.ai.RagMemoryEngine.synthesizeMemory(entries, "weekly", "OCT 5–11, 2026")
 
-        val title = if (entries.isNotEmpty()) {
-            "A week of progress and connection."
-        } else {
-            "Your weekly memory"
-        }
-
-        val narrative = if (count > 0) {
-            val highlightsList = titles.take(4).joinToString(", ")
-            "This week, you recorded $count entries across ${categories.joinToString(", ")}. You logged $highlightsList. $moodSummary"
-        } else {
-            "No entries recorded for this week yet. Add daily diary entries to see your story come together."
-        }
-
-        val highlights = (categories.take(2) + titles.take(2)).distinct()
-
-        _weeklyMemoryTitle.value = title
-        _weeklyMemoryNarrative.value = narrative
-        _weeklyHighlights.value = highlights
-        _weeklyMoodSummary.value = moodSummary
+        _weeklyMemoryTitle.value = ragResult.title
+        _weeklyMemoryNarrative.value = ragResult.narrative
+        _weeklyHighlights.value = ragResult.highlights
+        _weeklyMoodSummary.value = ragResult.moodSummary
         _weeklyEntriesCount.value = count
         _weeklyCategoriesCount.value = categories.size
         _weeklyMemoryDateRange.value = "OCT 5–11, 2026 · WEEKLY DRAFT"
@@ -360,6 +358,8 @@ object DiaryActivityStore {
                     data.title?.let { if (it.isNotBlank()) _weeklyMemoryTitle.value = it }
                     data.narrative?.let { if (it.isNotBlank()) _weeklyMemoryNarrative.value = it }
                     data.dateRange?.let { if (it.isNotBlank()) _weeklyMemoryDateRange.value = "$it · WEEKLY DRAFT" }
+                    data.highlights?.let { if (it.isNotEmpty()) _weeklyHighlights.value = it }
+                    data.moodSummary?.let { if (it.isNotBlank()) _weeklyMoodSummary.value = it }
                 }
             } catch (_: Exception) {}
         }
@@ -369,15 +369,7 @@ object DiaryActivityStore {
         val entries = _activities.value
         val count = entries.size
         val categories = entries.map { it.category }.distinct()
-        val moodSummary = synthesizeMoodSummary(entries)
-
-        val title = "October, in your words"
-        val narrative = if (count > 0) {
-            val highlightsList = entries.take(4).joinToString(", ") { it.title }
-            "This month, you logged $count entries spanning ${categories.joinToString(", ")}. Notable moments included $highlightsList. $moodSummary"
-        } else {
-            "No entries recorded for this month yet. Capture your days to reveal your monthly story."
-        }
+        val ragResult = com.simats.echodiary.ai.RagMemoryEngine.synthesizeMemory(entries, "monthly", "October 2026")
 
         val breakdown = categories.map { cat ->
             val catCount = entries.count { it.category.equals(cat, ignoreCase = true) }
@@ -385,12 +377,12 @@ object DiaryActivityStore {
             CategoryBreakdownItem(name = cat, count = catCount, progress = progress)
         }
 
-        _monthlySummaryTitle.value = title
-        _monthlySummaryText.value = narrative
+        _monthlySummaryTitle.value = ragResult.title
+        _monthlySummaryText.value = ragResult.narrative
         _monthlyCategoryBreakdown.value = breakdown
         _monthlyEntriesCount.value = count
         _monthlyCategoriesCount.value = categories.size
-        _monthlyFooterText.value = "Highlights: ${entries.take(4).joinToString(", ") { it.title }}."
+        _monthlyFooterText.value = "Highlights: ${ragResult.highlights.joinToString(", ")}."
 
         scope?.launch {
             try {
@@ -408,21 +400,13 @@ object DiaryActivityStore {
         val count = entries.size
         val categories = entries.map { it.category }.distinct()
         val supporting = entries.map { SupportingRecord(it.title, it.date) }
-        val moodSummary = synthesizeMoodSummary(entries)
+        val ragResult = com.simats.echodiary.ai.RagMemoryEngine.synthesizeMemory(entries, "yearly", "2026")
 
-        val title = "One small chapter of 2026."
-        val narrative = if (count > 0) {
-            val topTitles = entries.take(4).joinToString(", ") { it.title }
-            "Across 2026, your diary holds $count recorded reflections across ${categories.joinToString(", ")}. You revisited moments such as $topTitles. $moodSummary"
-        } else {
-            "No entries recorded for this year yet. Write or speak your entries to build your year in reflection."
-        }
-
-        _yearlyChapterTitle.value = title
-        _yearlyChapterText.value = narrative
+        _yearlyChapterTitle.value = ragResult.title
+        _yearlyChapterText.value = ragResult.narrative
         _yearlyCategories.value = categories
         _yearlySupportingRecords.value = supporting
-        _yearlyFooterText.value = "Topics come from these $count records; grounded directly in what you recorded."
+        _yearlyFooterText.value = "Topics come from these $count records; grounded directly via RAG."
 
         scope?.launch {
             try {
@@ -443,6 +427,7 @@ object DiaryActivityStore {
     fun resetToDefaults() {
         _activities.value = defaultActivities
         _selectedActivity.value = defaultActivities.firstOrNull()
+        _isLoadedFromBackend.value = false
     }
 
     fun setActivities(items: List<DiaryEntryItem>) {

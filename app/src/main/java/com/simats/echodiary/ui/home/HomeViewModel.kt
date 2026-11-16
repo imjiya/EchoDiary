@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.EchoDiaryApp
 import com.simats.echodiary.data.local.DiaryActivityStore
+import com.simats.echodiary.data.repository.EntryRepository
 import com.simats.echodiary.ui.activity.DiaryEntryItem
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,16 +25,30 @@ data class HomeUiState(
     val recentActivities: List<DiaryEntryItem> = emptyList()
 )
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val entryRepository: EntryRepository? = null,
+    scope: CoroutineScope? = null
+) : ViewModel() {
+
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
+
+    private fun getRepository(): EntryRepository? {
+        return entryRepository ?: try {
+            EchoDiaryApp.getEntryRepository()
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        val sessionName = EchoDiaryApp.getSessionManager().getUserName()
+        val sessionName = try { EchoDiaryApp.getSessionManager().getUserName() } catch (_: Exception) { null }
         val displayName = if (!sessionName.isNullOrBlank()) {
             sessionName.trim().split("\\s+".toRegex()).firstOrNull() ?: sessionName
         } else {
-            "Alex"
+            DiaryActivityStore.userFullName.value.split(" ").firstOrNull() ?: "Alex"
         }
 
         val todayDate = SimpleDateFormat("EEEE, MMM d, yyyy", Locale.getDefault()).format(Date())
@@ -42,9 +58,19 @@ class HomeViewModel : ViewModel() {
             dateText = todayDate
         )
 
-        viewModelScope.launch {
+        executionScope.launch {
             DiaryActivityStore.activities.collectLatest { activities ->
                 _uiState.update { it.copy(recentActivities = activities.take(4)) }
+            }
+        }
+
+        // MVVM Cache: Only fetch from backend if not already loaded, avoiding repeated API hits on every visit
+        if (!DiaryActivityStore.isLoadedFromBackend.value) {
+            val repo = getRepository()
+            if (repo != null) {
+                executionScope.launch {
+                    repo.getEntries(forceRefresh = false)
+                }
             }
         }
     }

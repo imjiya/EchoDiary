@@ -51,9 +51,55 @@ data class GenerateMemoryResponse(
     val highlights: List<String>? = null,
     @SerializedName("mood_summary")
     val moodSummary: String? = null,
+    @SerializedName("mindful_takeaway")
+    val mindfulTakeaway: String? = null,
     @SerializedName("entries")
     val entries: List<SummaryEntryItem>? = null,
     @SerializedName("message")
     val message: String? = null
+)
+
+data class MemoryListResponse(
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("count")
+    val count: Int? = 0,
+    @SerializedName("memories")
+    val memories: List<MemoryItemResponse>? = null,
+    @SerializedName("message")
+    val message: String? = null
+)
+
+data class MemoryItemResponse(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("type")
+    val type: String,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("narrative")
+    val narrative: String,
+    @SerializedName("summary_text")
+    val summaryText: String? = null,
+    @SerializedName("date_range_label")
+    val dateRangeLabel: String? = null,
+    @SerializedName("subtitle")
+    val subtitle: String? = null,
+    @SerializedName("entry_count")
+    val entryCount: Int? = 0,
+    @SerializedName("photo_count")
+    val photoCount: Int? = 0,
+    @SerializedName("highlights")
+    val highlights: List<String>? = null,
+    @SerializedName("mood_summary")
+    val moodSummary: String? = null,
+    @SerializedName("mindful_takeaway")
+    val mindfulTakeaway: String? = null,
+    @SerializedName("status")
+    val status: String? = null,
+    @SerializedName("start_date")
+    val startDate: String? = null,
+    @SerializedName("end_date")
+    val endDate: String? = null
 )
 

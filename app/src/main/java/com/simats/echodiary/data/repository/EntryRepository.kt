@@ -1,11 +1,13 @@
 package com.simats.echodiary.data.repository
 
+import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.data.model.CreateEntryRequest
 import com.simats.echodiary.data.model.CreateEntryResponse
 import com.simats.echodiary.data.model.DeleteEntryRequest
 import com.simats.echodiary.data.model.DeleteEntryResponse
 import com.simats.echodiary.data.model.UpdateEntryRequest
 import com.simats.echodiary.data.network.EchoDiaryApi
+import com.simats.echodiary.ui.activity.DiaryEntryItem
 import org.json.JSONObject
 import java.io.IOException
 import java.net.SocketTimeoutException
@@ -14,6 +16,7 @@ import java.util.Date
 import java.util.Locale
 
 interface EntryRepository {
+    suspend fun getEntries(forceRefresh: Boolean = false): Result<List<DiaryEntryItem>>
     suspend fun createVoiceEntry(transcript: String, title: String? = null): Result<CreateEntryResponse>
     suspend fun createManualEntry(
         title: String,
@@ -36,6 +39,48 @@ interface EntryRepository {
 class EntryRepositoryImpl(
     private val api: EchoDiaryApi
 ) : EntryRepository {
+
+    private var isCacheValid: Boolean = false
+
+    override suspend fun getEntries(forceRefresh: Boolean): Result<List<DiaryEntryItem>> {
+        // Return cached entries without hitting API on every visit
+        if (!forceRefresh && isCacheValid && DiaryActivityStore.isLoadedFromBackend.value) {
+            return Result.success(DiaryActivityStore.activities.value)
+        }
+
+        return try {
+            val response = api.listEntries()
+            if (response.isSuccessful && response.body()?.success == true) {
+                val apiEntries = response.body()?.entries ?: emptyList()
+                val mapped = apiEntries.map { item ->
+                    DiaryEntryItem(
+                        id = item.id,
+                        title = item.title,
+                        category = item.category ?: "College",
+                        date = item.date ?: SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).format(Date()),
+                        description = item.description ?: "",
+                        icon = item.icon ?: item.categoryIcon ?: DiaryActivityStore.getCategoryIcon(item.category ?: ""),
+                        mood = item.mood ?: "Not specified",
+                        hasPhoto = item.hasPhoto == true || !item.photoUrl.isNullOrBlank(),
+                        photoUri = item.photoUrl
+                    )
+                }
+
+                if (mapped.isNotEmpty()) {
+                    DiaryActivityStore.setActivities(mapped)
+                    DiaryActivityStore.setLoadedFromBackend(true)
+                }
+                isCacheValid = true
+                Result.success(DiaryActivityStore.activities.value)
+            } else {
+                // If API response is not successful, fall back to cached local store
+                Result.success(DiaryActivityStore.activities.value)
+            }
+        } catch (_: Exception) {
+            // Graceful fallback to cached store when offline or network fails
+            Result.success(DiaryActivityStore.activities.value)
+        }
+    }
 
     override suspend fun createVoiceEntry(transcript: String, title: String?): Result<CreateEntryResponse> {
         val cleanTranscript = transcript.trim()

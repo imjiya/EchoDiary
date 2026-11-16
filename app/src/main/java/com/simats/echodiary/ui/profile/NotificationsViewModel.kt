@@ -71,21 +71,25 @@ class NotificationsViewModel : ViewModel() {
     }
 
     fun sendTestNotification(context: Context) {
-        val posted = NotificationHelper.showReminderNotification(
+        val posted = NotificationHelper.showInteractiveAddMemoryNotification(
             context = context,
-            title = "EchoDiary · Time to reflect ✨",
-            message = "A gentle reminder to record your moments for today in your diary."
+            title = "EchoDiary · Time to add memory for this day ✨",
+            message = "How was your day? Take a moment to capture your thoughts, highlights, or feelings."
         )
         _uiState.update {
             it.copy(
                 statusMessage = if (posted) {
-                    "Test reminder notification dispatched!"
+                    "Interactive reminder dispatched! Check notification shade for '✍️ Write Diary', '🎙️ Voice Record', and '💭 Quick Thought'."
                 } else {
                     "Reminder triggered (enable notification permissions in system settings if not visible)."
                 },
                 isSavedSuccess = true
             )
         }
+    }
+
+    fun sendInteractiveAddMemoryReminder(context: Context) {
+        sendTestNotification(context)
     }
 
     fun clearStatusMessage() {
