@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.EchoDiaryApp
 import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.data.repository.EntryRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,6 +22,8 @@ data class ActivityDetailsUiState(
     val description: String = "Attended lectures and worked on a project.",
     val mood: String = "Not specified",
     val photoStatus: String = "No photo attached",
+    val hasPhoto: Boolean = false,
+    val photoUri: String? = null,
     val entryIdText: String = "Entry · Stored in memory of activities",
     val entryId: Int = 0
 )
@@ -32,8 +35,19 @@ sealed class ActivityDetailsNavigationEvent {
 }
 
 class ActivityDetailsViewModel(
-    private val entryRepository: EntryRepository = EchoDiaryApp.getEntryRepository()
+    private val entryRepository: EntryRepository? = null,
+    scope: CoroutineScope? = null
 ) : ViewModel() {
+
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
+
+    private fun getRepository(): EntryRepository? {
+        return entryRepository ?: try {
+            EchoDiaryApp.getEntryRepository()
+        } catch (_: Exception) {
+            null
+        }
+    }
 
     private val _uiState = MutableStateFlow(ActivityDetailsUiState())
     val uiState: StateFlow<ActivityDetailsUiState> = _uiState.asStateFlow()
@@ -47,9 +61,13 @@ class ActivityDetailsViewModel(
         date: String,
         category: String,
         mood: String = "Not specified",
-        id: Int = 0
+        id: Int = 0,
+        photoUri: String? = null,
+        hasPhoto: Boolean = false
     ) {
-        val hasAttachedPhoto = DiaryActivityStore.selectedActivity.value?.hasPhoto == true
+        val selected = DiaryActivityStore.selectedActivity.value
+        val resolvedPhotoUri = photoUri ?: selected?.photoUri
+        val hasAttachedPhoto = hasPhoto || !resolvedPhotoUri.isNullOrBlank() || selected?.hasPhoto == true
         val photoStatusText = if (hasAttachedPhoto) "1 photo attached" else "No photo attached"
         _uiState.update {
             it.copy(
@@ -59,6 +77,8 @@ class ActivityDetailsViewModel(
                 category = if (category.isNotBlank()) category else it.category,
                 mood = if (mood.isNotBlank()) mood else it.mood,
                 entryId = if (id > 0) id else it.entryId,
+                hasPhoto = hasAttachedPhoto,
+                photoUri = resolvedPhotoUri,
                 photoStatus = photoStatusText,
                 entryIdText = "Entry · Stored in memory of activities"
             )
@@ -82,7 +102,7 @@ class ActivityDetailsViewModel(
     }
 
     fun onEditClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(ActivityDetailsNavigationEvent.NavigateToEdit)
         }
     }
@@ -90,16 +110,16 @@ class ActivityDetailsViewModel(
     fun onDeleteClicked() {
         val state = _uiState.value
         DiaryActivityStore.deleteActivity(state.entryId, state.title)
-        viewModelScope.launch {
+        executionScope.launch {
             if (state.entryId > 0) {
-                entryRepository.deleteEntry(state.entryId)
+                getRepository()?.deleteEntry(state.entryId)
             }
             _navigationEvent.emit(ActivityDetailsNavigationEvent.NavigateToDelete)
         }
     }
 
     fun onBackClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(ActivityDetailsNavigationEvent.NavigateBack)
         }
     }

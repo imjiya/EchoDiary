@@ -82,12 +82,32 @@ fun WriteDiaryEntryScreen(
     val context = LocalContext.current
     var showDatePicker by remember { mutableStateOf(false) }
 
+    // Function to persist the imported gallery photo into internal storage
+    fun savePhotoToMemory(uri: Uri): String {
+        return try {
+            val photosDir = java.io.File(context.filesDir, "diary_photos")
+            if (!photosDir.exists()) {
+                photosDir.mkdirs()
+            }
+            val destinationFile = java.io.File(photosDir, "photo_${System.currentTimeMillis()}.jpg")
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                java.io.FileOutputStream(destinationFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            destinationFile.absolutePath
+        } catch (_: Exception) {
+            uri.toString()
+        }
+    }
+
     // Launcher to select photo from gallery
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            viewModel.onPhotoSelected(uri.toString())
+            val persistentPhotoPath = savePhotoToMemory(uri)
+            viewModel.onPhotoSelected(persistentPhotoPath)
         }
     }
 
@@ -128,12 +148,21 @@ fun WriteDiaryEntryScreen(
     }
 
     val photoBitmap = remember(state.photoUri) {
-        state.photoUri?.let { uriStr ->
+        state.photoUri?.let { pathOrUri ->
             try {
-                val uri = Uri.parse(uriStr)
-                context.contentResolver.openInputStream(uri)?.use { stream ->
-                    BitmapFactory.decodeStream(stream)
-                }?.asImageBitmap()
+                val file = java.io.File(pathOrUri)
+                if (file.exists() && file.isFile) {
+                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
+                } else {
+                    val uri = Uri.parse(pathOrUri)
+                    if (uri.scheme == "file") {
+                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
+                    } else {
+                        context.contentResolver.openInputStream(uri)?.use { stream ->
+                            BitmapFactory.decodeStream(stream)
+                        }?.asImageBitmap()
+                    }
+                }
             } catch (_: Exception) {
                 null
             }

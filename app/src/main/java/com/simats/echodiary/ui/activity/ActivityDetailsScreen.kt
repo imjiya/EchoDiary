@@ -1,6 +1,9 @@
 package com.simats.echodiary.ui.activity
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,16 +35,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,15 +61,49 @@ fun ActivityDetailsScreen(
     initialCategory: String = "",
     initialMood: String = "",
     entryId: Int = 0,
+    initialPhotoUri: String? = null,
+    initialHasPhoto: Boolean = false,
     onNavigateBack: () -> Unit,
     onNavigateToEdit: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
-    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId) {
+    val photoBitmap = remember(state.photoUri) {
+        state.photoUri?.let { pathOrUri ->
+            try {
+                val file = File(pathOrUri)
+                if (file.exists() && file.isFile) {
+                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
+                } else {
+                    val uri = Uri.parse(pathOrUri)
+                    if (uri.scheme == "file") {
+                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
+                    } else {
+                        context.contentResolver.openInputStream(uri)?.use { stream ->
+                            BitmapFactory.decodeStream(stream)
+                        }?.asImageBitmap()
+                    }
+                }
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
+
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId, initialPhotoUri, initialHasPhoto) {
         if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
-            viewModel.setEntryDetails(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId)
+            viewModel.setEntryDetails(
+                title = initialTitle,
+                description = initialDescription,
+                date = initialDate,
+                category = initialCategory,
+                mood = initialMood,
+                id = entryId,
+                photoUri = initialPhotoUri,
+                hasPhoto = initialHasPhoto
+            )
         }
     }
 
@@ -213,31 +255,93 @@ fun ActivityDetailsScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Photo Card
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                    .padding(16.dp)
-            ) {
-                Column {
-                    Text(
-                        text = "Photo",
-                        fontSize = 12.sp,
-                        color = Color(0xFF94A3B8)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+            // Photo Card - displays the inserted photo saved in memory
+            if (state.hasPhoto || !state.photoUri.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .padding(16.dp)
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Attached photo",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF64748B)
+                            )
+                            Text(
+                                text = "Stored in memory ✓",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF5165F6)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        if (photoBitmap != null) {
+                            Image(
+                                bitmap = photoBitmap,
+                                contentDescription = "Memory photo",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .clip(RoundedCornerShape(12.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(130.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Color(0xFFEEF2FF)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(text = "🖼️", fontSize = 30.sp)
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text(
+                                        text = "Photo stored in memory",
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color(0xFF5165F6)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .padding(16.dp)
+                ) {
+                    Column {
                         Text(
-                            text = state.photoStatus,
-                            fontSize = 14.sp,
-                            color = Color(0xFF64748B)
+                            text = "Photo",
+                            fontSize = 12.sp,
+                            color = Color(0xFF94A3B8)
                         )
-                        Text(text = "🖼️", fontSize = 16.sp)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "No photo attached",
+                                fontSize = 14.sp,
+                                color = Color(0xFF64748B)
+                            )
+                            Text(text = "🖼️", fontSize = 16.sp)
+                        }
                     }
                 }
             }

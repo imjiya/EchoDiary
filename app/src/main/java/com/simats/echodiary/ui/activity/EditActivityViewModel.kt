@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.simats.echodiary.EchoDiaryApp
 import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.data.repository.EntryRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,6 +22,7 @@ data class EditActivityUiState(
     val category: String = "College",
     val mood: String = "Not specified",
     val hasPhoto: Boolean = false,
+    val photoUri: String? = null,
     val entryId: Int = 0,
     val originalTitle: String = "Lectures and project",
     val isSaving: Boolean = false,
@@ -33,8 +35,19 @@ sealed class EditActivityNavigationEvent {
 }
 
 class EditActivityViewModel(
-    private val entryRepository: EntryRepository = EchoDiaryApp.getEntryRepository()
+    private val entryRepository: EntryRepository? = null,
+    scope: CoroutineScope? = null
 ) : ViewModel() {
+
+    private val executionScope: CoroutineScope = scope ?: viewModelScope
+
+    private fun getRepository(): EntryRepository? {
+        return entryRepository ?: try {
+            EchoDiaryApp.getEntryRepository()
+        } catch (_: Exception) {
+            null
+        }
+    }
 
     private val _uiState = MutableStateFlow(EditActivityUiState())
     val uiState: StateFlow<EditActivityUiState> = _uiState.asStateFlow()
@@ -48,8 +61,13 @@ class EditActivityViewModel(
         date: String,
         category: String,
         mood: String = "Not specified",
-        id: Int = 0
+        id: Int = 0,
+        photoUri: String? = null,
+        hasPhoto: Boolean = false
     ) {
+        val selected = DiaryActivityStore.selectedActivity.value
+        val resolvedPhotoUri = photoUri ?: selected?.photoUri
+        val hasAttachedPhoto = hasPhoto || !resolvedPhotoUri.isNullOrBlank() || selected?.hasPhoto == true
         _uiState.update {
             it.copy(
                 title = if (title.isNotBlank()) title else it.title,
@@ -58,7 +76,9 @@ class EditActivityViewModel(
                 date = if (date.isNotBlank()) date else it.date,
                 category = if (category.isNotBlank()) category else it.category,
                 mood = if (mood.isNotBlank()) mood else it.mood,
-                entryId = if (id > 0) id else it.entryId
+                entryId = if (id > 0) id else it.entryId,
+                hasPhoto = hasAttachedPhoto,
+                photoUri = resolvedPhotoUri
             )
         }
     }
@@ -100,15 +120,16 @@ class EditActivityViewModel(
             description = updatedDesc,
             icon = DiaryActivityStore.getCategoryIcon(state.category),
             mood = state.mood.trim().ifBlank { "Not specified" },
-            hasPhoto = state.hasPhoto
+            hasPhoto = state.hasPhoto,
+            photoUri = state.photoUri
         )
 
         // Save updated activity in memory of activities
         DiaryActivityStore.updateActivity(state.originalTitle, updatedItem)
 
-        viewModelScope.launch {
+        executionScope.launch {
             if (state.entryId > 0) {
-                entryRepository.updateEntry(
+                getRepository()?.updateEntry(
                     id = state.entryId,
                     title = updatedTitle,
                     description = updatedDesc,
@@ -124,22 +145,22 @@ class EditActivityViewModel(
     fun onDeleteClicked() {
         val state = _uiState.value
         DiaryActivityStore.deleteActivity(state.entryId, state.originalTitle)
-        viewModelScope.launch {
+        executionScope.launch {
             if (state.entryId > 0) {
-                entryRepository.deleteEntry(state.entryId)
+                getRepository()?.deleteEntry(state.entryId)
             }
             _navigationEvent.emit(EditActivityNavigationEvent.NavigateToAllActivities)
         }
     }
 
     fun onCancelClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(EditActivityNavigationEvent.NavigateBack)
         }
     }
 
     fun onBackClicked() {
-        viewModelScope.launch {
+        executionScope.launch {
             _navigationEvent.emit(EditActivityNavigationEvent.NavigateBack)
         }
     }

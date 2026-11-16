@@ -1,6 +1,9 @@
 package com.simats.echodiary.ui.activity
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,15 +36,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.collectLatest
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,12 +61,37 @@ fun EditActivityScreen(
     initialCategory: String = "",
     initialMood: String = "",
     entryId: Int = 0,
+    initialPhotoUri: String? = null,
+    initialHasPhoto: Boolean = false,
     onNavigateBack: () -> Unit,
     onNavigateToAllActivities: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
-    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId) {
+    val photoBitmap = remember(state.photoUri) {
+        state.photoUri?.let { pathOrUri ->
+            try {
+                val file = File(pathOrUri)
+                if (file.exists() && file.isFile) {
+                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
+                } else {
+                    val uri = Uri.parse(pathOrUri)
+                    if (uri.scheme == "file") {
+                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
+                    } else {
+                        context.contentResolver.openInputStream(uri)?.use { stream ->
+                            BitmapFactory.decodeStream(stream)
+                        }?.asImageBitmap()
+                    }
+                }
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
+
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId, initialPhotoUri, initialHasPhoto) {
         if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
             viewModel.setInitialDetails(
                 title = initialTitle,
@@ -66,7 +99,9 @@ fun EditActivityScreen(
                 date = initialDate,
                 category = initialCategory,
                 mood = initialMood,
-                id = entryId
+                id = entryId,
+                photoUri = initialPhotoUri,
+                hasPhoto = initialHasPhoto
             )
         }
     }
@@ -261,6 +296,27 @@ fun EditActivityScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Attached Photo Preview
+            if (state.hasPhoto || !state.photoUri.isNullOrBlank()) {
+                if (photoBitmap != null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFE2E8F0))
+                    ) {
+                        Image(
+                            bitmap = photoBitmap,
+                            contentDescription = "Attached photo preview",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+            }
+
             // Add photo button
             Button(
                 onClick = { viewModel.onAddPhotoClicked() },
@@ -273,7 +329,7 @@ fun EditActivityScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🖼️ ", fontSize = 16.sp)
                     Text(
-                        text = "Add photo · optional",
+                        text = if (state.hasPhoto) "Photo attached ✓" else "Add photo · optional",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF5165F6)
@@ -284,7 +340,7 @@ fun EditActivityScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = if (state.hasPhoto) "Photo added." else "Your original entry remains unchanged until you save.",
+                text = if (state.hasPhoto) "Photo stored in memory for this entry." else "Your original entry remains unchanged until you save.",
                 fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 modifier = Modifier.fillMaxWidth()

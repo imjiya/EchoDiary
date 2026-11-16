@@ -80,6 +80,8 @@ class MainActivity : ComponentActivity() {
                 var entryCategory by remember { mutableStateOf("College") }
                 var entryMood by remember { mutableStateOf("Not specified") }
                 var entryId by remember { mutableStateOf(0) }
+                var entryPhotoUri by remember { mutableStateOf<String?>(null) }
+                var entryHasPhoto by remember { mutableStateOf(false) }
                 val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
 
                 BackHandler(enabled = navController.canPop) {
@@ -202,6 +204,8 @@ class MainActivity : ComponentActivity() {
                                     entryCategory = activityItem.category
                                     entryMood = activityItem.mood
                                     entryId = activityItem.id
+                                    entryPhotoUri = activityItem.photoUri
+                                    entryHasPhoto = activityItem.hasPhoto
                                     DiaryActivityStore.selectActivity(activityItem)
                                 }
                                 navController.navigate(Screen.ActivityDetails)
@@ -264,6 +268,8 @@ class MainActivity : ComponentActivity() {
                                 entryCategory = item?.category ?: "Voice Diary"
                                 entryMood = item?.mood ?: "Reflective"
                                 entryId = item?.id ?: 0
+                                entryPhotoUri = item?.photoUri
+                                entryHasPhoto = item?.hasPhoto == true
                                 navController.navigateAndPopUpTo(Screen.ActivityDetails, popUpTo = Screen.Home)
                             }
                         )
@@ -283,6 +289,8 @@ class MainActivity : ComponentActivity() {
                                 entryCategory = category
                                 entryMood = item?.mood ?: writeDiaryViewModel.uiState.value.mood
                                 entryId = item?.id ?: 0
+                                entryPhotoUri = item?.photoUri ?: writeDiaryViewModel.uiState.value.photoUri
+                                entryHasPhoto = item?.hasPhoto ?: writeDiaryViewModel.uiState.value.hasPhoto
                                 navController.navigateAndPopUpTo(Screen.ActivityDetails, popUpTo = Screen.Home)
                             },
                             onNavigateToChooseCategory = {
@@ -294,6 +302,9 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     is Screen.ActivityDetails -> {
+                        val currentSelected = DiaryActivityStore.selectedActivity.value
+                        val resolvedPhotoUri = entryPhotoUri ?: currentSelected?.photoUri
+                        val resolvedHasPhoto = entryHasPhoto || currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank()
                         ActivityDetailsScreen(
                             initialTitle = entryTitle,
                             initialDescription = entryDescription,
@@ -301,6 +312,8 @@ class MainActivity : ComponentActivity() {
                             initialCategory = entryCategory,
                             initialMood = entryMood,
                             entryId = entryId,
+                            initialPhotoUri = resolvedPhotoUri,
+                            initialHasPhoto = resolvedHasPhoto,
                             onNavigateBack = {
                                 navController.popBackStack()
                             },
@@ -315,6 +328,9 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     is Screen.EditActivity -> {
+                        val currentSelected = DiaryActivityStore.selectedActivity.value
+                        val resolvedPhotoUri = entryPhotoUri ?: currentSelected?.photoUri
+                        val resolvedHasPhoto = entryHasPhoto || currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank()
                         EditActivityScreen(
                             initialTitle = entryTitle,
                             initialDescription = entryDescription,
@@ -322,6 +338,8 @@ class MainActivity : ComponentActivity() {
                             initialCategory = entryCategory,
                             initialMood = entryMood,
                             entryId = entryId,
+                            initialPhotoUri = resolvedPhotoUri,
+                            initialHasPhoto = resolvedHasPhoto,
                             onNavigateBack = {
                                 navController.popBackStack()
                             },
@@ -349,6 +367,8 @@ class MainActivity : ComponentActivity() {
                                 entryCategory = activityItem.category
                                 entryMood = activityItem.mood
                                 entryId = activityItem.id
+                                entryPhotoUri = activityItem.photoUri
+                                entryHasPhoto = activityItem.hasPhoto
                                 DiaryActivityStore.selectActivity(activityItem)
                                 navController.navigate(Screen.ActivityDetails)
                             },
@@ -586,6 +606,8 @@ class MainActivity : ComponentActivity() {
                                     entryCategory = item.category
                                     entryMood = item.mood
                                     entryId = item.id
+                                    entryPhotoUri = item.photoUri
+                                    entryHasPhoto = item.hasPhoto
                                 }
                                 navController.navigate(Screen.ActivityDetails)
                             }
