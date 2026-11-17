@@ -25,8 +25,17 @@ data class DiaryEntryItem(
     val id: Int = 0,
     val mood: String = "Not specified",
     val hasPhoto: Boolean = false,
-    val photoUri: String? = null
-)
+    val photoUri: String? = null,
+    val photoUris: List<String> = emptyList(),
+    val time: String = ""
+) {
+    fun getAllPhotos(): List<String> {
+        val result = linkedSetOf<String>()
+        if (!photoUri.isNullOrBlank()) result.add(photoUri)
+        photoUris.forEach { if (it.isNotBlank()) result.add(it) }
+        return result.toList()
+    }
+}
 
 data class AllActivitiesUiState(
     val searchQuery: String = "",

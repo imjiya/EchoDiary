@@ -177,6 +177,9 @@ object DiaryActivityStore {
     private val _weeklyMemoryPhotoUri = MutableStateFlow<String?>(null)
     val weeklyMemoryPhotoUri: StateFlow<String?> = _weeklyMemoryPhotoUri.asStateFlow()
 
+    private val _weeklyMemoryPhotoUris = MutableStateFlow<List<String>>(emptyList())
+    val weeklyMemoryPhotoUris: StateFlow<List<String>> = _weeklyMemoryPhotoUris.asStateFlow()
+
     private val _weeklyCategoriesCount = MutableStateFlow(0)
     val weeklyCategoriesCount: StateFlow<Int> = _weeklyCategoriesCount.asStateFlow()
 
@@ -479,16 +482,26 @@ object DiaryActivityStore {
         }
     }
 
-    fun updateWeeklyMemory(title: String, narrative: String, photoUri: String? = null) {
+    fun updateWeeklyMemory(
+        title: String,
+        narrative: String,
+        photoUri: String? = null,
+        photoUris: List<String>? = null
+    ) {
         if (title.isNotBlank()) _weeklyMemoryTitle.value = title
         if (narrative.isNotBlank()) _weeklyMemoryNarrative.value = narrative
-        if (photoUri != null) {
+        if (photoUris != null) {
+            _weeklyMemoryPhotoUris.value = photoUris
+            _weeklyMemoryPhotoUri.value = photoUris.firstOrNull() ?: photoUri
+        } else if (photoUri != null) {
             _weeklyMemoryPhotoUri.value = photoUri
+            _weeklyMemoryPhotoUris.value = listOf(photoUri)
         }
     }
 
     fun resetMemories() {
         _weeklyMemoryPhotoUri.value = null
+        _weeklyMemoryPhotoUris.value = emptyList()
         refreshMemories()
     }
 
@@ -503,6 +516,7 @@ object DiaryActivityStore {
         _activities.value = emptyList()
         _selectedActivity.value = null
         _weeklyMemoryPhotoUri.value = null
+        _weeklyMemoryPhotoUris.value = emptyList()
         _isLoadedFromBackend.value = false
         _isProfileLoadedFromBackend.value = false
         refreshMemories()

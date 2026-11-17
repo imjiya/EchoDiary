@@ -26,6 +26,7 @@ data class WriteDiaryEntryUiState(
     val mood: String = "Good",
     val hasPhoto: Boolean = false,
     val photoUri: String? = null,
+    val photoUris: List<String> = emptyList(),
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false,
     val statusMessage: String? = null,
@@ -94,12 +95,43 @@ class WriteDiaryEntryViewModel(
     }
 
     fun onPhotoSelected(uriString: String) {
-        _uiState.update {
-            it.copy(
+        _uiState.update { current ->
+            val updatedList = if (current.photoUris.contains(uriString)) current.photoUris else current.photoUris + uriString
+            current.copy(
                 hasPhoto = true,
-                photoUri = uriString,
+                photoUri = updatedList.firstOrNull(),
+                photoUris = updatedList,
                 statusMessage = "Photo imported from gallery ✓",
                 errorMessage = null
+            )
+        }
+    }
+
+    fun onPhotosSelected(uris: List<String>) {
+        if (uris.isEmpty()) return
+        _uiState.update { current ->
+            val combined = (current.photoUris + uris).distinct()
+            current.copy(
+                hasPhoto = true,
+                photoUri = combined.firstOrNull(),
+                photoUris = combined,
+                statusMessage = if (combined.size == 1) "Photo imported from gallery ✓" else "${combined.size} photos selected ✓",
+                errorMessage = null
+            )
+        }
+    }
+
+    fun onRemovePhotoAt(index: Int) {
+        _uiState.update { current ->
+            val updatedList = current.photoUris.toMutableList()
+            if (index in updatedList.indices) {
+                updatedList.removeAt(index)
+            }
+            current.copy(
+                hasPhoto = updatedList.isNotEmpty(),
+                photoUri = updatedList.firstOrNull(),
+                photoUris = updatedList,
+                statusMessage = if (updatedList.isEmpty()) null else "${updatedList.size} photo(s) remaining"
             )
         }
     }
@@ -109,6 +141,7 @@ class WriteDiaryEntryViewModel(
             it.copy(
                 hasPhoto = false,
                 photoUri = null,
+                photoUris = emptyList(),
                 statusMessage = null
             )
         }
@@ -168,6 +201,8 @@ class WriteDiaryEntryViewModel(
                     mood = entryMood
                 )
 
+                val currentTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
+
                 result.onSuccess { response ->
                     val serverId = response.entry?.id ?: ((System.currentTimeMillis() % 100000).toInt())
                     val newActivity = DiaryEntryItem(
@@ -179,7 +214,9 @@ class WriteDiaryEntryViewModel(
                         icon = DiaryActivityStore.getCategoryIcon(entryCategory),
                         mood = entryMood,
                         hasPhoto = _uiState.value.hasPhoto,
-                        photoUri = _uiState.value.photoUri
+                        photoUri = _uiState.value.photoUri,
+                        photoUris = _uiState.value.photoUris,
+                        time = currentTime
                     )
                     DiaryActivityStore.addActivity(newActivity)
 
@@ -209,7 +246,9 @@ class WriteDiaryEntryViewModel(
                         icon = DiaryActivityStore.getCategoryIcon(entryCategory),
                         mood = entryMood,
                         hasPhoto = _uiState.value.hasPhoto,
-                        photoUri = _uiState.value.photoUri
+                        photoUri = _uiState.value.photoUri,
+                        photoUris = _uiState.value.photoUris,
+                        time = currentTime
                     )
                     DiaryActivityStore.addActivity(newActivity)
 
@@ -230,6 +269,7 @@ class WriteDiaryEntryViewModel(
                 }
             } else {
                 val localId = (System.currentTimeMillis() % 100000).toInt()
+                val currentTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
                 val newActivity = DiaryEntryItem(
                     id = localId,
                     title = displayTitle,
@@ -239,7 +279,9 @@ class WriteDiaryEntryViewModel(
                     icon = DiaryActivityStore.getCategoryIcon(entryCategory),
                     mood = entryMood,
                     hasPhoto = _uiState.value.hasPhoto,
-                    photoUri = _uiState.value.photoUri
+                    photoUri = _uiState.value.photoUri,
+                    photoUris = _uiState.value.photoUris,
+                    time = currentTime
                 )
                 DiaryActivityStore.addActivity(newActivity)
 

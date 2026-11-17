@@ -11,6 +11,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -118,13 +120,13 @@ fun EditActivityScreen(
         }
     }
 
-    // Launcher to select photo from gallery
+    // Launcher to select photo(s) from gallery
     val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            val persistentPhotoPath = savePhotoToMemory(uri)
-            viewModel.onPhotoSelected(persistentPhotoPath)
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris: List<Uri> ->
+        if (uris.isNotEmpty()) {
+            val persistentPhotoPaths = uris.map { savePhotoToMemory(it) }
+            viewModel.onPhotosSelected(persistentPhotoPaths)
         }
     }
 
@@ -408,65 +410,101 @@ fun EditActivityScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Attached Photo Preview
-            if (state.hasPhoto || !state.photoUri.isNullOrBlank()) {
-                if (photoBitmap != null) {
-                    Box(
+            val currentPhotos = if (state.photoUris.isNotEmpty()) state.photoUris else if (!state.photoUri.isNullOrBlank()) listOf(state.photoUri!!) else emptyList()
+
+            // Attached Photos Preview / Multi-Photo Strip
+            if (currentPhotos.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${currentPhotos.size} photo(s) attached",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF1E293B)
+                    )
+                    Text(
+                        text = "Clear all",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFEF4444),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFFE2E8F0))
-                    ) {
-                        Image(
-                            bitmap = photoBitmap,
-                            contentDescription = "Attached photo preview",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                        IconButton(
-                            onClick = { viewModel.onRemovePhoto() },
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(8.dp)
-                                .size(32.dp)
-                                .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
-                        ) {
-                            Text(text = "✕", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                } else {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color(0xFFEEF2FF), RoundedCornerShape(12.dp))
-                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = "🖼️", fontSize = 18.sp)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Column {
-                                Text(
-                                    text = "Photo attached ✓",
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFF1E293B)
-                                )
-                                Text(
-                                    text = "Saved in memory for this entry",
-                                    fontSize = 11.sp,
-                                    color = Color(0xFF64748B)
-                                )
+                            .clickable { viewModel.onRemovePhoto() }
+                            .padding(4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    currentPhotos.forEachIndexed { index, pathOrUri ->
+                        val itemBitmap = remember(pathOrUri) {
+                            try {
+                                val file = java.io.File(pathOrUri)
+                                if (file.exists() && file.isFile) {
+                                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
+                                } else {
+                                    val uri = Uri.parse(pathOrUri)
+                                    if (uri.scheme == "file") {
+                                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
+                                    } else {
+                                        context.contentResolver.openInputStream(uri)?.use { stream ->
+                                            BitmapFactory.decodeStream(stream)
+                                        }?.asImageBitmap()
+                                    }
+                                }
+                            } catch (_: Exception) {
+                                null
                             }
                         }
-                        TextButton(onClick = { viewModel.onRemovePhoto() }) {
-                            Text("Remove", color = Color(0xFFEF4444), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+
+                        Box(
+                            modifier = Modifier
+                                .size(110.dp)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color(0xFFE2E8F0))
+                        ) {
+                            if (itemBitmap != null) {
+                                Image(
+                                    bitmap = itemBitmap,
+                                    contentDescription = "Attached photo $index",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(text = "🖼️", fontSize = 24.sp)
+                                }
+                            }
+
+                            // Individual Delete Button
+                            IconButton(
+                                onClick = { viewModel.onRemovePhotoAt(index) },
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(4.dp)
+                                    .size(24.dp)
+                                    .background(Color.Black.copy(alpha = 0.65f), CircleShape)
+                            ) {
+                                Text(text = "✕", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
+                Spacer(modifier = Modifier.height(10.dp))
             }
 
             // Add photo button
@@ -477,13 +515,13 @@ fun EditActivityScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (state.hasPhoto || !state.photoUri.isNullOrBlank()) Color(0xFFE0E7FF) else Color(0xFFEEF2FF)
+                    containerColor = if (currentPhotos.isNotEmpty()) Color(0xFFE0E7FF) else Color(0xFFEEF2FF)
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🖼️ ", fontSize = 16.sp)
                     Text(
-                        text = if (state.hasPhoto || !state.photoUri.isNullOrBlank()) "Change photo from gallery" else "Add photo · optional",
+                        text = if (currentPhotos.isNotEmpty()) "Add more photos (${currentPhotos.size} selected)" else "Add photo(s) · multiple allowed",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF5165F6)
@@ -494,7 +532,7 @@ fun EditActivityScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = if (state.hasPhoto || !state.photoUri.isNullOrBlank()) "Photo attached to this entry." else "Click above to select and attach a photo from your gallery.",
+                text = if (currentPhotos.isNotEmpty()) "Photos attached to this entry will appear in your memory collages." else "Click above to select and attach multiple photos from your gallery.",
                 fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 modifier = Modifier.fillMaxWidth()

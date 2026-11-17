@@ -23,6 +23,7 @@ data class EditActivityUiState(
     val mood: String = "Not specified",
     val hasPhoto: Boolean = false,
     val photoUri: String? = null,
+    val photoUris: List<String> = emptyList(),
     val entryId: Int = 0,
     val originalTitle: String = "",
     val isSaving: Boolean = false,
@@ -83,7 +84,14 @@ class EditActivityViewModel(
     ) {
         val selected = DiaryActivityStore.selectedActivity.value
         val resolvedPhotoUri = photoUri ?: selected?.photoUri
-        val hasAttachedPhoto = hasPhoto || !resolvedPhotoUri.isNullOrBlank() || selected?.hasPhoto == true
+        val resolvedPhotoUris = if (selected?.photoUris?.isNotEmpty() == true) {
+            selected.photoUris
+        } else if (!resolvedPhotoUri.isNullOrBlank()) {
+            listOf(resolvedPhotoUri)
+        } else {
+            emptyList()
+        }
+        val hasAttachedPhoto = hasPhoto || resolvedPhotoUris.isNotEmpty() || !resolvedPhotoUri.isNullOrBlank() || selected?.hasPhoto == true
         _uiState.update {
             it.copy(
                 title = if (title.isNotBlank()) title else it.title,
@@ -94,7 +102,8 @@ class EditActivityViewModel(
                 mood = if (mood.isNotBlank()) mood else it.mood,
                 entryId = if (id > 0) id else it.entryId,
                 hasPhoto = hasAttachedPhoto,
-                photoUri = resolvedPhotoUri
+                photoUri = resolvedPhotoUris.firstOrNull() ?: resolvedPhotoUri,
+                photoUris = resolvedPhotoUris
             )
         }
     }
@@ -124,11 +133,44 @@ class EditActivityViewModel(
     }
 
     fun onPhotoSelected(uri: String) {
-        _uiState.update { it.copy(photoUri = uri, hasPhoto = true) }
+        _uiState.update { current ->
+            val updated = if (current.photoUris.contains(uri)) current.photoUris else current.photoUris + uri
+            current.copy(
+                photoUri = updated.firstOrNull(),
+                photoUris = updated,
+                hasPhoto = true
+            )
+        }
+    }
+
+    fun onPhotosSelected(uris: List<String>) {
+        if (uris.isEmpty()) return
+        _uiState.update { current ->
+            val updated = (current.photoUris + uris).distinct()
+            current.copy(
+                photoUri = updated.firstOrNull(),
+                photoUris = updated,
+                hasPhoto = true
+            )
+        }
+    }
+
+    fun onRemovePhotoAt(index: Int) {
+        _uiState.update { current ->
+            val updated = current.photoUris.toMutableList()
+            if (index in updated.indices) {
+                updated.removeAt(index)
+            }
+            current.copy(
+                photoUri = updated.firstOrNull(),
+                photoUris = updated,
+                hasPhoto = updated.isNotEmpty()
+            )
+        }
     }
 
     fun onRemovePhoto() {
-        _uiState.update { it.copy(photoUri = null, hasPhoto = false) }
+        _uiState.update { it.copy(photoUri = null, photoUris = emptyList(), hasPhoto = false) }
     }
 
     fun onPermissionDenied(message: String) {
@@ -139,7 +181,8 @@ class EditActivityViewModel(
         val state = _uiState.value
         val updatedTitle = state.title.trim().ifBlank { "Diary Entry" }
         val updatedDesc = state.description.trim()
-        val hasAttachedPhoto = state.hasPhoto || !state.photoUri.isNullOrBlank()
+        val allPhotos = state.photoUris.ifEmpty { listOfNotNull(state.photoUri) }
+        val hasAttachedPhoto = state.hasPhoto || allPhotos.isNotEmpty()
 
         val updatedItem = DiaryEntryItem(
             id = state.entryId,
@@ -152,7 +195,9 @@ class EditActivityViewModel(
             icon = DiaryActivityStore.getCategoryIcon(state.category),
             mood = state.mood.trim().ifBlank { "Not specified" },
             hasPhoto = hasAttachedPhoto,
-            photoUri = if (hasAttachedPhoto) state.photoUri else null
+            photoUri = if (hasAttachedPhoto) allPhotos.firstOrNull() else null,
+            photoUris = if (hasAttachedPhoto) allPhotos else emptyList(),
+            time = DiaryActivityStore.selectedActivity.value?.time ?: java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(java.util.Date())
         )
 
         // Save updated activity in memory of activities
