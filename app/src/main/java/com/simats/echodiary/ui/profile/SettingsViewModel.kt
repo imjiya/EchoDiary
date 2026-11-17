@@ -38,7 +38,7 @@ class SettingsViewModel : ViewModel() {
         }
         viewModelScope.launch {
             DiaryActivityStore.activities.collectLatest { entries ->
-                _uiState.update { it.copy(storageSummary = "${entries.size} entries · 1 saved memory") }
+                _uiState.update { it.copy(storageSummary = "${entries.size} entries · 3 memories") }
             }
         }
         viewModelScope.launch {

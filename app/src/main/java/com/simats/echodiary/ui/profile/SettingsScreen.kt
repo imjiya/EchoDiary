@@ -55,6 +55,7 @@ fun SettingsScreen(
     onNavigateToAppearance: () -> Unit = {},
     onNavigateToPrivacyAndData: () -> Unit = {},
     onNavigateToNotifications: () -> Unit = {},
+    onNavigateToStorage: () -> Unit = {},
     onNavigateToHelpAndSupport: () -> Unit = {},
     onNavigateToLogin: () -> Unit = {}
 ) {
@@ -176,7 +177,7 @@ fun SettingsScreen(
                     title = "Storage",
                     subtitle = state.storageSummary,
                     iconType = SettingsIconType.STORAGE,
-                    onClick = { }
+                    onClick = onNavigateToStorage
                 )
             }
 

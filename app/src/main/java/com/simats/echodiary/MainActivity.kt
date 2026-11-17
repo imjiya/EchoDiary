@@ -60,6 +60,7 @@ import com.simats.echodiary.ui.profile.PrivacyAndDataScreen
 import com.simats.echodiary.ui.profile.ProfileScreen
 import com.simats.echodiary.ui.profile.ProfileViewModel
 import com.simats.echodiary.ui.profile.SettingsScreen
+import com.simats.echodiary.ui.profile.StorageScreen
 import com.simats.echodiary.ui.login.LoginScreen
 import com.simats.echodiary.ui.login.ResetPasswordScreen
 import com.simats.echodiary.ui.onboarding.FourthOnboardingScreen
@@ -743,6 +744,9 @@ class MainActivity : ComponentActivity() {
                             onNavigateToNotifications = {
                                 navController.navigate(Screen.Notifications)
                             },
+                            onNavigateToStorage = {
+                                navController.navigate(Screen.Storage)
+                            },
                             onNavigateToHelpAndSupport = {
                                 navController.navigate(Screen.HelpAndSupport)
                             },
@@ -779,6 +783,13 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToEmptyStates = {
                                 navController.navigate(Screen.EmptyStates)
+                            }
+                        )
+                    }
+                    is Screen.Storage -> {
+                        StorageScreen(
+                            onNavigateBack = {
+                                navController.popBackStack()
                             }
                         )
                     }
