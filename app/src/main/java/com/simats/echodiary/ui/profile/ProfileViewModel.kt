@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ProfileUiState(
-    val userName: String = "Alex Morgan",
-    val userEmail: String = "alex.morgan@example.com",
-    val userInitials: String = "AM",
+    val userName: String = "",
+    val userEmail: String = "",
+    val userInitials: String = "",
     val diaryEntriesCount: Int = 0,
     val savedMemoriesCount: Int = 0,
     val selectedTab: Int = 3,
@@ -30,19 +30,40 @@ class ProfileViewModel(
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     init {
+        try {
+            val session = EchoDiaryApp.getSessionManager()
+            val sName = session.getUserName() ?: ""
+            val sEmail = session.getUserEmail() ?: ""
+            if (sName.isNotBlank()) {
+                _uiState.update { 
+                    it.copy(
+                        userName = sName,
+                        userEmail = sEmail,
+                        userInitials = DiaryActivityStore.computeInitials(sName)
+                    )
+                }
+            }
+        } catch (_: Exception) {}
+
         viewModelScope.launch {
             DiaryActivityStore.userFullName.collectLatest { name ->
-                _uiState.update { it.copy(userName = name) }
+                if (name.isNotBlank()) {
+                    _uiState.update { it.copy(userName = name) }
+                }
             }
         }
         viewModelScope.launch {
             DiaryActivityStore.userEmail.collectLatest { email ->
-                _uiState.update { it.copy(userEmail = email) }
+                if (email.isNotBlank()) {
+                    _uiState.update { it.copy(userEmail = email) }
+                }
             }
         }
         viewModelScope.launch {
             DiaryActivityStore.userInitials.collectLatest { initials ->
-                _uiState.update { it.copy(userInitials = initials) }
+                if (initials.isNotBlank()) {
+                    _uiState.update { it.copy(userInitials = initials) }
+                }
             }
         }
         viewModelScope.launch {

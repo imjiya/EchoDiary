@@ -1,5 +1,6 @@
 package com.simats.echodiary.ai
 
+import com.simats.echodiary.data.local.DiaryActivityStore
 import com.simats.echodiary.ui.activity.DiaryEntryItem
 
 data class RagMemoryResult(
@@ -23,7 +24,7 @@ object RagMemoryEngine {
     fun synthesizeMemory(
         entries: List<DiaryEntryItem>,
         type: String = "weekly",
-        dateRangeLabel: String = "OCT 5–11, 2026"
+        dateRangeLabel: String = ""
     ): RagMemoryResult {
         if (entries.isEmpty()) {
             val emptyTitle = when (type.lowercase()) {
@@ -70,7 +71,7 @@ object RagMemoryEngine {
         val emotionalArc = deriveEmotionalArc(explicitMoods)
 
         // 3. GENERATION (SLM Synthesis)
-        val title = synthesizeTitle(type, topCategories, emotionalArc, anchors)
+        val title = synthesizeTitle(type, topCategories, emotionalArc, anchors, dateRangeLabel)
         val narrative = synthesizeNarrative(type, retrievedCount, anchors, topCategories, emotionalArc, photoCount)
         val highlights = (anchors.take(3) + topCategories.take(2)).distinct().take(4)
         val moodSummary = synthesizeMoodSummary(explicitMoods, retrievedCount)
@@ -101,12 +102,15 @@ object RagMemoryEngine {
         type: String,
         topCats: List<String>,
         emotionalArc: String,
-        anchors: List<String>
+        anchors: List<String>,
+        dateRangeLabel: String = ""
     ): String {
         val primary = topCats.firstOrNull() ?: "Life"
+        val monthLabel = if (dateRangeLabel.isNotBlank()) dateRangeLabel else DiaryActivityStore.getCurrentMonthLabel()
+        val yearLabel = if (dateRangeLabel.isNotBlank()) dateRangeLabel else DiaryActivityStore.getCurrentYearLabel()
         return when (type.lowercase()) {
-            "monthly" -> "October, in your words: balancing $primary and everyday moments."
-            "yearly" -> "One meaningful chapter of 2026: milestones and growth."
+            "monthly" -> "$monthLabel, in your words: balancing $primary and everyday moments."
+            "yearly" -> "One meaningful chapter of $yearLabel: milestones and growth."
             else -> {
                 if (topCats.contains("College") || topCats.contains("Work")) {
                     "A week of quiet momentum and social connection."

@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class WeeklyMemoryUiState(
-    val dateRangeText: String = "OCT 5–11, 2026 · WEEKLY DRAFT",
-    val title: String = "A week of progress and connection.",
-    val summaryText: String = "This week, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend.",
-    val highlights: List<String> = listOf("College project", "Friends & family", "Presentation prep", "Calm walk"),
-    val footerText: String = "Based on your 5 entries. Review before saving."
+    val dateRangeText: String = DiaryActivityStore.weeklyMemoryDateRange.value,
+    val title: String = DiaryActivityStore.weeklyMemoryTitle.value,
+    val summaryText: String = DiaryActivityStore.weeklyMemoryNarrative.value,
+    val highlights: List<String> = DiaryActivityStore.weeklyHighlights.value,
+    val footerText: String = "Based on your ${DiaryActivityStore.activities.value.size} entries. Review before saving."
 )
 
 sealed class WeeklyMemoryNavigationEvent {

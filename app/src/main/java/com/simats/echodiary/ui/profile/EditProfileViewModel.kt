@@ -16,9 +16,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class EditProfileUiState(
-    val fullName: String = "Alex Morgan",
-    val email: String = "alex.morgan@example.com",
-    val userInitials: String = "AM",
+    val fullName: String = DiaryActivityStore.userFullName.value,
+    val email: String = DiaryActivityStore.userEmail.value,
+    val userInitials: String = DiaryActivityStore.userInitials.value,
     val isSaving: Boolean = false,
     val nameError: String? = null,
     val emailError: String? = null,

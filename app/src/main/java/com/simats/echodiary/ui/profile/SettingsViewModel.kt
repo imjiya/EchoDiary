@@ -13,9 +13,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 data class SettingsUiState(
-    val userName: String = "Alex Morgan",
+    val userName: String = DiaryActivityStore.userFullName.value,
     val appearanceSummary: String = "Light · calm blue",
-    val storageSummary: String = "5 entries · 1 saved memory",
+    val storageSummary: String = "${DiaryActivityStore.activities.value.size} entries",
     val notificationsSummary: String = "Daily at 8:00 PM"
 )
 

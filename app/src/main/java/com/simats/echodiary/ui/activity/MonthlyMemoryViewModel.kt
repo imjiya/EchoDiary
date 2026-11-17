@@ -21,15 +21,15 @@ data class CategoryBreakdownItem(
 )
 
 data class MonthlyMemoryUiState(
-    val monthTitle: String = "October 2026",
+    val monthTitle: String = DiaryActivityStore.getCurrentMonthLabel(),
     val infoText: String = "Source-grounded monthly memory from your recorded entries.",
-    val diaryEntriesCount: Int = 5,
-    val categoriesCount: Int = 5,
-    val summaryTitle: String = "October, in your words",
-    val summaryText: String = "This month, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend.",
+    val diaryEntriesCount: Int = DiaryActivityStore.activities.value.size,
+    val categoriesCount: Int = DiaryActivityStore.activities.value.map { it.category }.distinct().size,
+    val summaryTitle: String = DiaryActivityStore.monthlySummaryTitle.value,
+    val summaryText: String = DiaryActivityStore.monthlySummaryText.value,
     val categoryBreakdown: List<CategoryBreakdownItem> = emptyList(),
     val entries: List<DiaryEntryItem> = emptyList(),
-    val footerText: String = "Highlights: project work, lunch with friends, a Calm walk, presentation preparation and family time."
+    val footerText: String = DiaryActivityStore.monthlyFooterText.value
 )
 
 sealed class MonthlyMemoryNavigationEvent {

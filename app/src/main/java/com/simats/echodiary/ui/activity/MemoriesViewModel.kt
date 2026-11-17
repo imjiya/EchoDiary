@@ -15,13 +15,15 @@ data class MemoriesUiState(
     val selectedTab: Int = 2, // Memories tab is selected
     val activeFilterTab: String = "Weekly",
     val memoryCardHeader: String = "SAVED WEEKLY MEMORY",
-    val memoryTitle: String = "A week of progress and connection.",
-    val memoryNarrative: String = "This week, you recorded your thoughts and reflections. Your entries capture your experiences.",
-    val memorySubtitle: String = "Oct 5–11, 2026 · 5 diary entries",
-    val highlights: List<String> = emptyList(),
+    val memoryTitle: String = DiaryActivityStore.weeklyMemoryTitle.value,
+    val memoryNarrative: String = DiaryActivityStore.weeklyMemoryNarrative.value,
+    val memorySubtitle: String = "${DiaryActivityStore.getCurrentWeekLabel()} · ${DiaryActivityStore.activities.value.size} diary entries",
+    val highlights: List<String> = DiaryActivityStore.weeklyHighlights.value,
     val entries: List<DiaryEntryItem> = emptyList(),
-    val totalSavedMemoriesCount: Int = 3,
-    val photosSubtitle: String = "Lunch with friends · Oct 6"
+    val totalSavedMemoriesCount: Int = if (DiaryActivityStore.activities.value.isEmpty()) 0 else 3,
+    val photosSubtitle: String = "No photo memories yet",
+    val monthlyCardSubtitle: String = "${DiaryActivityStore.getCurrentMonthLabel()} · Based on your entries",
+    val yearlyCardSubtitle: String = "${DiaryActivityStore.getCurrentYearLabel()} · Based on your entries"
 )
 
 class MemoriesViewModel(
@@ -42,7 +44,14 @@ class MemoriesViewModel(
                 } else {
                     "No photo memories yet"
                 }
-                _uiState.update { it.copy(photosSubtitle = sub) }
+                _uiState.update {
+                    it.copy(
+                        photosSubtitle = sub,
+                        totalSavedMemoriesCount = if (activities.isEmpty()) 0 else 3,
+                        monthlyCardSubtitle = "${DiaryActivityStore.getCurrentMonthLabel()} · ${activities.size} entries",
+                        yearlyCardSubtitle = "${DiaryActivityStore.getCurrentYearLabel()} · ${activities.size} entries"
+                    )
+                }
                 updateCardContent()
             }
         }
@@ -92,7 +101,7 @@ class MemoriesViewModel(
                         memoryCardHeader = "SAVED WEEKLY MEMORY",
                         memoryTitle = title,
                         memoryNarrative = narrative,
-                        memorySubtitle = "Oct 5–11, 2026 · $count diary entries",
+                        memorySubtitle = "${DiaryActivityStore.getCurrentWeekLabel()} · $count diary entries",
                         highlights = highlights,
                         entries = allActivities
                     )
@@ -108,7 +117,7 @@ class MemoriesViewModel(
                         memoryCardHeader = "SAVED MONTHLY MEMORY",
                         memoryTitle = title,
                         memoryNarrative = narrative,
-                        memorySubtitle = "October 2026 · $count diary entries",
+                        memorySubtitle = "${DiaryActivityStore.getCurrentMonthLabel()} · $count diary entries",
                         highlights = categories,
                         entries = allActivities
                     )
@@ -124,7 +133,7 @@ class MemoriesViewModel(
                         memoryCardHeader = "SAVED YEARLY MEMORY",
                         memoryTitle = title,
                         memoryNarrative = narrative,
-                        memorySubtitle = "2026 · $count diary entries",
+                        memorySubtitle = "${DiaryActivityStore.getCurrentYearLabel()} · $count diary entries",
                         highlights = categories,
                         entries = allActivities
                     )

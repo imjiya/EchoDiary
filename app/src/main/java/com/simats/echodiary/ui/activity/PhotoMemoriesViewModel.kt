@@ -35,12 +35,12 @@ data class PhotoMemoriesUiState(
     val headerSubtitle: String = "Photos connected to your diary entries.",
     val photoMemories: List<PhotoMemoryItem> = emptyList(),
     val totalPhotosCount: Int = 0,
-    val dateHeader: String = "October 6, 2026 · 1 photo",
-    val imageCaption: String = "Lunch with friends · A2",
-    val imageSubcaption: String = "Illustrative lunch photo associated with this entry.",
-    val entryTitle: String = "Lunch with friends",
-    val entrySubtitle: String = "Friends · Oct 6, 2026",
-    val entryDescription: String = "Had lunch with friends after class.",
+    val dateHeader: String = "",
+    val imageCaption: String = "",
+    val imageSubcaption: String = "",
+    val entryTitle: String = "",
+    val entrySubtitle: String = "",
+    val entryDescription: String = "",
     val footerText: String = "Only recorded photo memories are represented."
 )
 

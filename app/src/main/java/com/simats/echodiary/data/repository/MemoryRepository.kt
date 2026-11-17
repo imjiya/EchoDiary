@@ -83,9 +83,9 @@ class MemoryRepositoryImpl(
     private fun synthesizeOfflineRagMemory(type: String): GenerateMemoryResponse {
         val entries = DiaryActivityStore.activities.value
         val dateRange = when (type.lowercase()) {
-            "monthly" -> "OCTOBER 2026"
-            "yearly" -> "2026"
-            else -> "OCT 5–11, 2026"
+            "monthly" -> DiaryActivityStore.getCurrentMonthLabel().uppercase()
+            "yearly" -> DiaryActivityStore.getCurrentYearLabel()
+            else -> DiaryActivityStore.getCurrentWeekLabel().uppercase()
         }
         val ragResult = RagMemoryEngine.synthesizeMemory(entries, type, dateRange)
 

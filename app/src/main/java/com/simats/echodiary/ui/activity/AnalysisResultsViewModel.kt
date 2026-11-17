@@ -2,32 +2,30 @@ package com.simats.echodiary.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simats.echodiary.data.local.DiaryActivityStore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class AnalysisItem(
     val title: String,
     val sublink: String,
-    val icon: String
+    val icon: String,
+    val rawEntry: DiaryEntryItem? = null
 )
 
 data class AnalysisResultsUiState(
-    val headerSubtitle: String = "OCT 5–11 · BASED ON 5 ENTRIES",
+    val headerSubtitle: String = "",
     val title: String = "Grounded in your words.",
-    val description: String = "Five categories, one entry each. Topics below come directly from your saved diary.",
-    val items: List<AnalysisItem> = listOf(
-        AnalysisItem("College · Lectures and project work", "View A1: Lectures and project · Oct 5, 2026", "🎓"),
-        AnalysisItem("Friends · Lunch after class", "View A2: Lunch with friends · Oct 6, 2026", "👥"),
-        AnalysisItem("Health · Evening walk · Calm recorded", "View A3: Evening walk · Oct 7, 2026", "❤️"),
-        AnalysisItem("Work · Presentation preparation", "View A4: Presentation preparation · Oct 8, 2026", "💼"),
-        AnalysisItem("Family · Time with family", "View A5: Weekend with family · Oct 10, 2026", "🏠")
-    ),
-    val moodEvidenceText: String = "Mood evidence: Calm on A3. No mood inferred for the other 4 entries."
+    val description: String = "",
+    val items: List<AnalysisItem> = emptyList(),
+    val moodEvidenceText: String = ""
 )
 
 sealed class AnalysisResultsNavigationEvent {
@@ -44,13 +42,56 @@ class AnalysisResultsViewModel : ViewModel() {
     private val _navigationEvent = MutableSharedFlow<AnalysisResultsNavigationEvent>()
     val navigationEvent: SharedFlow<AnalysisResultsNavigationEvent> = _navigationEvent.asSharedFlow()
 
+    init {
+        viewModelScope.launch {
+            DiaryActivityStore.activities.collectLatest { activities ->
+                val count = activities.size
+                val categories = activities.map { it.category }.distinct()
+                val weekRange = DiaryActivityStore.weeklyMemoryDateRange.value
+
+                val analysisItems = activities.mapIndexed { idx, entry ->
+                    val moodSnippet = if (entry.mood.isNotBlank() && !entry.mood.equals("not specified", ignoreCase = true)) {
+                        " · ${entry.mood} recorded"
+                    } else ""
+                    AnalysisItem(
+                        title = "${entry.category} · ${entry.title}$moodSnippet",
+                        sublink = "View A${idx + 1}: ${entry.title} · ${entry.date}",
+                        icon = entry.icon.ifBlank { DiaryActivityStore.getCategoryIcon(entry.category) },
+                        rawEntry = entry
+                    )
+                }
+
+                val desc = if (count > 0) {
+                    "${categories.size} categories across $count entries. Topics below come directly from your saved diary."
+                } else {
+                    "No diary entries recorded for this period yet."
+                }
+
+                val moodEvidence = DiaryActivityStore.synthesizeMoodSummary(activities)
+
+                _uiState.update {
+                    it.copy(
+                        headerSubtitle = "${weekRange.substringBefore(" ·")} · BASED ON $count ENTRIES",
+                        description = desc,
+                        items = analysisItems,
+                        moodEvidenceText = "Mood evidence: $moodEvidence"
+                    )
+                }
+            }
+        }
+    }
+
     fun onViewMemoryClicked() {
         viewModelScope.launch {
             _navigationEvent.emit(AnalysisResultsNavigationEvent.NavigateToWeeklyMemory)
         }
     }
 
-    fun onEntryItemClicked() {
+    fun onEntryItemClicked(item: AnalysisItem? = null) {
+        val entry = item?.rawEntry ?: _uiState.value.items.firstOrNull()?.rawEntry ?: DiaryActivityStore.selectedActivity.value
+        if (entry != null) {
+            DiaryActivityStore.selectActivity(entry)
+        }
         viewModelScope.launch {
             _navigationEvent.emit(AnalysisResultsNavigationEvent.NavigateToActivityDetails)
         }

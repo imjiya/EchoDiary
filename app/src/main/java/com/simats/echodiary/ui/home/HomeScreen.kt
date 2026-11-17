@@ -121,7 +121,7 @@ fun HomeScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "AM",
+                        text = state.userInitials.ifBlank { "U" },
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = EchoTheme.primary
@@ -282,7 +282,7 @@ fun HomeScreen(
                         }
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "WEEKLY MEMORY · OCT 5–11",
+                            text = state.weeklyMemoryDateRange.ifBlank { "WEEKLY MEMORY" },
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = EchoTheme.primary,
@@ -293,7 +293,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "A week of progress and connection.",
+                        text = state.weeklyMemoryTitle.ifBlank { "Your Weekly Memory" },
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1E293B),
@@ -303,7 +303,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = "5 entries · 5 categories · 1 saved memory",
+                        text = state.weeklyMemorySubtitle,
                         fontSize = 13.sp,
                         color = Color(0xFF64748B)
                     )

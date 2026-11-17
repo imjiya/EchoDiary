@@ -157,17 +157,17 @@ fun SelectedDateScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = state.entryItem.icon, fontSize = 18.sp)
+                        Text(text = state.entryItem?.icon ?: "📅", fontSize = 18.sp)
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
-                                text = state.entryItem.title,
+                                text = state.entryItem?.title ?: "No entry recorded",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF1E293B)
                             )
                             Text(
-                                text = "${state.entryItem.category} · ${state.entryItem.date}",
+                                text = "${state.entryItem?.category ?: "Diary"} · ${state.fullDate}",
                                 fontSize = 12.sp,
                                 color = Color(0xFF94A3B8)
                             )
@@ -177,33 +177,35 @@ fun SelectedDateScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = state.entryItem.description,
+                        text = state.entryItem?.description ?: "No diary entry recorded for this date. Tap Add an entry below to create one.",
                         fontSize = 14.sp,
                         color = Color(0xFF64748B)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            if (state.hasEntry) {
+                Spacer(modifier = Modifier.height(12.dp))
 
-            // View activity details link
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { viewModel.onViewActivityDetailsClicked() }
-            ) {
-                Text(
-                    text = "View activity details",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "→",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF5165F6)
-                )
+                // View activity details link
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { viewModel.onViewActivityDetailsClicked() }
+                ) {
+                    Text(
+                        text = "View activity details",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF5165F6)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "→",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF5165F6)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(40.dp))

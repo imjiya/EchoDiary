@@ -130,73 +130,92 @@ fun SearchDiaryScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Result Header
-            Text(
-                text = "${state.searchResultCount} result for \"${state.searchQuery}\"",
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
-            )
+            if (state.searchQuery.isNotBlank()) {
+                Text(
+                    text = "${state.searchResultCount} results for \"${state.searchQuery}\"",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1E293B)
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            // Result Item Card
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                    .padding(16.dp)
-            ) {
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+                if (state.results.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(text = state.resultItem.icon, fontSize = 18.sp)
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Column {
-                            Text(
-                                text = state.resultItem.title,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
-                            )
-                            Text(
-                                text = "${state.resultItem.category} · ${state.resultItem.date}",
-                                fontSize = 12.sp,
-                                color = Color(0xFF94A3B8)
-                            )
+                        Text(
+                            text = "No diary entries found matching \"${state.searchQuery}\"",
+                            fontSize = 14.sp,
+                            color = Color(0xFF94A3B8)
+                        )
+                    }
+                } else {
+                    state.results.forEach { entry ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                                .clickable { viewModel.onSelectEntry(entry) }
+                                .padding(16.dp)
+                        ) {
+                            Column {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(text = entry.icon.ifBlank { "📝" }, fontSize = 18.sp)
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = entry.title,
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFF1E293B)
+                                        )
+                                        Text(
+                                            text = "${entry.category} · ${entry.date}",
+                                            fontSize = 12.sp,
+                                            color = Color(0xFF94A3B8)
+                                        )
+                                    }
+                                    val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
+                                    if (entry.mood.isNotBlank() && !entry.mood.equals("not specified", ignoreCase = true)) {
+                                        Text(text = "$moodEmoji ${entry.mood}", fontSize = 12.sp, color = Color(0xFF5165F6), fontWeight = FontWeight.Medium)
+                                    }
+                                }
+
+                                if (entry.description.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Text(
+                                        text = entry.description,
+                                        fontSize = 14.sp,
+                                        color = Color(0xFF64748B),
+                                        maxLines = 2
+                                    )
+                                }
+                            }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
-                        text = state.resultItem.description,
+                        text = "Type keywords, categories, or moods to search your diary.",
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B)
+                        color = Color(0xFF94A3B8)
                     )
                 }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // View activity details link
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { viewModel.onViewActivityDetailsClicked() }
-            ) {
-                Text(
-                    text = "View activity details",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "→",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF5165F6)
-                )
             }
 
             Spacer(modifier = Modifier.height(28.dp))

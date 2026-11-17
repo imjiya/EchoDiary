@@ -21,7 +21,7 @@ import java.util.Locale
 data class WriteDiaryEntryUiState(
     val title: String = "",
     val description: String = "",
-    val date: String = "Oct 11, 2026",
+    val date: String = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date()),
     val category: String = "College",
     val mood: String = "Good",
     val hasPhoto: Boolean = false,

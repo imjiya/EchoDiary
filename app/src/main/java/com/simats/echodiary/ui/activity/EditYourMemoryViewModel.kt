@@ -8,17 +8,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 data class EditYourMemoryUiState(
-    val dateRangeText: String = "Weekly memory · Oct 5–11, 2026",
-    val memoryTitle: String = "A week of progress and connection.",
-    val weeklyNarrative: String = "This week, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend.",
-    val sourceMaterialText: String = "Source material: 5 entries across College, Friends, Health, Work and Family."
+    val dateRangeText: String = DiaryActivityStore.weeklyMemoryDateRange.value,
+    val memoryTitle: String = DiaryActivityStore.weeklyMemoryTitle.value,
+    val weeklyNarrative: String = DiaryActivityStore.weeklyMemoryNarrative.value,
+    val sourceMaterialText: String = "Source material: ${DiaryActivityStore.activities.value.size} recorded entries."
 )
 
 class EditYourMemoryViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(
         EditYourMemoryUiState(
+            dateRangeText = DiaryActivityStore.weeklyMemoryDateRange.value,
             memoryTitle = DiaryActivityStore.weeklyMemoryTitle.value,
-            weeklyNarrative = DiaryActivityStore.weeklyMemoryNarrative.value
+            weeklyNarrative = DiaryActivityStore.weeklyMemoryNarrative.value,
+            sourceMaterialText = "Source material: ${DiaryActivityStore.activities.value.size} recorded entries."
         )
     )
     val uiState: StateFlow<EditYourMemoryUiState> = _uiState.asStateFlow()

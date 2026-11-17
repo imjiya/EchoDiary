@@ -127,10 +127,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                var recordedTranscript by remember { mutableStateOf("Attended lectures and worked on a project.") }
-                var entryTitle by remember { mutableStateOf("Diary Entry") }
-                var entryDescription by remember { mutableStateOf("Attended lectures and worked on a project.") }
-                var entryDate by remember { mutableStateOf("Oct 5, 2026") }
+                val todayFormatted = remember {
+                    java.text.SimpleDateFormat("MMM d, yyyy", java.util.Locale.getDefault()).format(java.util.Date())
+                }
+                var recordedTranscript by remember { mutableStateOf("") }
+                var entryTitle by remember { mutableStateOf("") }
+                var entryDescription by remember { mutableStateOf("") }
+                var entryDate by remember { mutableStateOf(todayFormatted) }
                 var entryCategory by remember { mutableStateOf("College") }
                 var entryMood by remember { mutableStateOf("Not specified") }
                 var entryId by remember { mutableStateOf(0) }
@@ -363,12 +366,12 @@ class MainActivity : ComponentActivity() {
                         val resolvedPhotoUri = entryPhotoUri ?: currentSelected?.photoUri
                         val resolvedHasPhoto = entryHasPhoto || currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank()
                         ActivityDetailsScreen(
-                            initialTitle = entryTitle,
-                            initialDescription = entryDescription,
-                            initialDate = entryDate,
-                            initialCategory = entryCategory,
-                            initialMood = entryMood,
-                            entryId = entryId,
+                            initialTitle = currentSelected?.title?.takeIf { it.isNotBlank() } ?: entryTitle,
+                            initialDescription = currentSelected?.description?.takeIf { it.isNotBlank() } ?: entryDescription,
+                            initialDate = currentSelected?.date?.takeIf { it.isNotBlank() } ?: entryDate,
+                            initialCategory = currentSelected?.category?.takeIf { it.isNotBlank() } ?: entryCategory,
+                            initialMood = currentSelected?.mood?.takeIf { it.isNotBlank() } ?: entryMood,
+                            entryId = currentSelected?.id?.takeIf { it > 0 } ?: entryId,
                             initialPhotoUri = resolvedPhotoUri,
                             initialHasPhoto = resolvedHasPhoto,
                             onNavigateBack = {
@@ -389,12 +392,12 @@ class MainActivity : ComponentActivity() {
                         val resolvedPhotoUri = entryPhotoUri ?: currentSelected?.photoUri
                         val resolvedHasPhoto = entryHasPhoto || currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank()
                         EditActivityScreen(
-                            initialTitle = entryTitle,
-                            initialDescription = entryDescription,
-                            initialDate = entryDate,
-                            initialCategory = entryCategory,
-                            initialMood = entryMood,
-                            entryId = entryId,
+                            initialTitle = currentSelected?.title?.takeIf { it.isNotBlank() } ?: entryTitle,
+                            initialDescription = currentSelected?.description?.takeIf { it.isNotBlank() } ?: entryDescription,
+                            initialDate = currentSelected?.date?.takeIf { it.isNotBlank() } ?: entryDate,
+                            initialCategory = currentSelected?.category?.takeIf { it.isNotBlank() } ?: entryCategory,
+                            initialMood = currentSelected?.mood?.takeIf { it.isNotBlank() } ?: entryMood,
+                            entryId = currentSelected?.id?.takeIf { it > 0 } ?: entryId,
                             initialPhotoUri = resolvedPhotoUri,
                             initialHasPhoto = resolvedHasPhoto,
                             onNavigateBack = {

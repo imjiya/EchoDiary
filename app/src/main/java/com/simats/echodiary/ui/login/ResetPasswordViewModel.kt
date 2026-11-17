@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simats.echodiary.data.local.DiaryActivityStore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ResetPasswordUiState(
-    val email: String = "alex.morgan@example.com",
+    val email: String = DiaryActivityStore.userEmail.value,
     val requestSent: Boolean = false
 )
 

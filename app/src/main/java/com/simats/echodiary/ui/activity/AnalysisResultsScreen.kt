@@ -158,7 +158,7 @@ fun AnalysisResultsScreen(
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF5165F6),
                             modifier = Modifier
-                                .clickable { viewModel.onEntryItemClicked() }
+                                .clickable { viewModel.onEntryItemClicked(item) }
                                 .padding(vertical = 2.dp)
                         )
                     }

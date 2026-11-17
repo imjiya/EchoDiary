@@ -16,15 +16,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class EditActivityUiState(
-    val title: String = "Lectures and project",
-    val description: String = "Attended lectures and worked on a project.",
-    val date: String = "Oct 5, 2026",
+    val title: String = "",
+    val description: String = "",
+    val date: String = "",
     val category: String = "College",
     val mood: String = "Not specified",
     val hasPhoto: Boolean = false,
     val photoUri: String? = null,
     val entryId: Int = 0,
-    val originalTitle: String = "Lectures and project",
+    val originalTitle: String = "",
     val isSaving: Boolean = false,
     val errorMessage: String? = null
 )
@@ -54,6 +54,22 @@ class EditActivityViewModel(
 
     private val _navigationEvent = MutableSharedFlow<EditActivityNavigationEvent>()
     val navigationEvent: SharedFlow<EditActivityNavigationEvent> = _navigationEvent.asSharedFlow()
+
+    init {
+        val current = DiaryActivityStore.selectedActivity.value
+        if (current != null) {
+            setInitialDetails(
+                title = current.title,
+                description = current.description,
+                date = current.date,
+                category = current.category,
+                mood = current.mood,
+                id = current.id,
+                photoUri = current.photoUri,
+                hasPhoto = current.hasPhoto
+            )
+        }
+    }
 
     fun setInitialDetails(
         title: String,
@@ -116,7 +132,9 @@ class EditActivityViewModel(
             id = state.entryId,
             title = updatedTitle,
             category = state.category.trim().ifBlank { "College" },
-            date = state.date.trim().ifBlank { "Oct 11, 2026" },
+            date = state.date.trim().ifBlank {
+                java.text.SimpleDateFormat("MMM d, yyyy", java.util.Locale.getDefault()).format(java.util.Date())
+            },
             description = updatedDesc,
             icon = DiaryActivityStore.getCategoryIcon(state.category),
             mood = state.mood.trim().ifBlank { "Not specified" },

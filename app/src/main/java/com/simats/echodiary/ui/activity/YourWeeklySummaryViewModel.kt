@@ -23,11 +23,11 @@ data class WeeklySummaryEntry(
 )
 
 data class YourWeeklySummaryUiState(
-    val dateRange: String = "OCT 5–11, 2026",
-    val diaryEntriesCount: Int = 5,
-    val categoriesCount: Int = 5,
+    val dateRange: String = DiaryActivityStore.getCurrentWeekLabel().uppercase(),
+    val diaryEntriesCount: Int = DiaryActivityStore.activities.value.size,
+    val categoriesCount: Int = DiaryActivityStore.activities.value.map { it.category }.distinct().size,
     val entries: List<WeeklySummaryEntry> = emptyList(),
-    val moodSummary: String = "1 explicitly recorded mood: Calm, on Oct 7. The other 4 entries have no mood specified."
+    val moodSummary: String = DiaryActivityStore.synthesizeMoodSummary(DiaryActivityStore.activities.value)
 )
 
 sealed class YourWeeklySummaryNavigationEvent {
@@ -71,6 +71,7 @@ class YourWeeklySummaryViewModel(
                 }
                 _uiState.update {
                     it.copy(
+                        dateRange = DiaryActivityStore.getCurrentWeekLabel().uppercase(),
                         diaryEntriesCount = activities.size,
                         categoriesCount = distinctCats.size,
                         entries = summaryEntries,

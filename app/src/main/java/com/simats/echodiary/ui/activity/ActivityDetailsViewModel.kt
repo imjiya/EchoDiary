@@ -15,11 +15,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import kotlinx.coroutines.flow.collectLatest
+
 data class ActivityDetailsUiState(
-    val date: String = "Monday, Oct 5, 2026",
-    val title: String = "Diary Entry",
-    val category: String = "College",
-    val description: String = "Attended lectures and worked on a project.",
+    val date: String = "",
+    val title: String = "",
+    val category: String = "Diary",
+    val description: String = "",
     val mood: String = "Not specified",
     val photoStatus: String = "No photo attached",
     val hasPhoto: Boolean = false,
@@ -54,6 +56,38 @@ class ActivityDetailsViewModel(
 
     private val _navigationEvent = MutableSharedFlow<ActivityDetailsNavigationEvent>()
     val navigationEvent: SharedFlow<ActivityDetailsNavigationEvent> = _navigationEvent.asSharedFlow()
+
+    init {
+        val current = DiaryActivityStore.selectedActivity.value
+        if (current != null) {
+            setEntryDetails(
+                title = current.title,
+                description = current.description,
+                date = current.date,
+                category = current.category,
+                mood = current.mood,
+                id = current.id,
+                photoUri = current.photoUri,
+                hasPhoto = current.hasPhoto
+            )
+        }
+        executionScope.launch {
+            DiaryActivityStore.selectedActivity.collectLatest { item ->
+                if (item != null) {
+                    setEntryDetails(
+                        title = item.title,
+                        description = item.description,
+                        date = item.date,
+                        category = item.category,
+                        mood = item.mood,
+                        id = item.id,
+                        photoUri = item.photoUri,
+                        hasPhoto = item.hasPhoto
+                    )
+                }
+            }
+        }
+    }
 
     fun setEntryDetails(
         title: String,

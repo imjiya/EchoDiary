@@ -16,11 +16,11 @@ import kotlinx.coroutines.launch
 
 data class CreatingYourMemoryUiState(
     val title: String = "Connecting your week.",
-    val subtitle: String = "Bringing together your 5 entries from Oct 5–11,\nusing only what you recorded.",
+    val subtitle: String = "Bringing together your diary entries,\nusing only what you recorded.",
     val progress: Float = 0.85f,
     val progressPercentageText: String = "85% · Drafting your source-based memory summary",
     val checklist: List<Pair<String, Boolean>> = listOf(
-        "Gathering 5 diary entries" to true,
+        "Gathering diary entries" to true,
         "Retrieving grounded context & anchors" to true,
         "Synthesizing narrative via RAG engine" to true
     )

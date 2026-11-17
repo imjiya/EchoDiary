@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.simats.echodiary.data.local.DiaryActivityStore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,16 +11,20 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 data class FilterActivitiesUiState(
-    val fromDate: String = "Oct 5, 2026",
-    val toDate: String = "Oct 11, 2026",
+    val fromDate: String = "",
+    val toDate: String = "",
     val selectedCategory: String = "All",
     val selectedSource: String = "All",
     val selectedMood: String = "All",
     val categories: List<String> = listOf("All", "College", "Work", "Friends", "Family", "Health", "Travel", "Exercise", "Learning", "Hobbies", "Other"),
     val sources: List<String> = listOf("All", "Voice", "Text"),
-    val moods: List<String> = listOf("All", "Calm", "Unspecified")
+    val moods: List<String> = listOf("All", "Happy", "Calm", "Reflective", "Anxious", "Sad", "Energetic", "Unspecified")
 )
 
 sealed class FilterActivitiesNavigationEvent {
@@ -30,7 +35,18 @@ sealed class FilterActivitiesNavigationEvent {
 
 class FilterActivitiesViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(FilterActivitiesUiState())
+    private val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+
+    private val _uiState = MutableStateFlow(
+        FilterActivitiesUiState(
+            fromDate = run {
+                val cal = Calendar.getInstance()
+                cal.add(Calendar.DAY_OF_YEAR, -7)
+                dateFormat.format(cal.time)
+            },
+            toDate = dateFormat.format(Date())
+        )
+    )
     val uiState: StateFlow<FilterActivitiesUiState> = _uiState.asStateFlow()
 
     private val _navigationEvent = MutableSharedFlow<FilterActivitiesNavigationEvent>()

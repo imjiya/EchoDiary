@@ -101,14 +101,30 @@ fun CalendarScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "〈", fontSize = 18.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Bold)
                         Text(
-                            text = "October 2026",
+                            text = "〈",
+                            fontSize = 18.sp,
+                            color = Color(0xFF94A3B8),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .clickable { viewModel.previousMonth() }
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                        Text(
+                            text = state.monthTitle,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF1E293B)
                         )
-                        Text(text = "〉", fontSize = 18.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "〉",
+                            fontSize = 18.sp,
+                            color = Color(0xFF94A3B8),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .clickable { viewModel.nextMonth() }
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -131,15 +147,7 @@ fun CalendarScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // Days Grid
-                    val weeks = listOf(
-                        listOf(null, null, null, 1, 2, 3, 4),
-                        listOf(5, 6, 7, 8, 9, 10, 11),
-                        listOf(12, 13, 14, 15, 16, 17, 18),
-                        listOf(19, 20, 21, 22, 23, 24, 25),
-                        listOf(26, 27, 28, 29, 30, 31, null)
-                    )
-
-                    weeks.forEach { week ->
+                    state.weeks.forEach { week ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -149,8 +157,7 @@ fun CalendarScreen(
                             week.forEach { dayNum ->
                                 if (dayNum != null) {
                                     val isSelected = state.selectedDay == dayNum
-                                    val isToday = dayNum == 11
-                                    val hasEntry = dayNum in listOf(5, 6, 7, 8, 10, 11)
+                                    val hasEntry = dayNum in state.daysWithEntries
 
                                     Box(
                                         modifier = Modifier
@@ -168,10 +175,10 @@ fun CalendarScreen(
                                             Text(
                                                 text = "$dayNum",
                                                 fontSize = 14.sp,
-                                                fontWeight = if (isSelected || isToday) FontWeight.Bold else FontWeight.Normal,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                                 color = when {
                                                     isSelected -> Color.White
-                                                    isToday -> EchoTheme.primary
+                                                    hasEntry -> EchoTheme.primary
                                                     else -> Color(0xFF1E293B)
                                                 }
                                             )
@@ -233,7 +240,14 @@ fun CalendarScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
-                    .clickable { onNavigateToActivityDetails() }
+                    .clickable { 
+                        if (state.hasEntry) {
+                            viewModel.onEntryCardClicked()
+                            onNavigateToActivityDetails()
+                        } else {
+                            onNavigateToWriteDiary(state.selectedActivityDate)
+                        }
+                    }
                     .padding(16.dp)
             ) {
                 Column {

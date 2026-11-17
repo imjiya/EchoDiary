@@ -148,7 +148,7 @@ fun ThirdOnboardingScreen(
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = "Oct 5–11, 2026 · 5 diary entries",
+                        text = "Weekly memory preview · Grounded in your entries",
                         fontSize = 13.sp,
                         color = Color(0xFF64748B)
                     )

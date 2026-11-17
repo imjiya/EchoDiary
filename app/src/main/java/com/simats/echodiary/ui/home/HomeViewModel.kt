@@ -18,11 +18,17 @@ import java.util.Date
 import java.util.Locale
 
 data class HomeUiState(
-    val userName: String = "Alex",
-    val dateText: String = "Sunday, Oct 11, 2026",
+    val userName: String = "",
+    val userInitials: String = "",
+    val dateText: String = "",
     val subtitleText: String = "A little reflection goes a long way.",
     val selectedTab: Int = 0,
-    val recentActivities: List<DiaryEntryItem> = emptyList()
+    val recentActivities: List<DiaryEntryItem> = emptyList(),
+    val weeklyMemoryDateRange: String = "",
+    val weeklyMemoryTitle: String = "",
+    val weeklyMemorySubtitle: String = "",
+    val entriesCount: Int = 0,
+    val categoriesCount: Int = 0
 )
 
 class HomeViewModel(
@@ -44,25 +50,64 @@ class HomeViewModel(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        val sessionName = try { EchoDiaryApp.getSessionManager().getUserName() } catch (_: Exception) { null }
-        val displayName = if (!sessionName.isNullOrBlank()) {
-            sessionName.trim().split("\\s+".toRegex()).firstOrNull() ?: sessionName
-        } else {
-            DiaryActivityStore.userFullName.value.split(" ").firstOrNull() ?: "Alex"
-        }
-
         val todayDate = SimpleDateFormat("EEEE, MMM d, yyyy", Locale.getDefault()).format(Date())
 
-        _uiState.value = _uiState.value.copy(
-            userName = displayName,
-            dateText = todayDate
-        )
+        executionScope.launch {
+            DiaryActivityStore.userFullName.collectLatest { name ->
+                val sessionName = try { EchoDiaryApp.getSessionManager().getUserName() } catch (_: Exception) { null }
+                val resolvedName = when {
+                    !sessionName.isNullOrBlank() -> sessionName
+                    name.isNotBlank() -> name
+                    else -> "Friend"
+                }
+                val firstWord = resolvedName.trim().split("\\s+".toRegex()).firstOrNull() ?: resolvedName
+                _uiState.update { it.copy(userName = firstWord) }
+            }
+        }
+
+        executionScope.launch {
+            DiaryActivityStore.userInitials.collectLatest { initials ->
+                val resolved = if (initials.isNotBlank()) initials else {
+                    val sName = try { EchoDiaryApp.getSessionManager().getUserName() } catch (_: Exception) { null }
+                    if (!sName.isNullOrBlank()) DiaryActivityStore.computeInitials(sName) else "U"
+                }
+                _uiState.update { it.copy(userInitials = resolved) }
+            }
+        }
 
         executionScope.launch {
             DiaryActivityStore.activities.collectLatest { activities ->
-                _uiState.update { it.copy(recentActivities = activities.take(4)) }
+                val count = activities.size
+                val cats = activities.map { it.category }.distinct().size
+                val sub = if (count > 0) {
+                    "$count entries · $cats categories · 1 saved memory"
+                } else {
+                    "No entries this week yet · Start your reflection"
+                }
+                _uiState.update {
+                    it.copy(
+                        recentActivities = activities.take(4),
+                        entriesCount = count,
+                        categoriesCount = cats,
+                        weeklyMemorySubtitle = sub
+                    )
+                }
             }
         }
+
+        executionScope.launch {
+            DiaryActivityStore.weeklyMemoryTitle.collectLatest { title ->
+                _uiState.update { it.copy(weeklyMemoryTitle = title) }
+            }
+        }
+
+        executionScope.launch {
+            DiaryActivityStore.weeklyMemoryDateRange.collectLatest { range ->
+                _uiState.update { it.copy(weeklyMemoryDateRange = range) }
+            }
+        }
+
+        _uiState.update { it.copy(dateText = todayDate) }
 
         // MVVM Cache: Only fetch from backend if not already loaded, avoiding repeated API hits on every visit
         loadEntries(forceRefresh = false)

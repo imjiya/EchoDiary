@@ -396,7 +396,7 @@ fun MemoriesScreen(
                                 color = Color(0xFF1E293B)
                             )
                             Text(
-                                text = "October 2026 · Limited sample",
+                                text = state.monthlyCardSubtitle,
                                 fontSize = 13.sp,
                                 color = Color(0xFF64748B)
                             )
@@ -439,7 +439,7 @@ fun MemoriesScreen(
                                 color = Color(0xFF1E293B)
                             )
                             Text(
-                                text = "2026 · October records only",
+                                text = state.yearlyCardSubtitle,
                                 fontSize = 13.sp,
                                 color = Color(0xFF64748B)
                             )

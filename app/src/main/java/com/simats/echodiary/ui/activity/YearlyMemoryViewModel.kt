@@ -20,14 +20,14 @@ data class SupportingRecord(
 )
 
 data class YearlyMemoryUiState(
-    val yearTitle: String = "2026",
+    val yearTitle: String = DiaryActivityStore.yearlyYearLabel.value,
     val infoText: String = "Source-grounded yearly memory from your recorded entries.",
-    val chapterTitle: String = "One small chapter of 2026.",
-    val chapterText: String = "Across 2026, you attended lectures and worked on a project, then had lunch with friends after class. You went for an evening walk and recorded feeling Calm. You also prepared a presentation and spent time with family over the weekend.",
-    val categories: List<String> = listOf("College", "Friends", "Health", "Work", "Family"),
-    val supportingRecords: List<SupportingRecord> = emptyList(),
+    val chapterTitle: String = DiaryActivityStore.yearlyChapterTitle.value,
+    val chapterText: String = DiaryActivityStore.yearlyChapterText.value,
+    val categories: List<String> = DiaryActivityStore.yearlyCategories.value,
+    val supportingRecords: List<SupportingRecord> = DiaryActivityStore.yearlySupportingRecords.value,
     val entries: List<DiaryEntryItem> = emptyList(),
-    val footerText: String = "Topics come from these records; grounded directly in what you recorded."
+    val footerText: String = DiaryActivityStore.yearlyFooterText.value
 )
 
 sealed class YearlyMemoryNavigationEvent {
