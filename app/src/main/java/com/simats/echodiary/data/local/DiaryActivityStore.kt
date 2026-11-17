@@ -174,6 +174,9 @@ object DiaryActivityStore {
     private val _weeklyEntriesCount = MutableStateFlow(0)
     val weeklyEntriesCount: StateFlow<Int> = _weeklyEntriesCount.asStateFlow()
 
+    private val _weeklyMemoryPhotoUri = MutableStateFlow<String?>(null)
+    val weeklyMemoryPhotoUri: StateFlow<String?> = _weeklyMemoryPhotoUri.asStateFlow()
+
     private val _weeklyCategoriesCount = MutableStateFlow(0)
     val weeklyCategoriesCount: StateFlow<Int> = _weeklyCategoriesCount.asStateFlow()
 
@@ -469,9 +472,12 @@ object DiaryActivityStore {
         }
     }
 
-    fun updateWeeklyMemory(title: String, narrative: String) {
+    fun updateWeeklyMemory(title: String, narrative: String, photoUri: String? = null) {
         if (title.isNotBlank()) _weeklyMemoryTitle.value = title
         if (narrative.isNotBlank()) _weeklyMemoryNarrative.value = narrative
+        if (photoUri != null) {
+            _weeklyMemoryPhotoUri.value = photoUri
+        }
     }
 
     fun loadSampleActivities() {
@@ -484,6 +490,7 @@ object DiaryActivityStore {
     fun clearData() {
         _activities.value = emptyList()
         _selectedActivity.value = null
+        _weeklyMemoryPhotoUri.value = null
         _isLoadedFromBackend.value = false
         _isProfileLoadedFromBackend.value = false
         refreshMemories()

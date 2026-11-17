@@ -59,6 +59,16 @@ class MemoriesViewModel(
             DiaryActivityStore.weeklyMemoryTitle.collectLatest { updateCardContent() }
         }
         executionScope.launch {
+            DiaryActivityStore.weeklyMemoryPhotoUri.collectLatest { photo ->
+                if (!photo.isNullOrBlank() && _uiState.value.photosSubtitle == "No photo memories yet") {
+                    _uiState.update {
+                        it.copy(photosSubtitle = "Weekly Memory · Photo attached")
+                    }
+                }
+                updateCardContent()
+            }
+        }
+        executionScope.launch {
             DiaryActivityStore.weeklyMemoryNarrative.collectLatest { updateCardContent() }
         }
         executionScope.launch {

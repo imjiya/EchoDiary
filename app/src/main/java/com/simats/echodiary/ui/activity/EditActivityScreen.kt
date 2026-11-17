@@ -1,7 +1,12 @@
 package com.simats.echodiary.ui.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,6 +33,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -48,6 +55,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 
@@ -88,6 +96,70 @@ fun EditActivityScreen(
             } catch (_: Exception) {
                 null
             }
+        }
+    }
+
+    // Function to persist the imported gallery photo into internal storage
+    fun savePhotoToMemory(uri: Uri): String {
+        return try {
+            val photosDir = java.io.File(context.filesDir, "diary_photos")
+            if (!photosDir.exists()) {
+                photosDir.mkdirs()
+            }
+            val destinationFile = java.io.File(photosDir, "photo_${System.currentTimeMillis()}.jpg")
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                java.io.FileOutputStream(destinationFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            destinationFile.absolutePath
+        } catch (_: Exception) {
+            uri.toString()
+        }
+    }
+
+    // Launcher to select photo from gallery
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            val persistentPhotoPath = savePhotoToMemory(uri)
+            viewModel.onPhotoSelected(persistentPhotoPath)
+        }
+    }
+
+    // Appropriate permissions based on Android API level
+    val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+        )
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+    } else {
+        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    // Launcher to request gallery access permission
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsMap ->
+        val isGranted = permissionsMap.values.any { it }
+        if (isGranted) {
+            photoPickerLauncher.launch("image/*")
+        } else {
+            viewModel.onPermissionDenied("Gallery permission is required to import photos.")
+        }
+    }
+
+    fun onPhotoButtonClicked() {
+        val hasPermission = permissionsToRequest.any { perm ->
+            ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED
+        }
+        if (hasPermission) {
+            photoPickerLauncher.launch("image/*")
+        } else {
+            permissionLauncher.launch(permissionsToRequest)
         }
     }
 
@@ -351,24 +423,67 @@ fun EditActivityScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
+                        IconButton(
+                            onClick = { viewModel.onRemovePhoto() },
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
+                                .size(32.dp)
+                                .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
+                        ) {
+                            Text(text = "✕", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        }
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFFEEF2FF), RoundedCornerShape(12.dp))
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = "🖼️", fontSize = 18.sp)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = "Photo attached ✓",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF1E293B)
+                                )
+                                Text(
+                                    text = "Saved in memory for this entry",
+                                    fontSize = 11.sp,
+                                    color = Color(0xFF64748B)
+                                )
+                            }
+                        }
+                        TextButton(onClick = { viewModel.onRemovePhoto() }) {
+                            Text("Remove", color = Color(0xFFEF4444), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
 
             // Add photo button
             Button(
-                onClick = { viewModel.onAddPhotoClicked() },
+                onClick = { onPhotoButtonClicked() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (state.hasPhoto || !state.photoUri.isNullOrBlank()) Color(0xFFE0E7FF) else Color(0xFFEEF2FF)
+                )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🖼️ ", fontSize = 16.sp)
                     Text(
-                        text = if (state.hasPhoto) "Photo attached ✓" else "Add photo · optional",
+                        text = if (state.hasPhoto || !state.photoUri.isNullOrBlank()) "Change photo from gallery" else "Add photo · optional",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF5165F6)
@@ -379,7 +494,7 @@ fun EditActivityScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = if (state.hasPhoto) "Photo stored in memory for this entry." else "Your original entry remains unchanged until you save.",
+                text = if (state.hasPhoto || !state.photoUri.isNullOrBlank()) "Photo attached to this entry." else "Click above to select and attach a photo from your gallery.",
                 fontSize = 12.sp,
                 color = Color(0xFF94A3B8),
                 modifier = Modifier.fillMaxWidth()

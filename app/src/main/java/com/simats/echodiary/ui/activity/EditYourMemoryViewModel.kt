@@ -11,7 +11,9 @@ data class EditYourMemoryUiState(
     val dateRangeText: String = DiaryActivityStore.weeklyMemoryDateRange.value,
     val memoryTitle: String = DiaryActivityStore.weeklyMemoryTitle.value,
     val weeklyNarrative: String = DiaryActivityStore.weeklyMemoryNarrative.value,
-    val sourceMaterialText: String = "Source material: ${DiaryActivityStore.activities.value.size} recorded entries."
+    val sourceMaterialText: String = "Source material: ${DiaryActivityStore.activities.value.size} recorded entries.",
+    val photoUri: String? = DiaryActivityStore.weeklyMemoryPhotoUri.value,
+    val hasPhoto: Boolean = !DiaryActivityStore.weeklyMemoryPhotoUri.value.isNullOrBlank()
 )
 
 class EditYourMemoryViewModel : ViewModel() {
@@ -20,7 +22,9 @@ class EditYourMemoryViewModel : ViewModel() {
             dateRangeText = DiaryActivityStore.weeklyMemoryDateRange.value,
             memoryTitle = DiaryActivityStore.weeklyMemoryTitle.value,
             weeklyNarrative = DiaryActivityStore.weeklyMemoryNarrative.value,
-            sourceMaterialText = "Source material: ${DiaryActivityStore.activities.value.size} recorded entries."
+            sourceMaterialText = "Source material: ${DiaryActivityStore.activities.value.size} recorded entries.",
+            photoUri = DiaryActivityStore.weeklyMemoryPhotoUri.value,
+            hasPhoto = !DiaryActivityStore.weeklyMemoryPhotoUri.value.isNullOrBlank()
         )
     )
     val uiState: StateFlow<EditYourMemoryUiState> = _uiState.asStateFlow()
@@ -33,7 +37,20 @@ class EditYourMemoryViewModel : ViewModel() {
         _uiState.update { it.copy(weeklyNarrative = narrative) }
     }
 
+    fun onPhotoSelected(uri: String) {
+        _uiState.update { it.copy(photoUri = uri, hasPhoto = true) }
+    }
+
+    fun onRemovePhoto() {
+        _uiState.update { it.copy(photoUri = null, hasPhoto = false) }
+    }
+
     fun onSaveClicked() {
-        DiaryActivityStore.updateWeeklyMemory(_uiState.value.memoryTitle, _uiState.value.weeklyNarrative)
+        val state = _uiState.value
+        DiaryActivityStore.updateWeeklyMemory(
+            title = state.memoryTitle,
+            narrative = state.weeklyNarrative,
+            photoUri = if (state.hasPhoto) state.photoUri else null
+        )
     }
 }

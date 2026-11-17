@@ -123,10 +123,23 @@ class EditActivityViewModel(
         _uiState.update { it.copy(hasPhoto = true) }
     }
 
+    fun onPhotoSelected(uri: String) {
+        _uiState.update { it.copy(photoUri = uri, hasPhoto = true) }
+    }
+
+    fun onRemovePhoto() {
+        _uiState.update { it.copy(photoUri = null, hasPhoto = false) }
+    }
+
+    fun onPermissionDenied(message: String) {
+        _uiState.update { it.copy(errorMessage = message) }
+    }
+
     fun onSaveClicked() {
         val state = _uiState.value
         val updatedTitle = state.title.trim().ifBlank { "Diary Entry" }
         val updatedDesc = state.description.trim()
+        val hasAttachedPhoto = state.hasPhoto || !state.photoUri.isNullOrBlank()
 
         val updatedItem = DiaryEntryItem(
             id = state.entryId,
@@ -138,12 +151,13 @@ class EditActivityViewModel(
             description = updatedDesc,
             icon = DiaryActivityStore.getCategoryIcon(state.category),
             mood = state.mood.trim().ifBlank { "Not specified" },
-            hasPhoto = state.hasPhoto,
-            photoUri = state.photoUri
+            hasPhoto = hasAttachedPhoto,
+            photoUri = if (hasAttachedPhoto) state.photoUri else null
         )
 
         // Save updated activity in memory of activities
         DiaryActivityStore.updateActivity(state.originalTitle, updatedItem)
+        DiaryActivityStore.selectActivity(updatedItem)
 
         executionScope.launch {
             if (state.entryId > 0) {

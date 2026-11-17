@@ -363,8 +363,8 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.ActivityDetails -> {
                         val currentSelected = DiaryActivityStore.selectedActivity.value
-                        val resolvedPhotoUri = entryPhotoUri ?: currentSelected?.photoUri
-                        val resolvedHasPhoto = entryHasPhoto || currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank()
+                        val resolvedPhotoUri = currentSelected?.photoUri ?: entryPhotoUri
+                        val resolvedHasPhoto = currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank() || entryHasPhoto
                         ActivityDetailsScreen(
                             initialTitle = currentSelected?.title?.takeIf { it.isNotBlank() } ?: entryTitle,
                             initialDescription = currentSelected?.description?.takeIf { it.isNotBlank() } ?: entryDescription,
@@ -389,8 +389,8 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.EditActivity -> {
                         val currentSelected = DiaryActivityStore.selectedActivity.value
-                        val resolvedPhotoUri = entryPhotoUri ?: currentSelected?.photoUri
-                        val resolvedHasPhoto = entryHasPhoto || currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank()
+                        val resolvedPhotoUri = currentSelected?.photoUri ?: entryPhotoUri
+                        val resolvedHasPhoto = currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank() || entryHasPhoto
                         EditActivityScreen(
                             initialTitle = currentSelected?.title?.takeIf { it.isNotBlank() } ?: entryTitle,
                             initialDescription = currentSelected?.description?.takeIf { it.isNotBlank() } ?: entryDescription,

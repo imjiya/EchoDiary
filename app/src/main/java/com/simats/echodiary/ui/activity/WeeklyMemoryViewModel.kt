@@ -19,7 +19,9 @@ data class WeeklyMemoryUiState(
     val title: String = DiaryActivityStore.weeklyMemoryTitle.value,
     val summaryText: String = DiaryActivityStore.weeklyMemoryNarrative.value,
     val highlights: List<String> = DiaryActivityStore.weeklyHighlights.value,
-    val footerText: String = "Based on your ${DiaryActivityStore.activities.value.size} entries. Review before saving."
+    val footerText: String = "Based on your ${DiaryActivityStore.activities.value.size} entries. Review before saving.",
+    val photoUri: String? = DiaryActivityStore.weeklyMemoryPhotoUri.value,
+    val hasPhoto: Boolean = !DiaryActivityStore.weeklyMemoryPhotoUri.value.isNullOrBlank()
 )
 
 sealed class WeeklyMemoryNavigationEvent {
@@ -64,6 +66,16 @@ class WeeklyMemoryViewModel : ViewModel() {
             DiaryActivityStore.activities.collectLatest { activities ->
                 _uiState.update {
                     it.copy(footerText = "Based on your ${activities.size} entries. Review before saving.")
+                }
+            }
+        }
+        viewModelScope.launch {
+            DiaryActivityStore.weeklyMemoryPhotoUri.collectLatest { photo ->
+                _uiState.update {
+                    it.copy(
+                        photoUri = photo,
+                        hasPhoto = !photo.isNullOrBlank()
+                    )
                 }
             }
         }
