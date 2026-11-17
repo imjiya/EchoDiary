@@ -487,6 +487,11 @@ object DiaryActivityStore {
         }
     }
 
+    fun resetMemories() {
+        _weeklyMemoryPhotoUri.value = null
+        refreshMemories()
+    }
+
     fun loadSampleActivities() {
         _activities.value = sampleActivities
         _selectedActivity.value = sampleActivities.firstOrNull()

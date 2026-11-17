@@ -783,6 +783,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToEmptyStates = {
                                 navController.navigate(Screen.EmptyStates)
+                            },
+                            onNavigateToLogin = {
+                                navController.navigateRoot(Screen.Login)
                             }
                         )
                     }
