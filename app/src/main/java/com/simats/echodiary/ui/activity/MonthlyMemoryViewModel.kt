@@ -37,6 +37,7 @@ sealed class MonthlyMemoryNavigationEvent {
     object NavigateToAllActivities : MonthlyMemoryNavigationEvent()
     object NavigateToActivityAndMood : MonthlyMemoryNavigationEvent()
     object NavigateToActivityDetails : MonthlyMemoryNavigationEvent()
+    object NavigateToCreatingMemory : MonthlyMemoryNavigationEvent()
 }
 
 class MonthlyMemoryViewModel(
@@ -94,7 +95,21 @@ class MonthlyMemoryViewModel(
     }
 
     fun onGenerateMonthlyMemoryClicked() {
-        DiaryActivityStore.generateMonthlySummary(executionScope)
+        DiaryActivityStore.setGeneratingMemoryType("monthly")
+        executionScope.launch {
+            _navigationEvent.emit(MonthlyMemoryNavigationEvent.NavigateToCreatingMemory)
+        }
+    }
+
+    fun onShareClicked(context: android.content.Context) {
+        val state = _uiState.value
+        com.simats.echodiary.util.MemoryImageShareHelper.shareMemoryAsImage(
+            context = context,
+            title = state.summaryTitle,
+            dateRange = state.monthTitle,
+            narrative = state.summaryText,
+            highlights = state.categoryBreakdown.map { "${it.name} (${it.count})" }
+        )
     }
 
     fun onBackClicked() {

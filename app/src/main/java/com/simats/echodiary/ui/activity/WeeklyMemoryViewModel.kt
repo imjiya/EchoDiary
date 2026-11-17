@@ -96,8 +96,16 @@ class WeeklyMemoryViewModel : ViewModel() {
         }
     }
 
-    fun onShareClicked() {
-        // Share action
+    fun onShareClicked(context: android.content.Context) {
+        val state = _uiState.value
+        com.simats.echodiary.util.MemoryImageShareHelper.shareMemoryAsImage(
+            context = context,
+            title = state.title,
+            dateRange = state.dateRangeText,
+            narrative = state.summaryText,
+            highlights = state.highlights,
+            photoUri = state.photoUri
+        )
     }
 
     fun onViewDetailsClicked() {

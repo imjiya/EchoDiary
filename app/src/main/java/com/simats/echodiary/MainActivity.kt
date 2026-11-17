@@ -559,8 +559,13 @@ class MainActivity : ComponentActivity() {
                             onNavigateBack = {
                                 navController.popBackStack()
                             },
-                            onNavigateToWeeklyMemory = {
-                                navController.replaceTop(Screen.WeeklyMemory)
+                            onNavigateToMemory = { memoryType ->
+                                val target = when (memoryType.lowercase(java.util.Locale.ROOT)) {
+                                    "monthly" -> Screen.MonthlyMemory
+                                    "yearly" -> Screen.YearlyMemory
+                                    else -> Screen.WeeklyMemory
+                                }
+                                navController.replaceTop(target)
                             }
                         )
                     }
@@ -626,6 +631,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityDetails = {
                                 navController.navigate(Screen.ActivityDetails)
+                            },
+                            onNavigateToCreatingMemory = {
+                                navController.navigate(Screen.CreatingYourMemory)
                             }
                         )
                     }
@@ -639,6 +647,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityDetails = {
                                 navController.navigate(Screen.ActivityDetails)
+                            },
+                            onNavigateToCreatingMemory = {
+                                navController.navigate(Screen.CreatingYourMemory)
                             }
                         )
                     }

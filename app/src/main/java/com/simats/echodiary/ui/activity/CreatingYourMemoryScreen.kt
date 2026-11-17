@@ -49,20 +49,17 @@ import kotlinx.coroutines.flow.collectLatest
 fun CreatingYourMemoryScreen(
     viewModel: CreatingYourMemoryViewModel = remember { CreatingYourMemoryViewModel() },
     onNavigateBack: () -> Unit,
-    onNavigateToWeeklyMemory: () -> Unit
+    onNavigateToWeeklyMemory: () -> Unit = {},
+    onNavigateToMemory: (String) -> Unit = { onNavigateToWeeklyMemory() }
 ) {
     val state by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(key1 = true) {
-        delay(2000L)
-        onNavigateToWeeklyMemory()
-    }
 
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
                 is CreatingYourMemoryNavigationEvent.NavigateBack -> onNavigateBack()
                 is CreatingYourMemoryNavigationEvent.NavigateToWeeklySummary -> onNavigateBack()
+                is CreatingYourMemoryNavigationEvent.NavigateToMemory -> onNavigateToMemory(event.type)
             }
         }
     }
@@ -106,22 +103,22 @@ fun CreatingYourMemoryScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Simulation Notice Banner
+            // AI Status Banner
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFF0F4FF), shape = RoundedCornerShape(16.dp))
+                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(16.dp))
                     .padding(14.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "ⓘ", fontSize = 16.sp, color = Color(0xFF5165F6), fontWeight = FontWeight.Bold)
+                    Text(text = "🧠", fontSize = 16.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Visual simulation · no AI process is running.",
+                        text = state.badgeText,
                         fontSize = 13.sp,
-                        color = Color(0xFF5165F6),
-                        fontWeight = FontWeight.Medium
+                        color = Color(0xFF4338CA),
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }

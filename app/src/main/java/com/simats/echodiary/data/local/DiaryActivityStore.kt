@@ -180,6 +180,13 @@ object DiaryActivityStore {
     private val _weeklyCategoriesCount = MutableStateFlow(0)
     val weeklyCategoriesCount: StateFlow<Int> = _weeklyCategoriesCount.asStateFlow()
 
+    private val _generatingMemoryType = MutableStateFlow("weekly")
+    val generatingMemoryType: StateFlow<String> = _generatingMemoryType.asStateFlow()
+
+    fun setGeneratingMemoryType(type: String) {
+        _generatingMemoryType.value = type.lowercase(Locale.ROOT)
+    }
+
     // ------------------------------------------------------------------------
     // Monthly Memory State
     // ------------------------------------------------------------------------

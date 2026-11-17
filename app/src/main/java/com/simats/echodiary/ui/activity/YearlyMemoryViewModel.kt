@@ -34,6 +34,7 @@ sealed class YearlyMemoryNavigationEvent {
     object NavigateBack : YearlyMemoryNavigationEvent()
     object NavigateToAllActivities : YearlyMemoryNavigationEvent()
     object NavigateToActivityDetails : YearlyMemoryNavigationEvent()
+    object NavigateToCreatingMemory : YearlyMemoryNavigationEvent()
 }
 
 class YearlyMemoryViewModel(
@@ -98,7 +99,21 @@ class YearlyMemoryViewModel(
     }
 
     fun onGenerateYearlyMemoryClicked() {
-        DiaryActivityStore.generateYearlySummary(executionScope)
+        DiaryActivityStore.setGeneratingMemoryType("yearly")
+        executionScope.launch {
+            _navigationEvent.emit(YearlyMemoryNavigationEvent.NavigateToCreatingMemory)
+        }
+    }
+
+    fun onShareClicked(context: android.content.Context) {
+        val state = _uiState.value
+        com.simats.echodiary.util.MemoryImageShareHelper.shareMemoryAsImage(
+            context = context,
+            title = state.chapterTitle,
+            dateRange = state.yearTitle,
+            narrative = state.chapterText,
+            highlights = state.categories
+        )
     }
 
     fun onBackClicked() {

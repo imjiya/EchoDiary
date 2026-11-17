@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <cache-path name="shared_memories" path="shared_memories/" />
+    <files-path name="diary_photos" path="diary_photos/" />
+</paths>

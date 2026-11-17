@@ -51,9 +51,11 @@ fun MonthlyMemoryScreen(
     viewModel: MonthlyMemoryViewModel = remember { MonthlyMemoryViewModel() },
     onNavigateBack: () -> Unit,
     onNavigateToAllActivities: () -> Unit,
-    onNavigateToActivityDetails: () -> Unit = {}
+    onNavigateToActivityDetails: () -> Unit = {},
+    onNavigateToCreatingMemory: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.navigationEvent.collectLatest { event ->
@@ -61,6 +63,7 @@ fun MonthlyMemoryScreen(
                 is MonthlyMemoryNavigationEvent.NavigateBack -> onNavigateBack()
                 is MonthlyMemoryNavigationEvent.NavigateToAllActivities -> onNavigateToAllActivities()
                 is MonthlyMemoryNavigationEvent.NavigateToActivityDetails -> onNavigateToActivityDetails()
+                is MonthlyMemoryNavigationEvent.NavigateToCreatingMemory -> onNavigateToCreatingMemory()
                 else -> {}
             }
         }
@@ -423,21 +426,45 @@ fun MonthlyMemoryScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Generate Monthly Memory Button
-            Button(
-                onClick = { viewModel.onGenerateMonthlyMemoryClicked() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(54.dp),
-                shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
+            // Generate & Share Buttons Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = "✨ Generate monthly memory",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
+                Button(
+                    onClick = { viewModel.onGenerateMonthlyMemoryClicked() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(26.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
+                ) {
+                    Text(
+                        text = "✨ Generate",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
+                }
+
+                Button(
+                    onClick = { viewModel.onShareClicked(context) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(26.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "↗ ", fontSize = 16.sp, color = EchoTheme.primary)
+                        Text(
+                            text = "Share as image",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = EchoTheme.primary
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))

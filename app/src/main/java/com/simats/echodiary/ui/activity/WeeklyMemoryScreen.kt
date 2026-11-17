@@ -292,7 +292,7 @@ fun WeeklyMemoryScreen(
                 }
 
                 Button(
-                    onClick = { viewModel.onShareClicked() },
+                    onClick = { viewModel.onShareClicked(context) },
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),

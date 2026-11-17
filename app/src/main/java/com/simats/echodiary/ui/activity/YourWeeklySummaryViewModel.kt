@@ -84,6 +84,7 @@ class YourWeeklySummaryViewModel(
 
     fun onGenerateWeeklyMemoryClicked() {
         // Automatically create memory summary of a week using RAG & SLM synthesis
+        DiaryActivityStore.setGeneratingMemoryType("weekly")
         DiaryActivityStore.generateWeeklySummary(executionScope)
         executionScope.launch {
             _navigationEvent.emit(YourWeeklySummaryNavigationEvent.NavigateToCreatingMemory)
