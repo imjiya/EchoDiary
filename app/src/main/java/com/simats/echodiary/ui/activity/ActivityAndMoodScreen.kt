@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -75,10 +76,11 @@ fun ActivityAndMoodScreen(
                         text = "Activity & mood",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -87,7 +89,7 @@ fun ActivityAndMoodScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -117,9 +119,10 @@ fun ActivityAndMoodScreen(
                         modifier = Modifier
                             .weight(1f)
                             .background(
-                                color = if (isSelected) EchoTheme.container else Color.White,
+                                color = if (isSelected) EchoTheme.container else EchoTheme.surface,
                                 shape = RoundedCornerShape(20.dp)
                             )
+                            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                             .clickable { viewModel.onTabSelected(tab) }
                             .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center
@@ -128,7 +131,7 @@ fun ActivityAndMoodScreen(
                             text = tab,
                             fontSize = 14.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) EchoTheme.primary else Color(0xFF64748B)
+                            color = if (isSelected) EchoTheme.primary else EchoTheme.textSecondary
                         )
                     }
                 }
@@ -140,7 +143,7 @@ fun ActivityAndMoodScreen(
             Text(
                 text = state.dateRangeText,
                 fontSize = 13.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -153,7 +156,8 @@ fun ActivityAndMoodScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -167,7 +171,7 @@ fun ActivityAndMoodScreen(
                         Text(
                             text = "Activities",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -175,7 +179,8 @@ fun ActivityAndMoodScreen(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -189,7 +194,7 @@ fun ActivityAndMoodScreen(
                         Text(
                             text = "Categories",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -201,7 +206,8 @@ fun ActivityAndMoodScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -209,7 +215,7 @@ fun ActivityAndMoodScreen(
                         text = "Activities by category",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -231,7 +237,7 @@ fun ActivityAndMoodScreen(
                                 Text(
                                     text = item.name,
                                     fontSize = 14.sp,
-                                    color = Color(0xFF64748B),
+                                    color = EchoTheme.textSecondary,
                                     modifier = Modifier.width(80.dp)
                                 )
                                 LinearProgressIndicator(
@@ -248,7 +254,7 @@ fun ActivityAndMoodScreen(
                                     text = "${item.count}",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFF1E293B)
+                                    color = EchoTheme.onSurface
                                 )
                             }
                         }
@@ -262,7 +268,8 @@ fun ActivityAndMoodScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -270,7 +277,7 @@ fun ActivityAndMoodScreen(
                         text = "Explicit moods, not assumptions",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -301,7 +308,7 @@ fun ActivityAndMoodScreen(
                                     Text(
                                         text = mood.name,
                                         fontSize = 14.sp,
-                                        color = Color(0xFF64748B),
+                                        color = EchoTheme.textSecondary,
                                         maxLines = 1
                                     )
                                 }
@@ -319,7 +326,7 @@ fun ActivityAndMoodScreen(
                                     text = "${mood.count} / ${mood.total}",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFF1E293B)
+                                    color = EchoTheme.onSurface
                                 )
                             }
                         }
@@ -341,7 +348,8 @@ fun ActivityAndMoodScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -354,12 +362,12 @@ fun ActivityAndMoodScreen(
                             text = "Recorded activities & mood status",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = "${state.entries.size} logged",
                             fontSize = 12.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                     Spacer(modifier = Modifier.height(14.dp))
@@ -413,13 +421,13 @@ fun ActivityAndMoodScreen(
                                             text = entry.title,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.SemiBold,
-                                            color = Color(0xFF1E293B),
+                                            color = EchoTheme.onSurface,
                                             maxLines = 1
                                         )
                                         Text(
                                             text = "${entry.category} · ${entry.date}",
                                             fontSize = 12.sp,
-                                            color = Color(0xFF64748B)
+                                            color = EchoTheme.textSecondary
                                         )
                                     }
                                 }
@@ -474,7 +482,7 @@ fun ActivityAndMoodScreen(
             Text(
                 text = state.footerText,
                 fontSize = 13.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textMuted
             )
 
             Spacer(modifier = Modifier.height(32.dp))

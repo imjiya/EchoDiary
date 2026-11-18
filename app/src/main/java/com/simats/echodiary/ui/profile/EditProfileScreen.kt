@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.profile
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -85,13 +86,14 @@ fun EditProfileScreen(
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                val backColor = EchoTheme.onSurface
                 IconButton(
                     onClick = onNavigateBack,
                     modifier = Modifier.size(36.dp)
                 ) {
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF1E293B)
+                        val color = backColor
                         val path = Path().apply {
                             moveTo(size.width * 0.8f, size.height * 0.5f)
                             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -109,7 +111,7 @@ fun EditProfileScreen(
                     text = "Edit profile",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
@@ -208,7 +210,7 @@ fun EditProfileScreen(
                 text = "Full name",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -222,9 +224,11 @@ fun EditProfileScreen(
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = EchoTheme.primary,
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface,
                     errorBorderColor = Color(0xFFEF4444)
                 )
             )
@@ -245,7 +249,7 @@ fun EditProfileScreen(
                 text = "Email",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -259,9 +263,10 @@ fun EditProfileScreen(
                 isError = state.emailError != null,
                 shape = RoundedCornerShape(14.dp),
                 trailingIcon = {
+                    val mailIconColor = EchoTheme.textSecondary
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF94A3B8)
+                        val color = mailIconColor
                         drawRect(
                             color = color,
                             topLeft = Offset(0f, size.height * 0.25f),
@@ -278,9 +283,11 @@ fun EditProfileScreen(
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = EchoTheme.primary,
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface,
                     errorBorderColor = Color(0xFFEF4444)
                 )
             )
@@ -300,7 +307,8 @@ fun EditProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFF1F5F9), shape = RoundedCornerShape(14.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(14.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(14.dp))
                     .padding(14.dp)
             ) {
                 Column {
@@ -308,13 +316,13 @@ fun EditProfileScreen(
                         text = "🔒 Account Details",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF334155)
+                        color = EchoTheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Updating your name and email will reflect across Settings, Profile, and your diary memories.",
                         fontSize = 12.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 16.sp
                     )
                 }

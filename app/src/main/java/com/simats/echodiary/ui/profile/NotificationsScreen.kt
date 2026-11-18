@@ -84,13 +84,14 @@ fun NotificationsScreen(
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                val backColor = EchoTheme.onSurface
                 IconButton(
                     onClick = onNavigateBack,
                     modifier = Modifier.size(36.dp)
                 ) {
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF1E293B)
+                        val color = backColor
                         val path = Path().apply {
                             moveTo(size.width * 0.8f, size.height * 0.5f)
                             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -108,7 +109,7 @@ fun NotificationsScreen(
                     text = "Notifications",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
@@ -119,7 +120,7 @@ fun NotificationsScreen(
                 text = "A gentle nudge.",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -127,7 +128,7 @@ fun NotificationsScreen(
             Text(
                 text = "Choose the reminders that feel right for you.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -177,7 +178,8 @@ fun NotificationsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 12.dp, horizontal = 16.dp)
             ) {
                 // Diary reminders toggle
@@ -511,13 +513,13 @@ private fun NotificationToggleItem(
                 text = title,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = subtitle,
                 fontSize = 12.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
         }
 

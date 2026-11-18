@@ -5,6 +5,7 @@ import com.simats.echodiary.ui.theme.EchoTheme
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -92,7 +93,7 @@ fun ProfileScreen(
                 text = "Profile",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -122,7 +123,7 @@ fun ProfileScreen(
                     text = state.userName,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -130,7 +131,7 @@ fun ProfileScreen(
                 Text(
                     text = state.userEmail,
                     fontSize = 14.sp,
-                    color = Color(0xFF64748B)
+                    color = EchoTheme.textSecondary
                 )
             }
 
@@ -146,6 +147,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .weight(1f)
                         .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -159,7 +161,7 @@ fun ProfileScreen(
                         Text(
                             text = "Diary entries",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -169,6 +171,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .weight(1f)
                         .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
                     Column {
@@ -182,7 +185,7 @@ fun ProfileScreen(
                         Text(
                             text = "Saved memory",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -195,6 +198,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 // Edit Profile Option
@@ -234,7 +238,7 @@ fun ProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontSize = 13.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textMuted
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -254,6 +258,7 @@ private fun ProfileMenuItem(
     onClick: () -> Unit
 ) {
     val iconColor = EchoTheme.primary
+    val chevronColor = EchoTheme.textMuted
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -335,13 +340,13 @@ private fun ProfileMenuItem(
                 text = title,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = subtitle,
                 fontSize = 12.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
         }
 
@@ -353,7 +358,7 @@ private fun ProfileMenuItem(
                 lineTo(size.width * 0.7f, size.height * 0.5f)
                 lineTo(size.width * 0.35f, size.height * 0.8f)
             }
-            drawPath(path, Color(0xFF94A3B8), style = stroke)
+            drawPath(path, chevronColor, style = stroke)
         }
     }
 }
