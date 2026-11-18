@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.onboarding
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,13 +66,13 @@ fun ThirdOnboardingScreen(
                         text = "EchoDiary AI",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -91,7 +93,7 @@ fun ThirdOnboardingScreen(
                     text = "02 / 03 - AI MEMORIES",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF5165F6),
+                    color = EchoTheme.primary,
                     letterSpacing = 1.sp
                 )
             }
@@ -103,17 +105,19 @@ fun ThirdOnboardingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(32.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(32.dp))
                     .padding(24.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.Start
                 ) {
+                    val sparkleColor = EchoTheme.primary
                     Canvas(modifier = Modifier.size(24.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF5165F6)
+                        val color = sparkleColor
                         val path = Path().apply {
                             moveTo(size.width * 0.5f, 0f)
                             quadraticTo(size.width * 0.5f, size.height * 0.5f, size.width, size.height * 0.5f)
@@ -131,7 +135,7 @@ fun ThirdOnboardingScreen(
                         text = "YOUR WEEKLY MEMORY",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5165F6),
+                        color = EchoTheme.primary,
                         letterSpacing = 0.5.sp
                     )
 
@@ -141,7 +145,7 @@ fun ThirdOnboardingScreen(
                         text = "A week of progress and connection.",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         lineHeight = 24.sp
                     )
 
@@ -150,7 +154,7 @@ fun ThirdOnboardingScreen(
                     Text(
                         text = "Weekly memory preview · Grounded in your entries",
                         fontSize = 13.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -162,14 +166,14 @@ fun ThirdOnboardingScreen(
                             text = "View memory",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "→",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -182,7 +186,7 @@ fun ThirdOnboardingScreen(
                 text = "See the story in your everyday.",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 lineHeight = 36.sp
             )
 
@@ -192,7 +196,7 @@ fun ThirdOnboardingScreen(
             Text(
                 text = "Bring your saved entries together in a source-based summary. Review and edit the words before keeping a memory.",
                 fontSize = 15.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 22.sp
             )
 
@@ -201,7 +205,7 @@ fun ThirdOnboardingScreen(
             Text(
                 text = "Illustrative preview · Oct 5–11, 2026",
                 fontSize = 13.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -215,18 +219,18 @@ fun ThirdOnboardingScreen(
                 Box(
                     modifier = Modifier
                         .size(6.dp)
-                        .background(Color(0xFFCBD5E1), shape = CircleShape)
+                        .background(EchoTheme.cardBorder, shape = CircleShape)
                 )
                 Box(
                     modifier = Modifier
                         .width(20.dp)
                         .height(6.dp)
-                        .background(Color(0xFF5165F6), shape = RoundedCornerShape(3.dp))
+                        .background(EchoTheme.primary, shape = RoundedCornerShape(3.dp))
                 )
                 Box(
                     modifier = Modifier
                         .size(6.dp)
-                        .background(Color(0xFFCBD5E1), shape = CircleShape)
+                        .background(EchoTheme.cardBorder, shape = CircleShape)
                 )
             }
 
@@ -239,7 +243,7 @@ fun ThirdOnboardingScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Continue",
@@ -256,7 +260,7 @@ fun ThirdOnboardingScreen(
                 text = "Skip",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 modifier = Modifier
                     .clickable { viewModel.onSkipClicked() }
                     .padding(8.dp)

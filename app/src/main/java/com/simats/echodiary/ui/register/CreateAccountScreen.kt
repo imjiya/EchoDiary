@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,10 +77,11 @@ fun CreateAccountScreen(
                         text = "Create account",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -88,14 +90,14 @@ fun CreateAccountScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -116,13 +118,13 @@ fun CreateAccountScreen(
                     text = "Your story starts here.",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "A few details to make this space yours.",
                     fontSize = 14.sp,
-                    color = Color(0xFF64748B)
+                    color = EchoTheme.textSecondary
                 )
             }
 
@@ -155,7 +157,7 @@ fun CreateAccountScreen(
                     text = "Full name",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF1E293B),
+                    color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
@@ -165,12 +167,14 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
-                    placeholder = { Text("e.g. Alex Morgan", color = Color(0xFF94A3B8)) },
+                    placeholder = { Text("e.g. Alex Morgan", color = EchoTheme.textSecondary) },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFE2E8F0),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        focusedBorderColor = EchoTheme.primary,
+                        unfocusedBorderColor = EchoTheme.cardBorder,
+                        focusedContainerColor = EchoTheme.surface,
+                        unfocusedContainerColor = EchoTheme.surface,
+                        focusedTextColor = EchoTheme.onSurface,
+                        unfocusedTextColor = EchoTheme.onSurface
                     )
                 )
             }
@@ -186,7 +190,7 @@ fun CreateAccountScreen(
                     text = "Email",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF1E293B),
+                    color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
@@ -196,11 +200,12 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
-                    placeholder = { Text("name@example.com", color = Color(0xFF94A3B8)) },
+                    placeholder = { Text("name@example.com", color = EchoTheme.textSecondary) },
                     trailingIcon = {
+                        val iconColor = EchoTheme.textSecondary
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF94A3B8)
+                            val color = iconColor
                             drawRect(color, topLeft = Offset(0f, size.height * 0.25f), size = Size(size.width, size.height * 0.6f), style = stroke)
                             val path = Path().apply {
                                 moveTo(0f, size.height * 0.25f)
@@ -211,10 +216,12 @@ fun CreateAccountScreen(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFE2E8F0),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        focusedBorderColor = EchoTheme.primary,
+                        unfocusedBorderColor = EchoTheme.cardBorder,
+                        focusedContainerColor = EchoTheme.surface,
+                        unfocusedContainerColor = EchoTheme.surface,
+                        focusedTextColor = EchoTheme.onSurface,
+                        unfocusedTextColor = EchoTheme.onSurface
                     )
                 )
             }
@@ -230,7 +237,7 @@ fun CreateAccountScreen(
                     text = "Password",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF1E293B),
+                    color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
@@ -240,13 +247,14 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
-                    placeholder = { Text("Minimum 8 characters", color = Color(0xFF94A3B8)) },
+                    placeholder = { Text("Minimum 8 characters", color = EchoTheme.textSecondary) },
                     visualTransformation = if (state.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
+                        val iconColor = EchoTheme.textSecondary
                         IconButton(onClick = { viewModel.onTogglePasswordVisibility() }) {
                             Canvas(modifier = Modifier.size(20.dp)) {
                                 val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round)
-                                val color = Color(0xFF94A3B8)
+                                val color = iconColor
                                 drawArc(color, 0f, 180f, false, Offset(0f, size.height * 0.25f), Size(size.width, size.height * 0.5f), style = stroke)
                                 drawArc(color, 180f, 180f, false, Offset(0f, size.height * 0.25f), Size(size.width, size.height * 0.5f), style = stroke)
                                 drawCircle(color, radius = size.width * 0.15f, center = center)
@@ -254,17 +262,19 @@ fun CreateAccountScreen(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFE2E8F0),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        focusedBorderColor = EchoTheme.primary,
+                        unfocusedBorderColor = EchoTheme.cardBorder,
+                        focusedContainerColor = EchoTheme.surface,
+                        unfocusedContainerColor = EchoTheme.surface,
+                        focusedTextColor = EchoTheme.onSurface,
+                        unfocusedTextColor = EchoTheme.onSurface
                     )
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Use at least 8 characters.",
                     fontSize = 12.sp,
-                    color = Color(0xFF94A3B8)
+                    color = EchoTheme.textSecondary
                 )
             }
 
@@ -279,7 +289,7 @@ fun CreateAccountScreen(
                     text = "Confirm password",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF1E293B),
+                    color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
@@ -289,13 +299,14 @@ fun CreateAccountScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
-                    placeholder = { Text("Re-enter password", color = Color(0xFF94A3B8)) },
+                    placeholder = { Text("Re-enter password", color = EchoTheme.textSecondary) },
                     visualTransformation = if (state.confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
+                        val iconColor = EchoTheme.textSecondary
                         IconButton(onClick = { viewModel.onToggleConfirmPasswordVisibility() }) {
                             Canvas(modifier = Modifier.size(20.dp)) {
                                 val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round)
-                                val color = Color(0xFF94A3B8)
+                                val color = iconColor
                                 drawArc(color, 0f, 180f, false, Offset(0f, size.height * 0.25f), Size(size.width, size.height * 0.5f), style = stroke)
                                 drawArc(color, 180f, 180f, false, Offset(0f, size.height * 0.25f), Size(size.width, size.height * 0.5f), style = stroke)
                                 drawCircle(color, radius = size.width * 0.15f, center = center)
@@ -303,10 +314,12 @@ fun CreateAccountScreen(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFE2E8F0),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        focusedBorderColor = EchoTheme.primary,
+                        unfocusedBorderColor = EchoTheme.cardBorder,
+                        focusedContainerColor = EchoTheme.surface,
+                        unfocusedContainerColor = EchoTheme.surface,
+                        focusedTextColor = EchoTheme.onSurface,
+                        unfocusedTextColor = EchoTheme.onSurface
                     )
                 )
             }
@@ -316,7 +329,7 @@ fun CreateAccountScreen(
             Text(
                 text = "By creating an account, you agree to the Terms and Privacy Policy.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 textAlign = TextAlign.Center
             )
 
@@ -331,8 +344,8 @@ fun CreateAccountScreen(
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF5165F6),
-                    disabledContainerColor = Color(0xFF5165F6).copy(alpha = 0.6f)
+                    containerColor = EchoTheme.primary,
+                    disabledContainerColor = EchoTheme.primary.copy(alpha = 0.6f)
                 )
             ) {
                 if (state.isLoading) {
@@ -367,13 +380,13 @@ fun CreateAccountScreen(
                     Text(
                         text = "Already have an account? ",
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
                     Text(
                         text = "Login",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }

@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.onboarding
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -52,7 +54,7 @@ fun OnboardingScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFAFBFC))
+            .background(EchoTheme.background)
             .padding(24.dp)
     ) {
         Column(
@@ -67,9 +69,10 @@ fun OnboardingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(32.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(32.dp))
                     .padding(vertical = 36.dp, horizontal = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -80,7 +83,7 @@ fun OnboardingScreen(
                         modifier = Modifier
                             .size(72.dp)
                             .background(
-                                color = Color(0xFF5165F6),
+                                color = EchoTheme.primary,
                                 shape = RoundedCornerShape(20.dp)
                             ),
                         contentAlignment = Alignment.Center
@@ -150,7 +153,7 @@ fun OnboardingScreen(
                                 modifier = Modifier
                                     .width(2.5.dp)
                                     .height(h.dp)
-                                    .background(Color(0xFF5165F6), shape = RoundedCornerShape(2.dp))
+                                    .background(EchoTheme.primary, shape = RoundedCornerShape(2.dp))
                             )
                         }
                     }
@@ -161,7 +164,7 @@ fun OnboardingScreen(
                         text = "EchoDiary AI",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -172,7 +175,7 @@ fun OnboardingScreen(
                 text = "Your everyday,\nbeautifully remembered.",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 lineHeight = 36.sp
             )
 
@@ -181,7 +184,7 @@ fun OnboardingScreen(
             Text(
                 text = "Speak a thought or write a few lines. Make room for your day, then revisit the moments that matter.",
                 fontSize = 15.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 22.sp
             )
 
@@ -191,7 +194,7 @@ fun OnboardingScreen(
                 text = "Your Voice. Your Day. Your Memories.",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF5165F6)
+                color = EchoTheme.primary
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -207,7 +210,7 @@ fun OnboardingScreen(
                         .fillMaxWidth()
                         .height(54.dp),
                     shape = RoundedCornerShape(27.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
                 ) {
                     Text(
                         text = "Get Started",
@@ -225,13 +228,13 @@ fun OnboardingScreen(
                         .fillMaxWidth()
                         .height(54.dp),
                     shape = RoundedCornerShape(27.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                 ) {
                     Text(
                         text = "Log In",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
 
@@ -240,7 +243,7 @@ fun OnboardingScreen(
                 Text(
                     text = "Your diary begins with you.",
                     fontSize = 12.sp,
-                    color = Color(0xFF94A3B8)
+                    color = EchoTheme.textSecondary
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

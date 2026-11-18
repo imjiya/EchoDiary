@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.profile
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -85,9 +85,9 @@ fun SettingsScreen(
                     onClick = onNavigateBack,
                     modifier = Modifier.size(36.dp)
                 ) {
+                    val iconColor = EchoTheme.onSurface
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF1E293B)
                         val path = Path().apply {
                             moveTo(size.width * 0.8f, size.height * 0.5f)
                             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -95,7 +95,7 @@ fun SettingsScreen(
                             lineTo(size.width * 0.2f, size.height * 0.5f)
                             lineTo(size.width * 0.45f, size.height * 0.8f)
                         }
-                        drawPath(path, color, style = stroke)
+                        drawPath(path, iconColor, style = stroke)
                     }
                 }
 
@@ -105,7 +105,7 @@ fun SettingsScreen(
                     text = "Settings",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
@@ -116,7 +116,7 @@ fun SettingsScreen(
                 text = "YOUR SPACE, YOUR PREFERENCES",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 letterSpacing = 0.5.sp
             )
 
@@ -126,7 +126,8 @@ fun SettingsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 SettingsMenuItem(
@@ -152,7 +153,8 @@ fun SettingsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 SettingsMenuItem(
@@ -187,7 +189,8 @@ fun SettingsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 SettingsMenuItem(
@@ -257,7 +260,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textMuted
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -338,34 +341,34 @@ private fun SettingsMenuItem(
                             lineTo(size.width * 0.82f, size.height * 0.72f)
                             lineTo(size.width * 0.75f, size.height * 0.62f)
                             cubicTo(size.width * 0.75f, size.height * 0.45f, size.width * 0.7f, size.height * 0.18f, size.width * 0.5f, size.height * 0.18f)
+                            close()
                         }
                         drawPath(path, color, style = stroke)
-                        val clapper = Path().apply {
-                            moveTo(size.width * 0.42f, size.height * 0.78f)
-                            cubicTo(size.width * 0.42f, size.height * 0.88f, size.width * 0.58f, size.height * 0.88f, size.width * 0.58f, size.height * 0.78f)
-                        }
-                        drawPath(clapper, color, style = stroke)
+                        drawCircle(color, radius = 2.dp.toPx(), center = Offset(size.width * 0.5f, size.height * 0.85f))
                     }
                     SettingsIconType.STORAGE -> {
-                        // Storage / Hard drive icon
-                        drawRoundRect(
-                            color = color,
-                            topLeft = Offset(size.width * 0.15f, size.height * 0.25f),
-                            size = Size(size.width * 0.7f, size.height * 0.52f),
-                            cornerRadius = CornerRadius(4.dp.toPx()),
-                            style = stroke
-                        )
-                        drawLine(color, Offset(size.width * 0.15f, size.height * 0.52f), Offset(size.width * 0.85f, size.height * 0.52f), strokeWidth = stroke.width)
-                        drawCircle(color, radius = 1.5.dp.toPx(), center = Offset(size.width * 0.72f, size.height * 0.38f))
-                        drawCircle(color, radius = 1.5.dp.toPx(), center = Offset(size.width * 0.72f, size.height * 0.65f))
+                        // Database cylinder icon
+                        val path = Path().apply {
+                            moveTo(size.width * 0.25f, size.height * 0.3f)
+                            lineTo(size.width * 0.25f, size.height * 0.7f)
+                            cubicTo(size.width * 0.25f, size.height * 0.85f, size.width * 0.75f, size.height * 0.85f, size.width * 0.75f, size.height * 0.7f)
+                            lineTo(size.width * 0.75f, size.height * 0.3f)
+                        }
+                        drawPath(path, color, style = stroke)
+                        drawOval(color, topLeft = Offset(size.width * 0.25f, size.height * 0.2f), size = Size(size.width * 0.5f, size.height * 0.2f), style = stroke)
+                        val midPath = Path().apply {
+                            moveTo(size.width * 0.25f, size.height * 0.5f)
+                            cubicTo(size.width * 0.25f, size.height * 0.65f, size.width * 0.75f, size.height * 0.65f, size.width * 0.75f, size.height * 0.5f)
+                        }
+                        drawPath(midPath, color, style = stroke)
                     }
                     SettingsIconType.HELP -> {
-                        // Question mark in circle
+                        // Help circle with ? icon
                         drawCircle(color, radius = size.width * 0.4f, center = Offset(size.width * 0.5f, size.height * 0.5f), style = stroke)
                         val question = Path().apply {
-                            moveTo(size.width * 0.38f, size.height * 0.4f)
-                            cubicTo(size.width * 0.38f, size.height * 0.3f, size.width * 0.62f, size.height * 0.3f, size.width * 0.62f, size.height * 0.43f)
-                            cubicTo(size.width * 0.62f, size.height * 0.55f, size.width * 0.5f, size.height * 0.55f, size.width * 0.5f, size.height * 0.63f)
+                            moveTo(size.width * 0.4f, size.height * 0.38f)
+                            cubicTo(size.width * 0.4f, size.height * 0.28f, size.width * 0.6f, size.height * 0.28f, size.width * 0.6f, size.height * 0.38f)
+                            cubicTo(size.width * 0.6f, size.height * 0.46f, size.width * 0.5f, size.height * 0.48f, size.width * 0.5f, size.height * 0.58f)
                         }
                         drawPath(question, color, style = stroke)
                         drawCircle(color, radius = 1.2.dp.toPx(), center = Offset(size.width * 0.5f, size.height * 0.72f))
@@ -382,17 +385,18 @@ private fun SettingsMenuItem(
                 text = title,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = subtitle,
                 fontSize = 12.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
         }
 
         // Chevron Right Arrow
+        val chevronColor = EchoTheme.textMuted
         Canvas(modifier = Modifier.size(16.dp)) {
             val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
             val path = Path().apply {
@@ -400,7 +404,7 @@ private fun SettingsMenuItem(
                 lineTo(size.width * 0.7f, size.height * 0.5f)
                 lineTo(size.width * 0.35f, size.height * 0.8f)
             }
-            drawPath(path, Color(0xFF94A3B8), style = stroke)
+            drawPath(path, chevronColor, style = stroke)
         }
     }
 }

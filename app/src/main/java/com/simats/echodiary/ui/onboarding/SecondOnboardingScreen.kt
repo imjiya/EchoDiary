@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.onboarding
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,13 +68,13 @@ fun SecondOnboardingScreen(
                         text = "EchoDiary AI",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -93,7 +95,7 @@ fun SecondOnboardingScreen(
                     text = "01 / 03 - VOICE JOURNALING",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF5165F6),
+                    color = EchoTheme.primary,
                     letterSpacing = 1.sp
                 )
             }
@@ -105,9 +107,10 @@ fun SecondOnboardingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(32.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(32.dp))
                     .padding(vertical = 40.dp, horizontal = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -119,14 +122,15 @@ fun SecondOnboardingScreen(
                         modifier = Modifier
                             .size(80.dp)
                             .background(
-                                color = Color.White,
+                                color = EchoTheme.container,
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
                     ) {
+                        val micColor = EchoTheme.primary
                         Canvas(modifier = Modifier.size(36.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = micColor
 
                             // Mic body
                             drawRoundRect(
@@ -181,7 +185,7 @@ fun SecondOnboardingScreen(
                                 modifier = Modifier
                                     .width(2.5.dp)
                                     .height(h.dp)
-                                    .background(Color(0xFF5165F6), shape = RoundedCornerShape(2.dp))
+                                    .background(EchoTheme.primary, shape = RoundedCornerShape(2.dp))
                             )
                         }
                     }
@@ -195,7 +199,7 @@ fun SecondOnboardingScreen(
                 text = "Some days are easier said than written.",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 lineHeight = 36.sp
             )
 
@@ -205,7 +209,7 @@ fun SecondOnboardingScreen(
             Text(
                 text = "Capture your day in your own words. Review the transcript and shape it into a diary entry before saving.",
                 fontSize = 15.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 22.sp
             )
 
@@ -221,17 +225,17 @@ fun SecondOnboardingScreen(
                     modifier = Modifier
                         .width(20.dp)
                         .height(6.dp)
-                        .background(Color(0xFF5165F6), shape = RoundedCornerShape(3.dp))
+                        .background(EchoTheme.primary, shape = RoundedCornerShape(3.dp))
                 )
                 Box(
                     modifier = Modifier
                         .size(6.dp)
-                        .background(Color(0xFFCBD5E1), shape = CircleShape)
+                        .background(EchoTheme.cardBorder, shape = CircleShape)
                 )
                 Box(
                     modifier = Modifier
                         .size(6.dp)
-                        .background(Color(0xFFCBD5E1), shape = CircleShape)
+                        .background(EchoTheme.cardBorder, shape = CircleShape)
                 )
             }
 
@@ -244,7 +248,7 @@ fun SecondOnboardingScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Continue",
@@ -261,7 +265,7 @@ fun SecondOnboardingScreen(
                 text = "Skip",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 modifier = Modifier
                     .clickable { viewModel.onSkipClicked() }
                     .padding(8.dp)

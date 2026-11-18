@@ -174,9 +174,10 @@ fun EditYourMemoryScreen(
                     onClick = onNavigateBack,
                     modifier = Modifier.size(36.dp)
                 ) {
+                    val backColor = EchoTheme.onSurface
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF1E293B)
+                        val color = backColor
                         val path = Path().apply {
                             moveTo(size.width * 0.8f, size.height * 0.5f)
                             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -194,7 +195,7 @@ fun EditYourMemoryScreen(
                     text = "Edit your memory",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
@@ -204,7 +205,7 @@ fun EditYourMemoryScreen(
             Text(
                 text = state.dateRangeText,
                 fontSize = 13.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -214,7 +215,7 @@ fun EditYourMemoryScreen(
                 text = "Memory title",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -227,9 +228,11 @@ fun EditYourMemoryScreen(
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = EchoTheme.primary,
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -240,7 +243,7 @@ fun EditYourMemoryScreen(
                 text = "Weekly narrative",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -254,9 +257,11 @@ fun EditYourMemoryScreen(
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = EchoTheme.primary,
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -265,7 +270,7 @@ fun EditYourMemoryScreen(
             Text(
                 text = "Editable summary · make it sound like you.",
                 fontSize = 12.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -286,7 +291,7 @@ fun EditYourMemoryScreen(
                         text = "${currentPhotos.size} memory photo(s) attached",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Text(
                         text = "Clear all",
@@ -376,7 +381,7 @@ fun EditYourMemoryScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (currentPhotos.isNotEmpty()) Color(0xFFE0E7FF) else Color(0xFFEEF2FF)
+                    containerColor = EchoTheme.container
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -385,7 +390,7 @@ fun EditYourMemoryScreen(
                         text = if (currentPhotos.isNotEmpty()) "Add more photos (${currentPhotos.size} selected)" else "Attach photo(s) to memory · multiple allowed",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -395,7 +400,7 @@ fun EditYourMemoryScreen(
             Text(
                 text = if (currentPhotos.isNotEmpty()) "Photos attached to this weekly memory will appear in memory cards and collages." else "Click above to select and attach multiple photos from your gallery.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -422,7 +427,7 @@ fun EditYourMemoryScreen(
                 Text(
                     text = "Your changes apply to this summary, saved in your memory of activities.",
                     fontSize = 12.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 17.sp,
                     modifier = Modifier.weight(1f)
                 )
@@ -434,7 +439,7 @@ fun EditYourMemoryScreen(
             Text(
                 text = state.sourceMaterialText,
                 fontSize = 12.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 17.sp
             )
 

@@ -3,6 +3,7 @@ package com.simats.echodiary.ui.profile
 import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -84,13 +85,14 @@ fun PrivacyAndDataScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val backColor = EchoTheme.onSurface
                     IconButton(
                         onClick = onNavigateBack,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF1E293B)
+                            val color = backColor
                             val path = Path().apply {
                                 moveTo(size.width * 0.8f, size.height * 0.5f)
                                 lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -108,7 +110,7 @@ fun PrivacyAndDataScreen(
                         text = "Privacy & Data",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 }
 
@@ -169,7 +171,7 @@ fun PrivacyAndDataScreen(
                 text = "Stay close to your data.",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -177,7 +179,7 @@ fun PrivacyAndDataScreen(
             Text(
                 text = "Review what you save, how summaries use it and your controls for managing your diary.",
                 fontSize = 13.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -186,14 +188,14 @@ fun PrivacyAndDataScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Text(
                     text = "Your entries are the source",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -201,7 +203,7 @@ fun PrivacyAndDataScreen(
                 Text(
                     text = "Voice transcripts are reviewed before saving. Memory drafts strictly use your saved diary entries and can be edited anytime. Moods are not assumed or hallucinated.",
                     fontSize = 13.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 18.sp
                 )
             }
@@ -212,7 +214,8 @@ fun PrivacyAndDataScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 // Export diary
@@ -269,7 +272,7 @@ fun PrivacyAndDataScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp),
                 verticalAlignment = Alignment.Top
             ) {
@@ -279,7 +282,7 @@ fun PrivacyAndDataScreen(
                         .padding(top = 2.dp)
                 ) {
                     val stroke = Stroke(width = 1.6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                    val color = Color(0xFF5165F6)
+                    val color = primaryColor
                     drawCircle(color, radius = size.width * 0.42f, center = Offset(size.width * 0.5f, size.height * 0.5f), style = stroke)
                     drawCircle(color, radius = 1.2.dp.toPx(), center = Offset(size.width * 0.5f, size.height * 0.32f))
                     drawLine(color, Offset(size.width * 0.5f, size.height * 0.48f), Offset(size.width * 0.5f, size.height * 0.72f), strokeWidth = stroke.width)
@@ -290,7 +293,7 @@ fun PrivacyAndDataScreen(
                 Text(
                     text = "🔒 100% On-Device Privacy Guarantee: EchoDiary never uploads your journal entries, speech recordings, or photos to cloud servers. All AI memory synthesis and data storage remain strictly on this device.",
                     fontSize = 12.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 17.sp,
                     modifier = Modifier.weight(1f)
                 )
@@ -754,13 +757,13 @@ private fun PrivacyMenuItem(
                 text = title,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = subtitle,
                 fontSize = 12.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
         }
 
@@ -770,6 +773,7 @@ private fun PrivacyMenuItem(
         }
 
         // Chevron Right Arrow
+        val chevronColor = EchoTheme.textMuted
         Canvas(modifier = Modifier.size(16.dp)) {
             val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
             val path = Path().apply {
@@ -777,7 +781,7 @@ private fun PrivacyMenuItem(
                 lineTo(size.width * 0.7f, size.height * 0.5f)
                 lineTo(size.width * 0.35f, size.height * 0.8f)
             }
-            drawPath(path, Color(0xFF94A3B8), style = stroke)
+            drawPath(path, chevronColor, style = stroke)
         }
     }
 }

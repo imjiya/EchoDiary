@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.shape.CircleShape
@@ -38,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import com.simats.echodiary.ui.theme.EchoTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -201,6 +203,7 @@ fun EditActivityScreen(
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -209,14 +212,14 @@ fun EditActivityScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -232,7 +235,7 @@ fun EditActivityScreen(
             Text(
                 text = "Update the details to save in your memory of activities.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 fontWeight = FontWeight.Medium
             )
 
@@ -243,7 +246,7 @@ fun EditActivityScreen(
                 text = "Title",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
             OutlinedTextField(
@@ -252,10 +255,12 @@ fun EditActivityScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    focusedBorderColor = EchoTheme.primary,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -266,7 +271,7 @@ fun EditActivityScreen(
                 text = "Description",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
             OutlinedTextField(
@@ -277,10 +282,12 @@ fun EditActivityScreen(
                     .height(110.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    focusedBorderColor = EchoTheme.primary,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -296,7 +303,7 @@ fun EditActivityScreen(
                         text = "Date",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                     OutlinedTextField(
@@ -308,10 +315,12 @@ fun EditActivityScreen(
                             Text(text = "📅", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
                         },
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFF5165F6),
-                            unfocusedBorderColor = Color(0xFFE2E8F0),
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White
+                            focusedBorderColor = EchoTheme.primary,
+                            unfocusedBorderColor = EchoTheme.cardBorder,
+                            focusedContainerColor = EchoTheme.surface,
+                            unfocusedContainerColor = EchoTheme.surface,
+                            focusedTextColor = EchoTheme.onSurface,
+                            unfocusedTextColor = EchoTheme.onSurface
                         )
                     )
                 }
@@ -321,7 +330,7 @@ fun EditActivityScreen(
                         text = "Category",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                     OutlinedTextField(
@@ -330,13 +339,15 @@ fun EditActivityScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         trailingIcon = {
-                            Text(text = "▼", fontSize = 12.sp, color = Color(0xFF64748B), modifier = Modifier.padding(end = 12.dp))
+                            Text(text = "▼", fontSize = 12.sp, color = EchoTheme.textSecondary, modifier = Modifier.padding(end = 12.dp))
                         },
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFF5165F6),
-                            unfocusedBorderColor = Color(0xFFE2E8F0),
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White
+                            focusedBorderColor = EchoTheme.primary,
+                            unfocusedBorderColor = EchoTheme.cardBorder,
+                            focusedContainerColor = EchoTheme.surface,
+                            unfocusedContainerColor = EchoTheme.surface,
+                            focusedTextColor = EchoTheme.onSurface,
+                            unfocusedTextColor = EchoTheme.onSurface
                         )
                     )
                 }
@@ -349,7 +360,7 @@ fun EditActivityScreen(
                 text = "Mood · optional",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
             OutlinedTextField(
@@ -365,10 +376,12 @@ fun EditActivityScreen(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    focusedBorderColor = EchoTheme.primary,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -391,9 +404,10 @@ fun EditActivityScreen(
                     Box(
                         modifier = Modifier
                             .background(
-                                color = if (isSelected) Color(0xFFE0E7FF) else Color(0xFFF1F5F9),
+                                color = if (isSelected) EchoTheme.primary else EchoTheme.surface,
                                 shape = RoundedCornerShape(12.dp)
                             )
+                            .border(1.dp, if (isSelected) EchoTheme.primary else EchoTheme.cardBorder, RoundedCornerShape(12.dp))
                             .clickable { viewModel.onMoodChanged(moodVal) }
                             .padding(horizontal = 8.dp, vertical = 5.dp)
                     ) {
@@ -401,7 +415,7 @@ fun EditActivityScreen(
                             text = label,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) Color(0xFF4338CA) else Color(0xFF475569)
+                            color = if (isSelected) Color.White else EchoTheme.onSurface
                         )
                     }
                 }
@@ -425,7 +439,7 @@ fun EditActivityScreen(
                         text = "${currentPhotos.size} photo(s) attached",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Text(
                         text = "Clear all",
@@ -515,7 +529,7 @@ fun EditActivityScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (currentPhotos.isNotEmpty()) Color(0xFFE0E7FF) else Color(0xFFEEF2FF)
+                    containerColor = EchoTheme.container
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -524,7 +538,7 @@ fun EditActivityScreen(
                         text = if (currentPhotos.isNotEmpty()) "Add more photos (${currentPhotos.size} selected)" else "Add photo(s) · multiple allowed",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -534,7 +548,7 @@ fun EditActivityScreen(
             Text(
                 text = if (currentPhotos.isNotEmpty()) "Photos attached to this entry will appear in your memory collages." else "Click above to select and attach multiple photos from your gallery.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -547,7 +561,7 @@ fun EditActivityScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Save Changes",
@@ -566,7 +580,9 @@ fun EditActivityScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFF1F2))
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (EchoTheme.isDark) Color(0xFF451A1A) else Color(0xFFFFF1F2)
+                )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🗑️ ", fontSize = 16.sp)
@@ -593,7 +609,7 @@ fun EditActivityScreen(
                     text = "Cancel",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.textSecondary
                 )
             }
 

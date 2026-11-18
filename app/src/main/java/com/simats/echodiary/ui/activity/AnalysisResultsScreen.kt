@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,10 +71,11 @@ fun AnalysisResultsScreen(
                         text = "Analysis results",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -81,14 +84,14 @@ fun AnalysisResultsScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -105,7 +108,7 @@ fun AnalysisResultsScreen(
                 text = state.headerSubtitle,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 letterSpacing = 0.5.sp
             )
 
@@ -116,13 +119,13 @@ fun AnalysisResultsScreen(
                 text = state.title,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = state.description,
                 fontSize = 14.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 20.sp
             )
 
@@ -133,7 +136,8 @@ fun AnalysisResultsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(16.dp)
                 ) {
                     Column {
@@ -146,7 +150,7 @@ fun AnalysisResultsScreen(
                                 text = item.title,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                         }
 
@@ -156,7 +160,7 @@ fun AnalysisResultsScreen(
                             text = item.sublink,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6),
+                            color = EchoTheme.primary,
                             modifier = Modifier
                                 .clickable { viewModel.onEntryItemClicked(item) }
                                 .padding(vertical = 2.dp)
@@ -173,7 +177,7 @@ fun AnalysisResultsScreen(
             Text(
                 text = state.moodEvidenceText,
                 fontSize = 13.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 18.sp
             )
 
@@ -186,7 +190,7 @@ fun AnalysisResultsScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "📖 ", fontSize = 16.sp)

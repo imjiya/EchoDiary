@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.onboarding
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,13 +66,13 @@ fun FourthOnboardingScreen(
                         text = "EchoDiary AI",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -91,7 +93,7 @@ fun FourthOnboardingScreen(
                     text = "03 / 03 - YOUR DIARY, YOUR CHOICE",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF5165F6),
+                    color = EchoTheme.primary,
                     letterSpacing = 1.sp
                 )
             }
@@ -103,15 +105,17 @@ fun FourthOnboardingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(32.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(32.dp))
                     .padding(vertical = 40.dp, horizontal = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
+                val primaryColor = EchoTheme.primary
                 Canvas(modifier = Modifier.size(64.dp)) {
                     val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                    val color = Color(0xFF5165F6)
+                    val color = primaryColor
 
                     val shieldPath = Path().apply {
                         moveTo(size.width * 0.5f, size.height * 0.1f)
@@ -140,7 +144,7 @@ fun FourthOnboardingScreen(
                 text = "A personal space. With you in control.",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 lineHeight = 36.sp
             )
 
@@ -150,7 +154,7 @@ fun FourthOnboardingScreen(
             Text(
                 text = "Review what you save and choose what stays. Explore privacy and data options whenever you need to.",
                 fontSize = 15.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 22.sp
             )
 
@@ -161,9 +165,10 @@ fun FourthOnboardingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color.White,
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(20.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(16.dp)
             ) {
                 Row(
@@ -173,12 +178,13 @@ fun FourthOnboardingScreen(
                     Box(
                         modifier = Modifier
                             .size(44.dp)
-                            .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                            .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                         contentAlignment = Alignment.Center
                     ) {
+                        val iconColor = EchoTheme.primary
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = iconColor
                             drawRect(color, topLeft = Offset(size.width * 0.2f, size.height * 0.1f), size = Size(size.width * 0.6f, size.height * 0.8f), style = stroke)
                         }
                     }
@@ -190,19 +196,19 @@ fun FourthOnboardingScreen(
                             text = "Review before saving",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = "Your words, with your final say.",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                     Text(
                         text = "›",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                 }
             }
@@ -214,9 +220,10 @@ fun FourthOnboardingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color.White,
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(20.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(16.dp)
             ) {
                 Row(
@@ -226,12 +233,13 @@ fun FourthOnboardingScreen(
                     Box(
                         modifier = Modifier
                             .size(44.dp)
-                            .background(Color(0xFFF0F4FF), shape = RoundedCornerShape(12.dp)),
+                            .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                         contentAlignment = Alignment.Center
                     ) {
+                        val iconColor = EchoTheme.primary
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = iconColor
                             drawLine(color, Offset(2f, size.height * 0.3f), Offset(size.width - 2f, size.height * 0.3f), strokeWidth = stroke.width)
                             drawLine(color, Offset(6f, size.height * 0.5f), Offset(size.width - 6f, size.height * 0.5f), strokeWidth = stroke.width)
                             drawLine(color, Offset(10f, size.height * 0.7f), Offset(size.width - 10f, size.height * 0.7f), strokeWidth = stroke.width)
@@ -245,19 +253,19 @@ fun FourthOnboardingScreen(
                             text = "Manage your diary",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = "Explore export and deletion options.",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                     Text(
                         text = "›",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                 }
             }
@@ -273,18 +281,18 @@ fun FourthOnboardingScreen(
                 Box(
                     modifier = Modifier
                         .size(6.dp)
-                        .background(Color(0xFFCBD5E1), shape = CircleShape)
+                        .background(EchoTheme.cardBorder, shape = CircleShape)
                 )
                 Box(
                     modifier = Modifier
                         .size(6.dp)
-                        .background(Color(0xFFCBD5E1), shape = CircleShape)
+                        .background(EchoTheme.cardBorder, shape = CircleShape)
                 )
                 Box(
                     modifier = Modifier
                         .width(20.dp)
                         .height(6.dp)
-                        .background(Color(0xFF5165F6), shape = RoundedCornerShape(3.dp))
+                        .background(EchoTheme.primary, shape = RoundedCornerShape(3.dp))
                 )
             }
 
@@ -297,7 +305,7 @@ fun FourthOnboardingScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Continue",
@@ -314,7 +322,7 @@ fun FourthOnboardingScreen(
                 text = "Skip",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 modifier = Modifier
                     .clickable { viewModel.onSkipClicked() }
                     .padding(8.dp)

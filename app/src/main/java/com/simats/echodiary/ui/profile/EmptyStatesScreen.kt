@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.profile
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 
 @Composable
 fun EmptyStatesScreen(
@@ -45,7 +47,7 @@ fun EmptyStatesScreen(
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -67,9 +69,10 @@ fun EmptyStatesScreen(
                     onClick = onNavigateBack,
                     modifier = Modifier.size(36.dp)
                 ) {
+                    val backColor = EchoTheme.onSurface
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF1E293B)
+                        val color = backColor
                         val path = Path().apply {
                             moveTo(size.width * 0.8f, size.height * 0.5f)
                             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -87,7 +90,7 @@ fun EmptyStatesScreen(
                     text = state.title,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
@@ -97,7 +100,7 @@ fun EmptyStatesScreen(
             Text(
                 text = "Gentle starting points for a diary still taking shape.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -163,7 +166,7 @@ fun EmptyStatesScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -182,14 +185,15 @@ private fun EmptyStateCard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(20.dp))
+            .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
             .padding(20.dp)
     ) {
         Text(
             text = tag,
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF5165F6),
+            color = EchoTheme.primary,
             letterSpacing = 0.5.sp
         )
 
@@ -199,7 +203,7 @@ private fun EmptyStateCard(
             text = title,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF1E293B)
+            color = EchoTheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(6.dp))
@@ -207,7 +211,7 @@ private fun EmptyStateCard(
         Text(
             text = body,
             fontSize = 13.sp,
-            color = Color(0xFF64748B),
+            color = EchoTheme.textSecondary,
             lineHeight = 18.sp
         )
 
@@ -217,7 +221,7 @@ private fun EmptyStateCard(
             text = actionText,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF5165F6),
+            color = EchoTheme.primary,
             modifier = Modifier.clickable { onActionClick() }
         )
     }

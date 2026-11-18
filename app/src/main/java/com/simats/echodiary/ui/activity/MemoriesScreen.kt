@@ -5,6 +5,7 @@ import com.simats.echodiary.ui.theme.EchoTheme
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -83,7 +84,7 @@ fun MemoriesScreen(
                 text = "Memories",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -93,13 +94,13 @@ fun MemoriesScreen(
                 text = "A shelf for your story.",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "1 saved memory, ready to revisit.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -118,6 +119,11 @@ fun MemoriesScreen(
                                 color = if (isSelected) EchoTheme.container else EchoTheme.surface,
                                 shape = RoundedCornerShape(20.dp)
                             )
+                            .border(
+                                width = 1.dp,
+                                color = if (isSelected) EchoTheme.primary else EchoTheme.cardBorder,
+                                shape = RoundedCornerShape(20.dp)
+                            )
                             .clickable {
                                 viewModel.onFilterTabSelected(tab)
                             }
@@ -128,7 +134,7 @@ fun MemoriesScreen(
                             text = tab,
                             fontSize = 14.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) EchoTheme.primary else Color(0xFF64748B)
+                            color = if (isSelected) EchoTheme.primary else EchoTheme.textSecondary
                         )
                     }
                 }
@@ -141,9 +147,10 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = EchoTheme.container,
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(24.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                     .padding(20.dp)
             ) {
                 Column(
@@ -163,7 +170,7 @@ fun MemoriesScreen(
                         text = state.memoryTitle,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         lineHeight = 26.sp
                     )
 
@@ -172,7 +179,7 @@ fun MemoriesScreen(
                     Text(
                         text = state.memorySubtitle,
                         fontSize = 13.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
 
                     if (state.memoryNarrative.isNotBlank()) {
@@ -180,7 +187,7 @@ fun MemoriesScreen(
                         Text(
                             text = state.memoryNarrative,
                             fontSize = 14.sp,
-                            color = Color(0xFF334155),
+                            color = EchoTheme.onSurface,
                             lineHeight = 20.sp
                         )
                     }
@@ -195,7 +202,7 @@ fun MemoriesScreen(
                                 Box(
                                     modifier = Modifier
                                         .background(
-                                            color = Color.White.copy(alpha = 0.85f),
+                                            color = EchoTheme.container,
                                             shape = RoundedCornerShape(12.dp)
                                         )
                                         .padding(horizontal = 10.dp, vertical = 5.dp)
@@ -247,6 +254,7 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -259,12 +267,12 @@ fun MemoriesScreen(
                             text = "Saved entries in this ${state.activeFilterTab.lowercase()} memory",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = "${state.entries.size} entries",
                             fontSize = 12.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
 
@@ -274,7 +282,7 @@ fun MemoriesScreen(
                         Text(
                             text = "No diary entries saved for this ${state.activeFilterTab.lowercase()} memory yet.",
                             fontSize = 13.sp,
-                            color = Color(0xFF94A3B8)
+                            color = EchoTheme.textSecondary
                         )
                     } else {
                         state.entries.forEach { entry ->
@@ -312,13 +320,13 @@ fun MemoriesScreen(
                                             text = entry.title,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.SemiBold,
-                                            color = Color(0xFF1E293B),
+                                            color = EchoTheme.onSurface,
                                             maxLines = 1
                                         )
                                         Text(
                                             text = "${entry.category} · ${entry.date}",
                                             fontSize = 12.sp,
-                                            color = Color(0xFF64748B)
+                                            color = EchoTheme.textSecondary
                                         )
                                     }
                                 }
@@ -329,9 +337,10 @@ fun MemoriesScreen(
                                 Box(
                                     modifier = Modifier
                                         .background(
-                                            color = if (hasExplicitMood) EchoTheme.container else Color(0xFFF1F5F9),
+                                            color = if (hasExplicitMood) EchoTheme.container else EchoTheme.surface,
                                             shape = RoundedCornerShape(10.dp)
                                         )
+                                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(10.dp))
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -360,7 +369,7 @@ fun MemoriesScreen(
                 text = "Explore your diary",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -370,6 +379,7 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .clickable { onNavigateToMonthlyMemory() }
                     .padding(16.dp)
             ) {
@@ -393,16 +403,16 @@ fun MemoriesScreen(
                                 text = "Monthly Memory",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Text(
                                 text = state.monthlyCardSubtitle,
                                 fontSize = 13.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
                     }
-                    Text(text = "›", fontSize = 18.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Bold)
+                    Text(text = "›", fontSize = 18.sp, color = EchoTheme.textMuted, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -413,6 +423,7 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .clickable { onNavigateToYearlyMemory() }
                     .padding(16.dp)
             ) {
@@ -436,16 +447,16 @@ fun MemoriesScreen(
                                 text = "Yearly Memory",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Text(
                                 text = state.yearlyCardSubtitle,
                                 fontSize = 13.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
                     }
-                    Text(text = "›", fontSize = 18.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Bold)
+                    Text(text = "›", fontSize = 18.sp, color = EchoTheme.textMuted, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -456,6 +467,7 @@ fun MemoriesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .clickable { onNavigateToPhotoMemories() }
                     .padding(16.dp)
             ) {
@@ -479,16 +491,16 @@ fun MemoriesScreen(
                                 text = "Photos",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Text(
                                 text = state.photosSubtitle,
                                 fontSize = 13.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
                     }
-                    Text(text = "›", fontSize = 18.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Bold)
+                    Text(text = "›", fontSize = 18.sp, color = EchoTheme.textMuted, fontWeight = FontWeight.Bold)
                 }
             }
 

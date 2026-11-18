@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.profile
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 
 private enum class DialogType {
     DELETE_ENTRY,
@@ -61,7 +63,7 @@ fun DialogsAndFeedbackScreen(
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -83,9 +85,10 @@ fun DialogsAndFeedbackScreen(
                     onClick = onNavigateBack,
                     modifier = Modifier.size(36.dp)
                 ) {
+                    val backColor = EchoTheme.onSurface
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF1E293B)
+                        val color = backColor
                         val path = Path().apply {
                             moveTo(size.width * 0.8f, size.height * 0.5f)
                             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -103,7 +106,7 @@ fun DialogsAndFeedbackScreen(
                     text = state.title,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
@@ -113,7 +116,7 @@ fun DialogsAndFeedbackScreen(
             Text(
                 text = "Clear choices, helpful errors and quiet confirmations.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -214,7 +217,7 @@ fun DialogsAndFeedbackScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -231,7 +234,8 @@ private fun DialogItemCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(20.dp))
+            .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
             .clickable { }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -372,17 +376,18 @@ private fun DialogItemCard(
                 text = title,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = subtitle,
                 fontSize = 12.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
         }
 
         // Chevron Right Arrow
+        val chevronColor = EchoTheme.textSecondary
         Canvas(modifier = Modifier.size(16.dp)) {
             val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
             val path = Path().apply {
@@ -390,7 +395,7 @@ private fun DialogItemCard(
                 lineTo(size.width * 0.7f, size.height * 0.5f)
                 lineTo(size.width * 0.35f, size.height * 0.8f)
             }
-            drawPath(path, Color(0xFF94A3B8), style = stroke)
+            drawPath(path, chevronColor, style = stroke)
         }
     }
 }

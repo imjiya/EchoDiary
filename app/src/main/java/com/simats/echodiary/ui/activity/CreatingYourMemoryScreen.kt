@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -72,10 +74,11 @@ fun CreatingYourMemoryScreen(
                         text = "Creating your memory",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -84,14 +87,14 @@ fun CreatingYourMemoryScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -107,7 +110,8 @@ fun CreatingYourMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .padding(14.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
@@ -117,7 +121,7 @@ fun CreatingYourMemoryScreen(
                     Text(
                         text = state.badgeText,
                         fontSize = 13.sp,
-                        color = Color(0xFF4338CA),
+                        color = EchoTheme.primary,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -129,7 +133,8 @@ fun CreatingYourMemoryScreen(
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .background(color = Color(0xFFF0F4FF), shape = CircleShape),
+                    .background(color = EchoTheme.container, shape = CircleShape)
+                    .border(1.dp, EchoTheme.cardBorder, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = "✨+", fontSize = 36.sp)
@@ -142,7 +147,7 @@ fun CreatingYourMemoryScreen(
                 text = state.title,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 textAlign = TextAlign.Center
             )
 
@@ -151,7 +156,7 @@ fun CreatingYourMemoryScreen(
             Text(
                 text = state.subtitle,
                 fontSize = 14.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 textAlign = TextAlign.Center,
                 lineHeight = 20.sp
             )
@@ -169,8 +174,8 @@ fun CreatingYourMemoryScreen(
                         .fillMaxWidth()
                         .height(8.dp)
                         .clip(RoundedCornerShape(4.dp)),
-                    color = Color(0xFF5165F6),
-                    trackColor = Color(0xFFE2E8F0),
+                    color = EchoTheme.primary,
+                    trackColor = EchoTheme.cardBorder,
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -178,7 +183,7 @@ fun CreatingYourMemoryScreen(
                 Text(
                     text = state.progressPercentageText,
                     fontSize = 13.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -189,7 +194,8 @@ fun CreatingYourMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -205,12 +211,12 @@ fun CreatingYourMemoryScreen(
                                 text = task,
                                 fontSize = 15.sp,
                                 fontWeight = if (isCompleted) FontWeight.Medium else FontWeight.Bold,
-                                color = if (isCompleted) Color(0xFF1E293B) else Color(0xFF5165F6)
+                                color = if (isCompleted) EchoTheme.onSurface else EchoTheme.primary
                             )
                             if (isCompleted) {
-                                Text(text = "✓", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF5165F6))
+                                Text(text = "✓", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = EchoTheme.primary)
                             } else {
-                                Text(text = "···", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF5165F6))
+                                Text(text = "···", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = EchoTheme.primary)
                             }
                         }
                         if (index < state.checklist.size - 1) {
@@ -225,7 +231,7 @@ fun CreatingYourMemoryScreen(
             Text(
                 text = "You can review and edit the finished draft.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 textAlign = TextAlign.Center
             )
 

@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,11 +73,12 @@ fun FilterActivitiesScreen(
                         text = "Filter activities",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
+                        val iconColor = EchoTheme.onSurface
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             val path = Path().apply {
@@ -84,14 +86,14 @@ fun FilterActivitiesScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, iconColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -107,7 +109,7 @@ fun FilterActivitiesScreen(
             Text(
                 text = "Find a moment with a little more focus.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 fontWeight = FontWeight.Medium
             )
 
@@ -123,7 +125,7 @@ fun FilterActivitiesScreen(
                         text = "From",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                     OutlinedTextField(
@@ -136,9 +138,9 @@ fun FilterActivitiesScreen(
                             Text(text = "📅", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
                         },
                         colors = OutlinedTextFieldDefaults.colors(
-                            disabledBorderColor = Color(0xFFE2E8F0),
-                            disabledContainerColor = Color.White,
-                            disabledTextColor = Color(0xFF1E293B)
+                            disabledBorderColor = EchoTheme.cardBorder,
+                            disabledContainerColor = EchoTheme.surface,
+                            disabledTextColor = EchoTheme.onSurface
                         )
                     )
                 }
@@ -148,7 +150,7 @@ fun FilterActivitiesScreen(
                         text = "To",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                     OutlinedTextField(
@@ -161,9 +163,9 @@ fun FilterActivitiesScreen(
                             Text(text = "📅", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
                         },
                         colors = OutlinedTextFieldDefaults.colors(
-                            disabledBorderColor = Color(0xFFE2E8F0),
-                            disabledContainerColor = Color.White,
-                            disabledTextColor = Color(0xFF1E293B)
+                            disabledBorderColor = EchoTheme.cardBorder,
+                            disabledContainerColor = EchoTheme.surface,
+                            disabledTextColor = EchoTheme.onSurface
                         )
                     )
                 }
@@ -176,7 +178,7 @@ fun FilterActivitiesScreen(
                 text = "Category",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -191,12 +193,12 @@ fun FilterActivitiesScreen(
                         Box(
                             modifier = Modifier
                                 .background(
-                                    color = if (isSelected) Color(0xFFF0F4FF) else Color.White,
+                                    color = if (isSelected) EchoTheme.container else EchoTheme.surface,
                                     shape = RoundedCornerShape(20.dp)
                                 )
                                 .border(
                                     width = if (isSelected) 1.5.dp else 1.dp,
-                                    color = if (isSelected) Color(0xFF5165F6) else Color(0xFFE2E8F0),
+                                    color = if (isSelected) EchoTheme.primary else EchoTheme.cardBorder,
                                     shape = RoundedCornerShape(20.dp)
                                 )
                                 .clickable { viewModel.selectCategory(cat) }
@@ -207,7 +209,7 @@ fun FilterActivitiesScreen(
                                 text = cat,
                                 fontSize = 13.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) Color(0xFF5165F6) else Color(0xFF1E293B)
+                                color = if (isSelected) EchoTheme.primary else EchoTheme.onSurface
                             )
                         }
                     }
@@ -222,7 +224,7 @@ fun FilterActivitiesScreen(
                 text = "Entry source",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -236,12 +238,12 @@ fun FilterActivitiesScreen(
                         modifier = Modifier
                             .weight(1f)
                             .background(
-                                color = if (isSelected) Color(0xFFF0F4FF) else Color.White,
+                                color = if (isSelected) EchoTheme.container else EchoTheme.surface,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .border(
                                 width = if (isSelected) 1.5.dp else 1.dp,
-                                color = if (isSelected) Color(0xFF5165F6) else Color(0xFFE2E8F0),
+                                color = if (isSelected) EchoTheme.primary else EchoTheme.cardBorder,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .clickable { viewModel.selectSource(source) }
@@ -252,7 +254,7 @@ fun FilterActivitiesScreen(
                             text = source,
                             fontSize = 13.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color(0xFF5165F6) else Color(0xFF1E293B)
+                            color = if (isSelected) EchoTheme.primary else EchoTheme.onSurface
                         )
                     }
                 }
@@ -265,7 +267,7 @@ fun FilterActivitiesScreen(
                 text = "Mood",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -278,12 +280,12 @@ fun FilterActivitiesScreen(
                     Box(
                         modifier = Modifier
                             .background(
-                                color = if (isSelected) Color(0xFFF0F4FF) else Color.White,
+                                color = if (isSelected) EchoTheme.container else EchoTheme.surface,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .border(
                                 width = if (isSelected) 1.5.dp else 1.dp,
-                                color = if (isSelected) Color(0xFF5165F6) else Color(0xFFE2E8F0),
+                                color = if (isSelected) EchoTheme.primary else EchoTheme.cardBorder,
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .clickable { viewModel.selectMood(mood) }
@@ -294,7 +296,7 @@ fun FilterActivitiesScreen(
                             text = mood,
                             fontSize = 13.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color(0xFF5165F6) else Color(0xFF1E293B)
+                            color = if (isSelected) EchoTheme.primary else EchoTheme.onSurface
                         )
                     }
                 }
@@ -305,7 +307,7 @@ fun FilterActivitiesScreen(
             Text(
                 text = "Only explicitly recorded moods are shown.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -317,7 +319,7 @@ fun FilterActivitiesScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Apply Filters",
@@ -341,7 +343,7 @@ fun FilterActivitiesScreen(
                     text = "Reset",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
             }
 

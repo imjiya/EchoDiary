@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 
 @Composable
 fun MemoryDetailsScreen(
@@ -47,7 +48,7 @@ fun MemoryDetailsScreen(
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -66,13 +67,14 @@ fun MemoryDetailsScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val backColor = EchoTheme.onSurface
                     IconButton(
                         onClick = onNavigateBack,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF1E293B)
+                            val color = backColor
                             val path = Path().apply {
                                 moveTo(size.width * 0.8f, size.height * 0.5f)
                                 lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -90,18 +92,19 @@ fun MemoryDetailsScreen(
                         text = "Memory details",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 }
 
                 // Share Button Icon
+                val shareColor = EchoTheme.primary
                 IconButton(
                     onClick = { },
                     modifier = Modifier.size(36.dp)
                 ) {
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF5165F6)
+                        val color = shareColor
                         drawCircle(color, radius = 2.5.dp.toPx(), center = Offset(size.width * 0.8f, size.height * 0.25f))
                         drawCircle(color, radius = 2.5.dp.toPx(), center = Offset(size.width * 0.2f, size.height * 0.5f))
                         drawCircle(color, radius = 2.5.dp.toPx(), center = Offset(size.width * 0.8f, size.height * 0.75f))
@@ -118,7 +121,7 @@ fun MemoryDetailsScreen(
                 text = state.tagText,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 letterSpacing = 0.5.sp
             )
 
@@ -129,7 +132,7 @@ fun MemoryDetailsScreen(
                 text = state.title,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 lineHeight = 28.sp
             )
 
@@ -139,13 +142,14 @@ fun MemoryDetailsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(18.dp)
             ) {
                 Text(
                     text = state.summaryText,
                     fontSize = 13.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 19.sp
                 )
             }
@@ -160,14 +164,14 @@ fun MemoryDetailsScreen(
                 state.highlights.forEach { highlight ->
                     Box(
                         modifier = Modifier
-                            .background(Color.White, shape = CircleShape)
-                            .border(width = 1.dp, color = Color(0xFFE2E8F0), shape = CircleShape)
+                            .background(EchoTheme.surface, shape = CircleShape)
+                            .border(width = 1.dp, color = EchoTheme.cardBorder, shape = CircleShape)
                             .padding(horizontal = 14.dp, vertical = 8.dp)
                     ) {
                         Text(
                             text = highlight,
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B),
+                            color = EchoTheme.textSecondary,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -181,7 +185,7 @@ fun MemoryDetailsScreen(
                 text = "${state.entries.size} source entries",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -190,7 +194,8 @@ fun MemoryDetailsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 state.entries.forEachIndexed { index, entry ->
@@ -205,7 +210,7 @@ fun MemoryDetailsScreen(
                         Box(
                             modifier = Modifier
                                 .size(40.dp)
-                                .background(color = Color(0xFFEEF2FF), shape = CircleShape),
+                                .background(color = EchoTheme.container, shape = CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(text = entry.icon, fontSize = 16.sp)
@@ -219,17 +224,18 @@ fun MemoryDetailsScreen(
                                 text = entry.title,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = entry.subtitle,
                                 fontSize = 12.sp,
-                                color = Color(0xFF94A3B8)
+                                color = EchoTheme.textSecondary
                             )
                         }
 
                         // Right Chevron Arrow
+                        val chevronColor = EchoTheme.textSecondary
                         Canvas(modifier = Modifier.size(16.dp)) {
                             val stroke = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             val path = Path().apply {
@@ -237,7 +243,7 @@ fun MemoryDetailsScreen(
                                 lineTo(size.width * 0.7f, size.height * 0.5f)
                                 lineTo(size.width * 0.35f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF94A3B8), style = stroke)
+                            drawPath(path, chevronColor, style = stroke)
                         }
                     }
 
@@ -253,7 +259,7 @@ fun MemoryDetailsScreen(
             Text(
                 text = "Highlights reflect the records, not inferred moods.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -63,6 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -233,11 +234,12 @@ fun VoiceRecordingScreen(
                         text = "Voice recording",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
+                        val backColor = EchoTheme.onSurface
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             val path = Path().apply {
@@ -245,14 +247,14 @@ fun VoiceRecordingScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -269,9 +271,10 @@ fun VoiceRecordingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(14.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(14.dp))
                     .padding(14.dp)
             ) {
                 Row(
@@ -288,7 +291,7 @@ fun VoiceRecordingScreen(
                         Text(
                             text = state.statusText,
                             fontSize = 13.sp,
-                            color = Color(0xFF1E293B),
+                            color = EchoTheme.onSurface,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -296,7 +299,7 @@ fun VoiceRecordingScreen(
                     if (state.detectedLanguage.isNotBlank() && state.detectedLanguage != "Unknown") {
                         Box(
                             modifier = Modifier
-                                .background(Color(0xFF5165F6), shape = RoundedCornerShape(12.dp))
+                                .background(EchoTheme.primary, shape = RoundedCornerShape(12.dp))
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
@@ -317,9 +320,10 @@ fun VoiceRecordingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color.White,
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(28.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(28.dp))
                     .padding(vertical = 32.dp, horizontal = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -331,7 +335,7 @@ fun VoiceRecordingScreen(
                         modifier = Modifier
                             .size(96.dp)
                             .background(
-                                color = if (state.isPaused) Color(0xFFCBD5E1) else Color(0xFF5165F6),
+                                color = if (state.isPaused) EchoTheme.cardBorder else EchoTheme.primary,
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -371,7 +375,7 @@ fun VoiceRecordingScreen(
                         text = if (state.isPaused) "Recording paused" else "Tell us about your day",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
 
                     Spacer(modifier = Modifier.height(18.dp))
@@ -392,7 +396,7 @@ fun VoiceRecordingScreen(
                                     .width(3.dp)
                                     .height(h.dp)
                                     .background(
-                                        color = if (state.isPaused) Color(0xFFCBD5E1) else Color(0xFF818CF8),
+                                        color = if (state.isPaused) EchoTheme.cardBorder else EchoTheme.primary,
                                         shape = RoundedCornerShape(2.dp)
                                     )
                             )
@@ -405,7 +409,7 @@ fun VoiceRecordingScreen(
                         text = state.timerText,
                         fontSize = 36.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -413,7 +417,7 @@ fun VoiceRecordingScreen(
                     Text(
                         text = if (state.isPaused) "Tap Resume to continue" else "Speak in your preferred language...",
                         fontSize = 12.sp,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                 }
             }
@@ -425,8 +429,8 @@ fun VoiceRecordingScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White, shape = RoundedCornerShape(18.dp))
-                        .border(1.dp, Color(0xFFE2E8F0), shape = RoundedCornerShape(18.dp))
+                        .background(EchoTheme.surface, shape = RoundedCornerShape(18.dp))
+                        .border(1.dp, EchoTheme.cardBorder, shape = RoundedCornerShape(18.dp))
                         .padding(16.dp)
                 ) {
                     Column {
@@ -439,13 +443,13 @@ fun VoiceRecordingScreen(
                                 text = "🗣️ Spoken Voice",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                             if (state.detectedLanguage.isNotBlank()) {
                                 Text(
                                     text = "Language: ${state.detectedLanguage}",
                                     fontSize = 11.sp,
-                                    color = Color(0xFF94A3B8)
+                                    color = EchoTheme.textSecondary
                                 )
                             }
                         }
@@ -455,7 +459,7 @@ fun VoiceRecordingScreen(
                         Text(
                             text = "\"${state.spokenText}\"",
                             fontSize = 14.sp,
-                            color = Color(0xFF334155),
+                            color = EchoTheme.onSurface,
                             fontWeight = FontWeight.Normal
                         )
                     }
@@ -468,8 +472,8 @@ fun VoiceRecordingScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFEEF2FF), shape = RoundedCornerShape(20.dp))
-                    .border(1.5.dp, Color(0xFF818CF8), shape = RoundedCornerShape(20.dp))
+                    .background(EchoTheme.container, shape = RoundedCornerShape(20.dp))
+                    .border(1.5.dp, EchoTheme.primary, shape = RoundedCornerShape(20.dp))
                     .padding(18.dp)
             ) {
                 Column(
@@ -487,13 +491,13 @@ fun VoiceRecordingScreen(
                                 text = "Proper English Translation",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF3730A3)
+                                color = EchoTheme.primary
                             )
                         }
 
                         Box(
                             modifier = Modifier
-                                .background(Color(0xFF4F46E5), shape = RoundedCornerShape(10.dp))
+                                .background(EchoTheme.primary, shape = RoundedCornerShape(10.dp))
                                 .padding(horizontal = 8.dp, vertical = 3.dp)
                         ) {
                             Text(
@@ -515,13 +519,13 @@ fun VoiceRecordingScreen(
                             CircularProgressIndicator(
                                 modifier = Modifier.size(18.dp),
                                 strokeWidth = 2.dp,
-                                color = Color(0xFF5165F6)
+                                color = EchoTheme.primary
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
                                 text = "Translating speech into proper English...",
                                 fontSize = 13.sp,
-                                color = Color(0xFF5165F6),
+                                color = EchoTheme.primary,
                                 fontWeight = FontWeight.Medium
                             )
                         }
@@ -530,7 +534,7 @@ fun VoiceRecordingScreen(
                             text = "\"${state.translatedText}\"",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1E293B),
+                            color = EchoTheme.onSurface,
                             lineHeight = 22.sp
                         )
 
@@ -539,14 +543,14 @@ fun VoiceRecordingScreen(
                         Text(
                             text = "✓ Live translation active · Ready for diary transcript",
                             fontSize = 12.sp,
-                            color = Color(0xFF4338CA),
+                            color = EchoTheme.primary,
                             fontWeight = FontWeight.Medium
                         )
                     } else {
                         Text(
                             text = "Start speaking in any language. Your speech will be automatically transcribed and translated into clear, proper English here in real-time.",
                             fontSize = 13.sp,
-                            color = Color(0xFF6366F1),
+                            color = EchoTheme.textSecondary,
                             lineHeight = 18.sp
                         )
                     }
@@ -563,13 +567,13 @@ fun VoiceRecordingScreen(
                 Text(
                     text = "Tap to speak with Google Voice:",
                     fontSize = 12.sp,
-                    color = Color(0xFF64748B)
+                    color = EchoTheme.textSecondary
                 )
 
                 Box(
                     modifier = Modifier
-                        .background(Color.White, shape = RoundedCornerShape(12.dp))
-                        .border(1.dp, Color(0xFFE2E8F0), shape = RoundedCornerShape(12.dp))
+                        .background(EchoTheme.surface, shape = RoundedCornerShape(12.dp))
+                        .border(1.dp, EchoTheme.cardBorder, shape = RoundedCornerShape(12.dp))
                         .clickable {
                             try {
                                 speechIntentLauncher.launch(recognizerIntent)
@@ -584,7 +588,7 @@ fun VoiceRecordingScreen(
                         text = "🎤 Open Mic Intent",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -603,13 +607,13 @@ fun VoiceRecordingScreen(
                             .weight(1f)
                             .height(52.dp),
                         shape = RoundedCornerShape(26.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                        colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                     ) {
                         Text(
                             text = "⏸ Pause",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 } else {
@@ -619,13 +623,13 @@ fun VoiceRecordingScreen(
                             .weight(1f)
                             .height(52.dp),
                         shape = RoundedCornerShape(26.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                        colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                     ) {
                         Text(
                             text = "▶ Resume",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -636,7 +640,7 @@ fun VoiceRecordingScreen(
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(26.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
                 ) {
                     Text(
                         text = "⏹ Stop & Review",
@@ -653,7 +657,7 @@ fun VoiceRecordingScreen(
                 text = "Cancel",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 modifier = Modifier
                     .clickable { viewModel.onCancelClicked() }
                     .padding(8.dp)

@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,11 +71,12 @@ fun SearchDiaryScreen(
                         text = "Search diary",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
+                        val backColor = EchoTheme.onSurface
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             val path = Path().apply {
@@ -81,14 +84,14 @@ fun SearchDiaryScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -105,7 +108,7 @@ fun SearchDiaryScreen(
                 text = "Search query",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
@@ -116,14 +119,16 @@ fun SearchDiaryScreen(
                 shape = RoundedCornerShape(16.dp),
                 trailingIcon = {
                     IconButton(onClick = { viewModel.onClearQuery() }) {
-                        Text(text = "✕", fontSize = 14.sp, color = Color(0xFF94A3B8))
+                        Text(text = "✕", fontSize = 14.sp, color = EchoTheme.textSecondary)
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    focusedBorderColor = EchoTheme.primary,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -135,7 +140,7 @@ fun SearchDiaryScreen(
                     text = "${state.searchResultCount} results for \"${state.searchQuery}\"",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -144,14 +149,15 @@ fun SearchDiaryScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                            .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                             .padding(20.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = "No diary entries found matching \"${state.searchQuery}\"",
                             fontSize = 14.sp,
-                            color = Color(0xFF94A3B8)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 } else {
@@ -160,7 +166,8 @@ fun SearchDiaryScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
-                                .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                                .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                                .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                                 .clickable { viewModel.onSelectEntry(entry) }
                                 .padding(16.dp)
                         ) {
@@ -175,17 +182,17 @@ fun SearchDiaryScreen(
                                             text = entry.title,
                                             fontSize = 15.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF1E293B)
+                                            color = EchoTheme.onSurface
                                         )
                                         Text(
                                             text = "${entry.category} · ${entry.date}",
                                             fontSize = 12.sp,
-                                            color = Color(0xFF94A3B8)
+                                            color = EchoTheme.textSecondary
                                         )
                                     }
                                     val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
                                     if (entry.mood.isNotBlank() && !entry.mood.equals("not specified", ignoreCase = true)) {
-                                        Text(text = "$moodEmoji ${entry.mood}", fontSize = 12.sp, color = Color(0xFF5165F6), fontWeight = FontWeight.Medium)
+                                        Text(text = "$moodEmoji ${entry.mood}", fontSize = 12.sp, color = EchoTheme.primary, fontWeight = FontWeight.Medium)
                                     }
                                 }
 
@@ -194,7 +201,7 @@ fun SearchDiaryScreen(
                                     Text(
                                         text = entry.description,
                                         fontSize = 14.sp,
-                                        color = Color(0xFF64748B),
+                                        color = EchoTheme.textSecondary,
                                         maxLines = 2
                                     )
                                 }
@@ -206,14 +213,15 @@ fun SearchDiaryScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "Type keywords, categories, or moods to search your diary.",
                         fontSize = 14.sp,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                 }
             }
@@ -225,7 +233,7 @@ fun SearchDiaryScreen(
                 text = "Recent searches",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -234,7 +242,8 @@ fun SearchDiaryScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .clickable { viewModel.onSearchQueryChanged(search) }
                         .padding(16.dp)
                 ) {
@@ -250,10 +259,10 @@ fun SearchDiaryScreen(
                                 text = search,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                         }
-                        Text(text = "↗", fontSize = 16.sp, color = Color(0xFF94A3B8))
+                        Text(text = "↗", fontSize = 16.sp, color = EchoTheme.textSecondary)
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -271,7 +280,7 @@ fun SearchDiaryScreen(
                         text = "Clear recent searches",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -281,7 +290,7 @@ fun SearchDiaryScreen(
             Text(
                 text = "Search by title, description or category.",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )

@@ -1,5 +1,7 @@
 package com.simats.echodiary.ui.activity
 
+import com.simats.echodiary.ui.theme.EchoTheme
+
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -229,11 +231,12 @@ fun WriteDiaryEntryScreen(
                         text = "Write diary entry",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
+                        val backColor = EchoTheme.onSurface
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             val path = Path().apply {
@@ -241,7 +244,7 @@ fun WriteDiaryEntryScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -250,10 +253,10 @@ fun WriteDiaryEntryScreen(
                         Text(text = "📅", fontSize = 20.sp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -269,7 +272,7 @@ fun WriteDiaryEntryScreen(
             Text(
                 text = "WRITE MANUALLY · Stored directly in your diary",
                 fontSize = 12.sp,
-                color = Color(0xFF5165F6),
+                color = EchoTheme.primary,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 0.5.sp
             )
@@ -281,24 +284,24 @@ fun WriteDiaryEntryScreen(
                 text = "Title",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
             OutlinedTextField(
                 value = state.title,
                 onValueChange = { viewModel.onTitleChanged(it) },
                 placeholder = {
-                    Text("e.g. Lectures and project", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                    Text("e.g. Lectures and project", color = EchoTheme.textSecondary, fontSize = 14.sp)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedTextColor = Color(0xFF1E293B),
-                    unfocusedTextColor = Color(0xFF1E293B)
+                    focusedBorderColor = EchoTheme.primary,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -309,26 +312,26 @@ fun WriteDiaryEntryScreen(
                 text = "Description",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
             OutlinedTextField(
                 value = state.description,
                 onValueChange = { viewModel.onDescriptionChanged(it) },
                 placeholder = {
-                    Text("Write about your thoughts, feelings, or activities...", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                    Text("Write about your thoughts, feelings, or activities...", color = EchoTheme.textSecondary, fontSize = 14.sp)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(130.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedTextColor = Color(0xFF1E293B),
-                    unfocusedTextColor = Color(0xFF1E293B)
+                    focusedBorderColor = EchoTheme.primary,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -350,14 +353,14 @@ fun WriteDiaryEntryScreen(
                             text = "Date",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B),
+                            color = EchoTheme.onSurface,
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
                         Text(
                             text = "Calendar 📅",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6),
+                            color = EchoTheme.primary,
                             modifier = Modifier
                                 .clickable { showDatePicker = true }
                                 .padding(bottom = 6.dp)
@@ -383,12 +386,12 @@ fun WriteDiaryEntryScreen(
                                 }
                             },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF5165F6),
-                                unfocusedBorderColor = Color(0xFFE2E8F0),
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                                focusedTextColor = Color(0xFF1E293B),
-                                unfocusedTextColor = Color(0xFF1E293B)
+                                focusedBorderColor = EchoTheme.primary,
+                                unfocusedBorderColor = EchoTheme.cardBorder,
+                                focusedContainerColor = EchoTheme.surface,
+                                unfocusedContainerColor = EchoTheme.surface,
+                                focusedTextColor = EchoTheme.onSurface,
+                                unfocusedTextColor = EchoTheme.onSurface
                             )
                         )
                     }
@@ -400,7 +403,7 @@ fun WriteDiaryEntryScreen(
                         text = "Category",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                     Box(
@@ -415,12 +418,12 @@ fun WriteDiaryEntryScreen(
                             enabled = false,
                             shape = RoundedCornerShape(16.dp),
                             trailingIcon = {
-                                Text(text = "▼", fontSize = 12.sp, color = Color(0xFF64748B), modifier = Modifier.padding(end = 12.dp))
+                                Text(text = "▼", fontSize = 12.sp, color = EchoTheme.textSecondary, modifier = Modifier.padding(end = 12.dp))
                             },
                             colors = OutlinedTextFieldDefaults.colors(
-                                disabledBorderColor = Color(0xFFE2E8F0),
-                                disabledContainerColor = Color.White,
-                                disabledTextColor = Color(0xFF1E293B)
+                                disabledBorderColor = EchoTheme.cardBorder,
+                                disabledContainerColor = EchoTheme.surface,
+                                disabledTextColor = EchoTheme.onSurface
                             )
                         )
                     }
@@ -434,7 +437,7 @@ fun WriteDiaryEntryScreen(
                 text = "Mood · optional",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
             OutlinedTextField(
@@ -450,12 +453,12 @@ fun WriteDiaryEntryScreen(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF5165F6),
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedTextColor = Color(0xFF1E293B),
-                    unfocusedTextColor = Color(0xFF1E293B)
+                    focusedBorderColor = EchoTheme.primary,
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -478,9 +481,10 @@ fun WriteDiaryEntryScreen(
                     Box(
                         modifier = Modifier
                             .background(
-                                color = if (isSelected) Color(0xFFE0E7FF) else Color(0xFFF1F5F9),
+                                color = if (isSelected) EchoTheme.primary else EchoTheme.surface,
                                 shape = RoundedCornerShape(12.dp)
                             )
+                            .border(1.dp, if (isSelected) EchoTheme.primary else EchoTheme.cardBorder, RoundedCornerShape(12.dp))
                             .clickable { viewModel.onMoodChanged(moodVal) }
                             .padding(horizontal = 8.dp, vertical = 5.dp)
                     ) {
@@ -488,7 +492,7 @@ fun WriteDiaryEntryScreen(
                             text = label,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) Color(0xFF4338CA) else Color(0xFF475569)
+                            color = if (isSelected) Color.White else EchoTheme.onSurface
                         )
                     }
                 }
@@ -505,7 +509,7 @@ fun WriteDiaryEntryScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (state.hasPhoto) Color(0xFFE0E7FF) else Color(0xFFEEF2FF)
+                    containerColor = EchoTheme.container
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -514,7 +518,7 @@ fun WriteDiaryEntryScreen(
                         text = if (currentPhotos.isNotEmpty()) "Add more photos (${currentPhotos.size} selected)" else "Import photos from gallery · multiple allowed",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }
@@ -534,7 +538,7 @@ fun WriteDiaryEntryScreen(
                         text = "${currentPhotos.size} photo(s) attached",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Text(
                         text = "Clear all",
@@ -686,7 +690,7 @@ fun WriteDiaryEntryScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 if (state.isSaving) {
                     CircularProgressIndicator(
@@ -721,7 +725,7 @@ fun WriteDiaryEntryScreen(
                     text = "Cancel",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF64748B)
+                    color = EchoTheme.textSecondary
                 )
             }
 

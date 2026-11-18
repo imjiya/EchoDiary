@@ -6,6 +6,7 @@ import com.simats.echodiary.ui.theme.EchoTheme
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -102,14 +103,14 @@ fun HomeScreen(
                     Text(
                         text = state.dateText,
                         fontSize = 13.sp,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Hello, ${state.userName}.",
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 }
 
@@ -134,7 +135,7 @@ fun HomeScreen(
             Text(
                 text = state.subtitleText,
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -189,7 +190,7 @@ fun HomeScreen(
                     text = "Start with a category",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
                 Text(
                     text = "Choose →",
@@ -209,6 +210,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .clickable { onNavigateToChooseCategory() }
                         .padding(horizontal = 14.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
@@ -216,13 +218,14 @@ fun HomeScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "🎓", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "College", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                        Text(text = "College", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = EchoTheme.onSurface)
                     }
                 }
 
                 Box(
                     modifier = Modifier
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .clickable { onNavigateToChooseCategory() }
                         .padding(horizontal = 14.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
@@ -230,13 +233,14 @@ fun HomeScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "💼", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "Work", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                        Text(text = "Work", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = EchoTheme.onSurface)
                     }
                 }
 
                 Box(
                     modifier = Modifier
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .clickable { onNavigateToChooseCategory() }
                         .padding(horizontal = 14.dp, vertical = 8.dp),
                     contentAlignment = Alignment.Center
@@ -244,7 +248,7 @@ fun HomeScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "👥", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "Friends", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                        Text(text = "Friends", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = EchoTheme.onSurface)
                     }
                 }
             }
@@ -256,9 +260,10 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = EchoTheme.container,
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(24.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                     .padding(20.dp)
             ) {
                 Column(
@@ -296,7 +301,7 @@ fun HomeScreen(
                         text = state.weeklyMemoryTitle.ifBlank { "Your Weekly Memory" },
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         lineHeight = 24.sp
                     )
 
@@ -305,7 +310,7 @@ fun HomeScreen(
                     Text(
                         text = state.weeklyMemorySubtitle,
                         fontSize = 13.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -343,7 +348,7 @@ fun HomeScreen(
                     text = "Recent activities",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B),
+                    color = EchoTheme.onSurface,
                     modifier = Modifier.clickable { onNavigateToAllActivities() }
                 )
                 Text(
@@ -363,13 +368,14 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .padding(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "No recent activities yet. Record or write your first entry!",
                         fontSize = 14.sp,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                 }
             } else {
@@ -381,6 +387,7 @@ fun HomeScreen(
                                 color = EchoTheme.surface,
                                 shape = RoundedCornerShape(16.dp)
                             )
+                            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                             .clickable { onNavigateToActivityDetails(entry) }
                             .padding(16.dp)
                     ) {
@@ -404,13 +411,13 @@ fun HomeScreen(
                                     text = entry.title,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E293B)
+                                    color = EchoTheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = "${entry.category} · ${entry.date}",
                                     fontSize = 13.sp,
-                                    color = Color(0xFF64748B)
+                                    color = EchoTheme.textSecondary
                                 )
                             }
                             val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
@@ -456,6 +463,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .clickable { onNavigateToPhotoMemories() }
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
@@ -483,6 +491,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .weight(1f)
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .clickable { onNavigateToInsights() }
                         .padding(16.dp),
                     contentAlignment = Alignment.Center

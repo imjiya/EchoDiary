@@ -1,6 +1,7 @@
 package com.simats.echodiary.ui.calendar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,7 +83,7 @@ fun CalendarScreen(
                 text = "Calendar",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -92,6 +93,7 @@ fun CalendarScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = EchoTheme.surface, shape = RoundedCornerShape(24.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                     .padding(20.dp)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -104,7 +106,7 @@ fun CalendarScreen(
                         Text(
                             text = "〈",
                             fontSize = 18.sp,
-                            color = Color(0xFF94A3B8),
+                            color = EchoTheme.textSecondary,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .clickable { viewModel.previousMonth() }
@@ -114,12 +116,12 @@ fun CalendarScreen(
                             text = state.monthTitle,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = "〉",
                             fontSize = 18.sp,
-                            color = Color(0xFF94A3B8),
+                            color = EchoTheme.textSecondary,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .clickable { viewModel.nextMonth() }
@@ -139,7 +141,7 @@ fun CalendarScreen(
                                 text = day,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF94A3B8)
+                                color = EchoTheme.textSecondary
                             )
                         }
                     }
@@ -179,7 +181,7 @@ fun CalendarScreen(
                                                 color = when {
                                                     isSelected -> Color.White
                                                     hasEntry -> EchoTheme.primary
-                                                    else -> Color(0xFF1E293B)
+                                                    else -> EchoTheme.onSurface
                                                 }
                                             )
                                             if (hasEntry && !isSelected) {

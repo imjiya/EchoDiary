@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -125,10 +126,11 @@ fun ActivityDetailsScreen(
                         text = "Activity details",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backIconColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -137,7 +139,7 @@ fun ActivityDetailsScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backIconColor, style = stroke)
                         }
                     }
                 },
@@ -160,7 +162,7 @@ fun ActivityDetailsScreen(
             Text(
                 text = state.date,
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 fontWeight = FontWeight.Medium
             )
 
@@ -171,7 +173,7 @@ fun ActivityDetailsScreen(
                 text = state.title,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -180,21 +182,22 @@ fun ActivityDetailsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
                 Column {
                     Text(
                         text = "Category",
                         fontSize = 12.sp,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = state.category,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 }
             }
@@ -205,20 +208,21 @@ fun ActivityDetailsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
                 Column {
                     Text(
                         text = "Description",
                         fontSize = 12.sp,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = state.description,
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.onSurface,
                         lineHeight = 20.sp
                     )
                 }
@@ -230,14 +234,15 @@ fun ActivityDetailsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
                 Column {
                     Text(
                         text = "Mood",
                         fontSize = 12.sp,
-                        color = Color(0xFF94A3B8)
+                        color = EchoTheme.textSecondary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -245,7 +250,7 @@ fun ActivityDetailsScreen(
                             text = state.mood,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
@@ -263,7 +268,8 @@ fun ActivityDetailsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ) {
                     Column {
@@ -276,13 +282,13 @@ fun ActivityDetailsScreen(
                                 text = "Attached photo",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.onSurface
                             )
                             Text(
                                 text = "Stored in memory ✓",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF5165F6)
+                                color = EchoTheme.primary
                             )
                         }
                         Spacer(modifier = Modifier.height(10.dp))
@@ -302,7 +308,7 @@ fun ActivityDetailsScreen(
                                     .fillMaxWidth()
                                     .height(130.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFFEEF2FF)),
+                                    .background(EchoTheme.container),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -312,7 +318,7 @@ fun ActivityDetailsScreen(
                                         text = "Photo stored in memory",
                                         fontSize = 13.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = Color(0xFF5165F6)
+                                        color = EchoTheme.primary
                                     )
                                 }
                             }
@@ -323,14 +329,15 @@ fun ActivityDetailsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ) {
                     Column {
                         Text(
                             text = "Photo",
                             fontSize = 12.sp,
-                            color = Color(0xFF94A3B8)
+                            color = EchoTheme.textSecondary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Row(
@@ -341,7 +348,7 @@ fun ActivityDetailsScreen(
                             Text(
                                 text = "No photo attached",
                                 fontSize = 14.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                             Text(text = "🖼️", fontSize = 16.sp)
                         }
@@ -355,7 +362,7 @@ fun ActivityDetailsScreen(
             Text(
                 text = state.entryIdText,
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -390,7 +397,9 @@ fun ActivityDetailsScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFF1F2))
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (EchoTheme.isDark) Color(0xFF451A1A) else Color(0xFFFFF1F2)
+                )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "🗑️ ", fontSize = 16.sp)

@@ -83,7 +83,7 @@ fun EchoBottomBar(
                     Icon(
                         imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
                         contentDescription = item.title,
-                        tint = if (isSelected) EchoTheme.primary else Color(0xFF94A3B8),
+                        tint = if (isSelected) EchoTheme.primary else EchoTheme.textSecondary,
                         modifier = Modifier.size(24.dp)
                     )
                 },
@@ -92,15 +92,15 @@ fun EchoBottomBar(
                         text = item.title,
                         fontSize = 11.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (isSelected) EchoTheme.primary else Color(0xFF94A3B8)
+                        color = if (isSelected) EchoTheme.primary else EchoTheme.textSecondary
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = EchoTheme.container,
                     selectedIconColor = EchoTheme.primary,
-                    unselectedIconColor = Color(0xFF94A3B8),
+                    unselectedIconColor = EchoTheme.textSecondary,
                     selectedTextColor = EchoTheme.primary,
-                    unselectedTextColor = Color(0xFF94A3B8)
+                    unselectedTextColor = EchoTheme.textSecondary
                 )
             )
         }

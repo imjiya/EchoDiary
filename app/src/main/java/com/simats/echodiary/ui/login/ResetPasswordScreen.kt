@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.login
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,10 +71,11 @@ fun ResetPasswordScreen(
                         text = "Reset password",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -81,14 +84,14 @@ fun ResetPasswordScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -105,15 +108,17 @@ fun ResetPasswordScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(32.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(32.dp))
                     .padding(vertical = 36.dp, horizontal = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
+                val primaryColor = EchoTheme.primary
                 Canvas(modifier = Modifier.size(64.dp)) {
                     val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                    val color = Color(0xFF5165F6)
+                    val color = primaryColor
 
                     drawRect(color, topLeft = Offset(0f, size.height * 0.3f), size = Size(size.width * 0.85f, size.height * 0.55f), style = stroke)
                     val envelopePath = Path().apply {
@@ -143,13 +148,13 @@ fun ResetPasswordScreen(
                     text = "Let’s get you back in.",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = "Enter your account email to request reset instructions.",
                     fontSize = 14.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 20.sp
                 )
             }
@@ -165,7 +170,7 @@ fun ResetPasswordScreen(
                     text = "Email",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF1E293B),
+                    color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
@@ -176,9 +181,10 @@ fun ResetPasswordScreen(
                     shape = RoundedCornerShape(14.dp),
                     singleLine = true,
                     trailingIcon = {
+                        val iconColor = EchoTheme.textSecondary
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF94A3B8)
+                            val color = iconColor
                             drawRect(color, topLeft = Offset(0f, size.height * 0.25f), size = Size(size.width, size.height * 0.6f), style = stroke)
                             val path = Path().apply {
                                 moveTo(0f, size.height * 0.25f)
@@ -189,10 +195,12 @@ fun ResetPasswordScreen(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFE2E8F0),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        focusedBorderColor = EchoTheme.primary,
+                        unfocusedBorderColor = EchoTheme.cardBorder,
+                        focusedContainerColor = EchoTheme.surface,
+                        unfocusedContainerColor = EchoTheme.surface,
+                        focusedTextColor = EchoTheme.onSurface,
+                        unfocusedTextColor = EchoTheme.onSurface
                     )
                 )
             }
@@ -206,7 +214,7 @@ fun ResetPasswordScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 Text(
                     text = "Send Reset Instructions",
@@ -222,17 +230,19 @@ fun ResetPasswordScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = Color(0xFFDCFCE7),
+                            color = EchoTheme.container,
                             shape = RoundedCornerShape(16.dp)
                         )
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val checkColor = EchoTheme.primary
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
-                            val color = Color(0xFF16A34A)
+                            val color = checkColor
                             drawCircle(color, radius = size.width * 0.45f, style = stroke)
                             val check = Path().apply {
                                 moveTo(size.width * 0.3f, size.height * 0.5f)
@@ -245,7 +255,7 @@ fun ResetPasswordScreen(
                         Text(
                             text = "Request received. If this email has an account, reset instructions will be sent.",
                             fontSize = 13.sp,
-                            color = Color(0xFF166534),
+                            color = EchoTheme.primary,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -254,7 +264,7 @@ fun ResetPasswordScreen(
                 Text(
                     text = "Confirmation preview - no email sent in this design.",
                     fontSize = 12.sp,
-                    color = Color(0xFF94A3B8),
+                    color = EchoTheme.textSecondary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -270,13 +280,13 @@ fun ResetPasswordScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
             ) {
                 Text(
                     text = "Back to Login",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF5165F6)
+                    color = EchoTheme.primary
                 )
             }
 

@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,10 +72,11 @@ fun AllActivitiesScreen(
                         text = "All activities",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -82,15 +85,16 @@ fun AllActivitiesScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
                 actions = {
+                    val filterColor = EchoTheme.onSurface
                     IconButton(onClick = onNavigateToFilterActivities) {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF1E293B)
+                            val color = filterColor
                             drawLine(color, Offset(size.width * 0.15f, size.height * 0.25f), Offset(size.width * 0.85f, size.height * 0.25f), strokeWidth = stroke.width)
                             drawCircle(color, radius = 2.5.dp.toPx(), center = Offset(size.width * 0.35f, size.height * 0.25f))
 
@@ -102,10 +106,10 @@ fun AllActivitiesScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -122,7 +126,7 @@ fun AllActivitiesScreen(
                 text = "Search diary",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
@@ -137,16 +141,18 @@ fun AllActivitiesScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     placeholder = {
-                        Text(text = "Search entries", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                        Text(text = "Search entries", color = EchoTheme.textSecondary, fontSize = 14.sp)
                     },
                     trailingIcon = {
                         Text(text = "🔍", fontSize = 16.sp, modifier = Modifier.padding(end = 12.dp))
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFE2E8F0),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        focusedBorderColor = EchoTheme.primary,
+                        unfocusedBorderColor = EchoTheme.cardBorder,
+                        focusedContainerColor = EchoTheme.surface,
+                        unfocusedContainerColor = EchoTheme.surface,
+                        focusedTextColor = EchoTheme.onSurface,
+                        unfocusedTextColor = EchoTheme.onSurface
                     )
                 )
             }
@@ -157,7 +163,7 @@ fun AllActivitiesScreen(
             Text(
                 text = "${state.entries.size} entries · Stored in memory of activities",
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textSecondary,
                 fontWeight = FontWeight.Medium
             )
 
@@ -168,7 +174,8 @@ fun AllActivitiesScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .clickable { onNavigateToActivityDetails(entry) }
                         .padding(16.dp)
                 ) {
@@ -183,12 +190,12 @@ fun AllActivitiesScreen(
                                     text = entry.title,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E293B)
+                                    color = EchoTheme.onSurface
                                 )
                                 Text(
                                     text = "${entry.category} · ${entry.date}",
                                     fontSize = 12.sp,
-                                    color = Color(0xFF94A3B8)
+                                    color = EchoTheme.textSecondary
                                 )
                             }
                             val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
@@ -198,14 +205,14 @@ fun AllActivitiesScreen(
                             if (hasExplicitMood) {
                                 Box(
                                     modifier = Modifier
-                                        .background(Color(0xFFF1F5F9), shape = RoundedCornerShape(10.dp))
+                                        .background(EchoTheme.container, shape = RoundedCornerShape(10.dp))
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
                                     Text(
                                         text = "$moodEmoji ${entry.mood}",
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = Color(0xFF334155)
+                                        color = EchoTheme.primary
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(6.dp))
@@ -222,7 +229,7 @@ fun AllActivitiesScreen(
                             Text(
                                 text = entry.description,
                                 fontSize = 14.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
                     }
@@ -236,7 +243,7 @@ fun AllActivitiesScreen(
             Text(
                 text = "All ${state.entries.size} entries in your diary",
                 fontSize = 13.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )

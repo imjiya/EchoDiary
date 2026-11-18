@@ -39,6 +39,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
+import com.simats.echodiary.ui.theme.getPaletteColors
 
 @Composable
 fun AppearanceScreen(
@@ -47,9 +49,11 @@ fun AppearanceScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val activePalette = state.palettes.find { it.name == state.selectedPalette } ?: state.palettes.first()
+    val isDark = EchoTheme.isDark
+    val activeContainer = getPaletteColors(activePalette.name, isDark).second
 
     Scaffold(
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -71,9 +75,9 @@ fun AppearanceScreen(
                     onClick = onNavigateBack,
                     modifier = Modifier.size(36.dp)
                 ) {
+                    val iconColor = EchoTheme.onSurface
                     Canvas(modifier = Modifier.size(20.dp)) {
                         val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                        val color = Color(0xFF1E293B)
                         val path = Path().apply {
                             moveTo(size.width * 0.8f, size.height * 0.5f)
                             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -81,7 +85,7 @@ fun AppearanceScreen(
                             lineTo(size.width * 0.2f, size.height * 0.5f)
                             lineTo(size.width * 0.45f, size.height * 0.8f)
                         }
-                        drawPath(path, color, style = stroke)
+                        drawPath(path, iconColor, style = stroke)
                     }
                 }
 
@@ -91,7 +95,7 @@ fun AppearanceScreen(
                     text = "Appearance",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
@@ -102,7 +106,7 @@ fun AppearanceScreen(
                 text = "Craft your atmosphere.",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -110,7 +114,7 @@ fun AppearanceScreen(
             Text(
                 text = "Choose the color tone and display style for your thoughts.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -120,7 +124,7 @@ fun AppearanceScreen(
                 text = "DISPLAY MODE",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 letterSpacing = 0.5.sp
             )
 
@@ -142,10 +146,10 @@ fun AppearanceScreen(
                         modifier = Modifier
                             .weight(1f)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(if (isSelected) activePalette.containerColor else Color.White)
+                            .background(if (isSelected) EchoTheme.container else EchoTheme.surface)
                             .border(
                                 width = if (isSelected) 2.dp else 1.dp,
-                                color = if (isSelected) activePalette.primaryColor else Color(0xFFE2E8F0),
+                                color = if (isSelected) activePalette.primaryColor else EchoTheme.cardBorder,
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .clickable { viewModel.onThemeModeSelected(mode) }
@@ -161,7 +165,7 @@ fun AppearanceScreen(
                                 text = mode,
                                 fontSize = 14.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) activePalette.primaryColor else Color(0xFF334155)
+                                color = if (isSelected) activePalette.primaryColor else EchoTheme.onSurface
                             )
                         }
                     }
@@ -175,7 +179,7 @@ fun AppearanceScreen(
                 text = "COLOR ACCENTS & PALETTES",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 letterSpacing = 0.5.sp
             )
 
@@ -184,11 +188,13 @@ fun AppearanceScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 state.palettes.forEachIndexed { index, palette ->
                     val isSelected = state.selectedPalette.equals(palette.name, ignoreCase = true)
+                    val paletteContainer = getPaletteColors(palette.name, isDark).second
 
                     Row(
                         modifier = Modifier
@@ -201,10 +207,10 @@ fun AppearanceScreen(
                         Box(
                             modifier = Modifier
                                 .size(44.dp)
-                                .background(color = palette.containerColor, shape = CircleShape)
+                                .background(color = paletteContainer, shape = CircleShape)
                                 .border(
                                     width = 2.dp,
-                                    color = if (isSelected) palette.primaryColor else Color.Transparent,
+                                    color = if (isSelected) palette.primaryColor else EchoTheme.cardBorder,
                                     shape = CircleShape
                                 ),
                             contentAlignment = Alignment.Center
@@ -220,13 +226,13 @@ fun AppearanceScreen(
                                 text = palette.name,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = palette.description,
                                 fontSize = 12.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
 
@@ -236,7 +242,7 @@ fun AppearanceScreen(
                                 .size(24.dp)
                                 .border(
                                     width = 2.dp,
-                                    color = if (isSelected) palette.primaryColor else Color(0xFFCBD5E1),
+                                    color = if (isSelected) palette.primaryColor else EchoTheme.cardBorder,
                                     shape = CircleShape
                                 )
                                 .background(
@@ -272,7 +278,7 @@ fun AppearanceScreen(
                 text = "LIVE THEME PREVIEW",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 letterSpacing = 0.5.sp
             )
 
@@ -282,12 +288,12 @@ fun AppearanceScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = activePalette.containerColor,
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(20.dp)
                     )
                     .border(
                         width = 1.dp,
-                        color = activePalette.primaryColor.copy(alpha = 0.3f),
+                        color = activePalette.primaryColor.copy(alpha = 0.35f),
                         shape = RoundedCornerShape(20.dp)
                     )
                     .padding(18.dp)
@@ -301,7 +307,7 @@ fun AppearanceScreen(
                         Box(
                             modifier = Modifier
                                 .background(
-                                    color = activePalette.primaryColor.copy(alpha = 0.15f),
+                                    color = activePalette.primaryColor.copy(alpha = 0.18f),
                                     shape = RoundedCornerShape(8.dp)
                                 )
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -319,7 +325,7 @@ fun AppearanceScreen(
                             text = "${state.selectedMode} mode",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
 
@@ -329,7 +335,7 @@ fun AppearanceScreen(
                         text = "Evening walk under the stars",
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -337,7 +343,7 @@ fun AppearanceScreen(
                     Text(
                         text = "Reflecting upon today's milestones with peace, gratitude and mindfulness.",
                         fontSize = 13.sp,
-                        color = Color(0xFF475569),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 18.sp
                     )
 
@@ -362,14 +368,15 @@ fun AppearanceScreen(
 
                         Box(
                             modifier = Modifier
-                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .background(activeContainer, RoundedCornerShape(12.dp))
+                                .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(12.dp))
                                 .padding(horizontal = 10.dp, vertical = 4.dp)
                         ) {
                             Text(
                                 text = "❤️ Health",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF475569)
+                                color = EchoTheme.onSurface
                             )
                         }
                     }
@@ -399,4 +406,3 @@ fun AppearanceScreen(
         }
     }
 }
-

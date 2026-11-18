@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -88,11 +89,12 @@ fun PhotoMemoriesScreen(
                         text = "Photo memories",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
+                        val backColor = EchoTheme.onSurface
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             val path = Path().apply {
@@ -100,7 +102,7 @@ fun PhotoMemoriesScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -124,7 +126,7 @@ fun PhotoMemoriesScreen(
                 text = state.headerTitle,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -133,7 +135,7 @@ fun PhotoMemoriesScreen(
             Text(
                 text = "Photos connected to your diary entries, organized by date and captured moments.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -145,6 +147,7 @@ fun PhotoMemoriesScreen(
                         .fillMaxWidth()
                         .padding(vertical = 32.dp)
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(24.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -155,13 +158,13 @@ fun PhotoMemoriesScreen(
                             text = "No photo memories yet",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = "Add photos to your diary entries to see your moments captured and formatted into collages according to their date and time.",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B),
+                            color = EchoTheme.textSecondary,
                             textAlign = TextAlign.Center,
                             lineHeight = 18.sp
                         )
@@ -185,7 +188,7 @@ fun PhotoMemoriesScreen(
                                 text = dateGroup.formattedDate,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                         }
 
@@ -214,6 +217,7 @@ fun PhotoMemoriesScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(color = EchoTheme.surface, shape = RoundedCornerShape(24.dp))
+                                .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                                 .padding(16.dp)
                         ) {
                             Column {
@@ -233,14 +237,14 @@ fun PhotoMemoriesScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Box(
                                             modifier = Modifier
-                                                .background(Color(0xFFF1F5F9), RoundedCornerShape(8.dp))
+                                                .background(EchoTheme.container, RoundedCornerShape(8.dp))
                                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                                         ) {
                                             Text(
                                                 text = item.category,
                                                 fontSize = 11.sp,
                                                 fontWeight = FontWeight.Medium,
-                                                color = Color(0xFF475569)
+                                                color = EchoTheme.primary
                                             )
                                         }
                                     }
@@ -253,7 +257,7 @@ fun PhotoMemoriesScreen(
                                                 text = item.mood,
                                                 fontSize = 12.sp,
                                                 fontWeight = FontWeight.Medium,
-                                                color = Color(0xFF64748B)
+                                                color = EchoTheme.textSecondary
                                             )
                                         }
                                     }
@@ -278,13 +282,13 @@ fun PhotoMemoriesScreen(
                                     text = item.imageCaption,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFF1E293B)
+                                    color = EchoTheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                     text = item.imageSubcaption,
                                     fontSize = 12.sp,
-                                    color = Color(0xFF94A3B8)
+                                    color = EchoTheme.textSecondary
                                 )
                             }
                         }
@@ -296,6 +300,7 @@ fun PhotoMemoriesScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                                .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                                 .clickable {
                                     val raw = item.rawEntry ?: DiaryEntryItem(
                                         id = item.id,
@@ -331,26 +336,26 @@ fun PhotoMemoriesScreen(
                                         text = item.title,
                                         fontSize = 15.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF1E293B)
+                                        color = EchoTheme.onSurface
                                     )
                                     Spacer(modifier = Modifier.height(2.dp))
                                     Text(
                                         text = "${item.category} · ${item.date}${if (item.time.isNotBlank()) " at ${item.time}" else ""}",
                                         fontSize = 12.sp,
-                                        color = Color(0xFF64748B)
+                                        color = EchoTheme.textSecondary
                                     )
                                     if (item.description.isNotBlank()) {
                                         Spacer(modifier = Modifier.height(6.dp))
                                         Text(
                                             text = item.description,
                                             fontSize = 13.sp,
-                                            color = Color(0xFF334155),
+                                            color = EchoTheme.onSurface,
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                 }
-                                Text(text = "›", fontSize = 18.sp, color = Color(0xFF94A3B8), fontWeight = FontWeight.Bold)
+                                Text(text = "›", fontSize = 18.sp, color = EchoTheme.textMuted, fontWeight = FontWeight.Bold)
                             }
                         }
 
@@ -363,7 +368,7 @@ fun PhotoMemoriesScreen(
             Text(
                 text = state.footerText,
                 fontSize = 13.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(32.dp))

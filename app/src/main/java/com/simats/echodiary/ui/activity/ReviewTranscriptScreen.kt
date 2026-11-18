@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.simats.echodiary.ui.theme.EchoTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,11 +83,12 @@ fun ReviewTranscriptScreen(
                         text = "Review transcript",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
+                        val backColor = EchoTheme.onSurface
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             val path = Path().apply {
@@ -94,14 +96,14 @@ fun ReviewTranscriptScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFAFBFC))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = EchoTheme.background)
             )
         },
-        containerColor = Color(0xFFFAFBFC)
+        containerColor = EchoTheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -118,13 +120,13 @@ fun ReviewTranscriptScreen(
                 text = "Your words, first.",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Check the recorded voice translation and make any edits before creating your entry.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 20.sp
             )
 
@@ -135,9 +137,10 @@ fun ReviewTranscriptScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color(0xFFF0F4FF),
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(24.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                     .padding(20.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -154,7 +157,7 @@ fun ReviewTranscriptScreen(
                                 modifier = Modifier
                                     .width(2.5.dp)
                                     .height(h.dp)
-                                    .background(Color(0xFF5165F6), shape = RoundedCornerShape(2.dp))
+                                    .background(EchoTheme.primary, shape = RoundedCornerShape(2.dp))
                             )
                         }
                     }
@@ -164,7 +167,7 @@ fun ReviewTranscriptScreen(
                     Text(
                         text = "🎙️ Voice transcription recorded · Proper English translation ready",
                         fontSize = 12.sp,
-                        color = Color(0xFF4338CA),
+                        color = EchoTheme.primary,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -186,19 +189,20 @@ fun ReviewTranscriptScreen(
                         text = "Transcript",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
 
                     Box(
                         modifier = Modifier
-                            .background(Color(0xFFEEF2FF), shape = RoundedCornerShape(10.dp))
+                            .background(EchoTheme.container, shape = RoundedCornerShape(10.dp))
+                            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(10.dp))
                             .padding(horizontal = 8.dp, vertical = 3.dp)
                     ) {
                         Text(
                             text = "✓ Voice Translation Recorded",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -211,7 +215,7 @@ fun ReviewTranscriptScreen(
                     placeholder = {
                         Text(
                             text = "Your translated English voice transcript will appear here...",
-                            color = Color(0xFF94A3B8),
+                            color = EchoTheme.textSecondary,
                             fontSize = 14.sp
                         )
                     },
@@ -220,12 +224,12 @@ fun ReviewTranscriptScreen(
                         .height(130.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF5165F6),
-                        unfocusedBorderColor = Color(0xFFCBD5E1),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedTextColor = Color(0xFF1E293B),
-                        unfocusedTextColor = Color(0xFF1E293B)
+                        focusedBorderColor = EchoTheme.primary,
+                        unfocusedBorderColor = EchoTheme.cardBorder,
+                        focusedContainerColor = EchoTheme.surface,
+                        unfocusedContainerColor = EchoTheme.surface,
+                        focusedTextColor = EchoTheme.onSurface,
+                        unfocusedTextColor = EchoTheme.onSurface
                     )
                 )
 
@@ -234,7 +238,7 @@ fun ReviewTranscriptScreen(
                 Text(
                     text = "Editable transcript · saved as your diary entry description.",
                     fontSize = 12.sp,
-                    color = Color(0xFF94A3B8)
+                    color = EchoTheme.textSecondary
                 )
             }
 
@@ -245,20 +249,21 @@ fun ReviewTranscriptScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFEEF2FF), shape = RoundedCornerShape(12.dp))
+                        .background(EchoTheme.container, shape = RoundedCornerShape(12.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(12.dp))
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(16.dp),
                         strokeWidth = 2.dp,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "Saving entry to your diary...",
                         fontSize = 13.sp,
-                        color = Color(0xFF5165F6),
+                        color = EchoTheme.primary,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -300,7 +305,7 @@ fun ReviewTranscriptScreen(
             Text(
                 text = "This becomes your diary description. You can review details next.",
                 fontSize = 13.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 18.sp
             )
 
@@ -314,7 +319,7 @@ fun ReviewTranscriptScreen(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = RoundedCornerShape(27.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF5165F6))
+                colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
             ) {
                 if (state.isSaving) {
                     CircularProgressIndicator(
@@ -349,12 +354,13 @@ fun ReviewTranscriptScreen(
                         .weight(1f)
                         .height(52.dp),
                     shape = RoundedCornerShape(26.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEF2FF))
+                    colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        val micColor = EchoTheme.primary
                         Canvas(modifier = Modifier.size(14.dp)) {
                             val stroke = Stroke(width = 1.5.dp.toPx(), cap = StrokeCap.Round)
-                            val color = Color(0xFF5165F6)
+                            val color = micColor
                             drawRoundRect(
                                 color = color,
                                 topLeft = Offset(size.width * 0.35f, 0f),
@@ -383,7 +389,7 @@ fun ReviewTranscriptScreen(
                             text = "Retake",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF5165F6)
+                            color = EchoTheme.primary
                         )
                     }
                 }
@@ -399,7 +405,7 @@ fun ReviewTranscriptScreen(
                         text = "Discard",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF5165F6)
+                        color = EchoTheme.primary
                     )
                 }
             }

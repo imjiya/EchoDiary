@@ -3,6 +3,7 @@ package com.simats.echodiary.ui.profile
 import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,13 +83,14 @@ fun StorageScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val backColor = EchoTheme.onSurface
                     IconButton(
                         onClick = onNavigateBack,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF1E293B)
+                            val color = backColor
                             val path = Path().apply {
                                 moveTo(size.width * 0.8f, size.height * 0.5f)
                                 lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -106,7 +108,7 @@ fun StorageScreen(
                         text = "Storage & Memory",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 }
 
@@ -160,7 +162,8 @@ fun StorageScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(EchoTheme.container, RoundedCornerShape(24.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(24.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                     .padding(22.dp)
             ) {
                 Column {
@@ -181,13 +184,13 @@ fun StorageScreen(
                             text = state.totalAppStorageText,
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "used by EchoDiary",
                             fontSize = 14.sp,
-                            color = Color(0xFF64748B),
+                            color = EchoTheme.textSecondary,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                     }
@@ -196,7 +199,7 @@ fun StorageScreen(
                     Text(
                         text = "100% on-device private data · zero cloud synchronization",
                         fontSize = 12.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
 
                     Spacer(modifier = Modifier.height(18.dp))
@@ -288,7 +291,7 @@ fun StorageScreen(
                 text = "STORAGE & MEMORY DETAILS",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 letterSpacing = 0.5.sp
             )
 
@@ -450,7 +453,8 @@ fun StorageScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -463,7 +467,7 @@ fun StorageScreen(
                             text = "Device Storage",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = "${state.deviceFreeStorageSummary} free",
@@ -478,7 +482,7 @@ fun StorageScreen(
                     Text(
                         text = "${state.deviceStorageSummary} used of ${state.deviceTotalStorageSummary}",
                         fontSize = 13.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -490,7 +494,7 @@ fun StorageScreen(
                             .height(8.dp)
                             .clip(RoundedCornerShape(4.dp)),
                         color = primaryColor,
-                        trackColor = Color(0xFFE2E8F0)
+                        trackColor = if (EchoTheme.isDark) Color(0xFF334155) else Color(0xFFE2E8F0)
                     )
                 }
             }
@@ -501,7 +505,7 @@ fun StorageScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp),
                 verticalAlignment = Alignment.Top
             ) {
@@ -511,7 +515,7 @@ fun StorageScreen(
                         .padding(top = 2.dp)
                 ) {
                     val stroke = Stroke(width = 1.6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                    val color = Color(0xFF5165F6)
+                    val color = primaryColor
                     drawCircle(color, radius = size.width * 0.42f, center = Offset(size.width * 0.5f, size.height * 0.5f), style = stroke)
                     drawCircle(color, radius = 1.2.dp.toPx(), center = Offset(size.width * 0.5f, size.height * 0.32f))
                     drawLine(color, Offset(size.width * 0.5f, size.height * 0.48f), Offset(size.width * 0.5f, size.height * 0.72f), strokeWidth = stroke.width)
@@ -522,7 +526,7 @@ fun StorageScreen(
                 Text(
                     text = "EchoDiary stores all entries, SLM memory narratives, and photos locally on your device. Your personal life stories never leave this device.",
                     fontSize = 12.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 17.sp,
                     modifier = Modifier.weight(1f)
                 )
@@ -614,14 +618,14 @@ private fun StorageLegendItem(
         Text(
             text = label,
             fontSize = 12.sp,
-            color = Color(0xFF64748B)
+            color = EchoTheme.textSecondary
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = sizeText,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF1E293B)
+            color = EchoTheme.onSurface
         )
     }
 }
@@ -638,7 +642,8 @@ private fun StorageDetailCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(20.dp))
+            .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
             .padding(18.dp)
     ) {
         Column {
@@ -665,12 +670,12 @@ private fun StorageDetailCard(
                             text = title,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = subtitle,
                             fontSize = 12.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -697,9 +702,10 @@ private fun MemoryTagChip(
     Box(
         modifier = modifier
             .background(
-                color = if (active) Color(0xFFEEF2FF) else Color(0xFFF1F5F9),
+                color = if (active) EchoTheme.container else EchoTheme.surface,
                 shape = RoundedCornerShape(10.dp)
             )
+            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(10.dp))
             .padding(horizontal = 8.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -707,7 +713,7 @@ private fun MemoryTagChip(
             text = label,
             fontSize = 11.sp,
             fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal,
-            color = if (active) Color(0xFF4F46E5) else Color(0xFF64748B)
+            color = if (active) EchoTheme.primary else EchoTheme.textSecondary
         )
     }
 }

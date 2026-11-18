@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -86,13 +87,14 @@ fun HelpAndSupportScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val backColor = EchoTheme.onSurface
                     IconButton(
                         onClick = onNavigateBack,
                         modifier = Modifier.size(36.dp)
                     ) {
                         Canvas(modifier = Modifier.size(20.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                            val color = Color(0xFF1E293B)
+                            val color = backColor
                             val path = Path().apply {
                                 moveTo(size.width * 0.8f, size.height * 0.5f)
                                 lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -110,7 +112,7 @@ fun HelpAndSupportScreen(
                         text = "Help & Support",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 }
 
@@ -184,11 +186,11 @@ fun HelpAndSupportScreen(
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(24.dp)),
+                    .background(EchoTheme.surface, RoundedCornerShape(24.dp)),
                 placeholder = {
                     Text(
                         text = "Search questions or topics...",
-                        color = Color(0xFF94A3B8),
+                        color = EchoTheme.textSecondary,
                         fontSize = 14.sp
                     )
                 },
@@ -201,7 +203,7 @@ fun HelpAndSupportScreen(
                             text = "✕",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF94A3B8),
+                            color = EchoTheme.textSecondary,
                             modifier = Modifier
                                 .clickable { viewModel.onSearchQueryChanged("") }
                                 .padding(8.dp)
@@ -212,9 +214,11 @@ fun HelpAndSupportScreen(
                 shape = RoundedCornerShape(24.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = primaryColor,
-                    unfocusedBorderColor = Color(0xFFE2E8F0),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedBorderColor = EchoTheme.cardBorder,
+                    focusedContainerColor = EchoTheme.surface,
+                    unfocusedContainerColor = EchoTheme.surface,
+                    focusedTextColor = EchoTheme.onSurface,
+                    unfocusedTextColor = EchoTheme.onSurface
                 )
             )
 
@@ -233,7 +237,8 @@ fun HelpAndSupportScreen(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(16.dp))
-                            .background(if (isSelected) primaryColor else Color.White)
+                            .background(if (isSelected) primaryColor else EchoTheme.surface)
+                            .border(1.dp, if (isSelected) primaryColor else EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                             .clickable { viewModel.onCategorySelected(cat) }
                             .padding(horizontal = 14.dp, vertical = 8.dp)
                     ) {
@@ -241,7 +246,7 @@ fun HelpAndSupportScreen(
                             text = cat,
                             fontSize = 13.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSelected) Color.White else Color(0xFF64748B)
+                            color = if (isSelected) Color.White else EchoTheme.onSurface
                         )
                     }
                 }
@@ -254,7 +259,7 @@ fun HelpAndSupportScreen(
                 text = "FREQUENTLY ASKED QUESTIONS (${state.filteredFaqs.size})",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 letterSpacing = 0.5.sp
             )
 
@@ -264,7 +269,8 @@ fun HelpAndSupportScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(20.dp))
+                        .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(24.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -275,7 +281,7 @@ fun HelpAndSupportScreen(
                             text = "No answers found for \"${state.searchQuery}\"",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
@@ -289,7 +295,8 @@ fun HelpAndSupportScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(20.dp))
+                        .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .padding(vertical = 12.dp, horizontal = 16.dp)
                 ) {
                     state.filteredFaqs.forEachIndexed { index, faq ->
@@ -305,7 +312,7 @@ fun HelpAndSupportScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(1.dp)
-                                    .background(Color(0xFFF1F5F9))
+                                    .background(EchoTheme.cardBorder)
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                         }
@@ -320,7 +327,7 @@ fun HelpAndSupportScreen(
                 text = "SYSTEM DIAGNOSTICS & HARDWARE STATUS",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 letterSpacing = 0.5.sp
             )
 
@@ -329,7 +336,8 @@ fun HelpAndSupportScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(20.dp))
+                    .background(EchoTheme.surface, RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Column {
@@ -342,7 +350,7 @@ fun HelpAndSupportScreen(
                             text = "Hardware & Engine Health",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Button(
                             onClick = { viewModel.runDiagnostics(context) },
@@ -409,7 +417,7 @@ fun HelpAndSupportScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color(0xFFEEF2FF), shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.container, shape = RoundedCornerShape(20.dp))
                     .padding(20.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -419,7 +427,7 @@ fun HelpAndSupportScreen(
                         text = "How are memories synthesized?",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 }
 
@@ -428,7 +436,7 @@ fun HelpAndSupportScreen(
                 Text(
                     text = "Weekly, monthly, and yearly memories use on-device SLM synthesis and RAG embeddings to summarize your daily entries. Only explicitly recorded feelings are highlighted. You can freely edit drafts and attach photos anytime.",
                     fontSize = 13.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 18.sp
                 )
             }
@@ -495,7 +503,7 @@ fun HelpAndSupportScreen(
                 Text(
                     text = "EchoDiary v1.0.0 (Build 2026.11) · 100% Private Local Storage",
                     fontSize = 12.sp,
-                    color = Color(0xFF94A3B8)
+                    color = EchoTheme.textMuted
                 )
             }
 
@@ -525,14 +533,14 @@ private fun ExpandableFaqCard(
                 // Category tag
                 Box(
                     modifier = Modifier
-                        .background(Color(0xFFF1F5F9), RoundedCornerShape(6.dp))
+                        .background(EchoTheme.container, RoundedCornerShape(6.dp))
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = faq.category.uppercase(),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.primary,
                         letterSpacing = 0.5.sp
                     )
                 }
@@ -543,15 +551,16 @@ private fun ExpandableFaqCard(
                     text = faq.question,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             }
 
             Spacer(modifier = Modifier.width(12.dp))
 
+            val arrowColor = if (isExpanded) EchoTheme.primary else EchoTheme.textMuted
             Canvas(modifier = Modifier.size(16.dp)) {
                 val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-                val color = if (isExpanded) Color(0xFF5165F6) else Color(0xFF94A3B8)
+                val color = arrowColor
                 val path = Path().apply {
                     if (isExpanded) {
                         moveTo(size.width * 0.2f, size.height * 0.65f)
@@ -576,7 +585,7 @@ private fun ExpandableFaqCard(
                 Text(
                     text = faq.answer,
                     fontSize = 13.sp,
-                    color = Color(0xFF475569),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 19.sp
                 )
 
@@ -594,7 +603,7 @@ private fun ExpandableFaqCard(
                             Text(
                                 text = tip,
                                 fontSize = 12.sp,
-                                color = Color(0xFF64748B),
+                                color = EchoTheme.textSecondary,
                                 lineHeight = 16.sp
                             )
                         }
@@ -616,7 +625,7 @@ private fun DiagnosticRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFF8FAFC), RoundedCornerShape(12.dp))
+            .background(EchoTheme.container, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -632,7 +641,7 @@ private fun DiagnosticRow(
                     text = title,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
                 Text(
                     text = statusText,

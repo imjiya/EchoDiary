@@ -17,8 +17,12 @@ data class EchoDiaryColors(
     val primaryContainer: Color,
     val background: Color,
     val surface: Color,
+    val cardBackground: Color,
+    val cardBorder: Color,
     val onSurface: Color,
+    val textPrimary: Color,
     val textSecondary: Color,
+    val textMuted: Color,
     val isDark: Boolean
 )
 
@@ -28,8 +32,12 @@ val LocalEchoColors = staticCompositionLocalOf {
         primaryContainer = Color(0xFFEEF2FF),
         background = Color(0xFFFAFBFC),
         surface = Color.White,
+        cardBackground = Color.White,
+        cardBorder = Color(0xFFE2E8F0),
         onSurface = Color(0xFF1E293B),
+        textPrimary = Color(0xFF1E293B),
         textSecondary = Color(0xFF64748B),
+        textMuted = Color(0xFF94A3B8),
         isDark = false
     )
 }
@@ -55,28 +63,59 @@ object EchoTheme {
         @Composable
         get() = LocalEchoColors.current.surface
 
+    val cardBackground: Color
+        @Composable
+        get() = LocalEchoColors.current.cardBackground
+
+    val cardBorder: Color
+        @Composable
+        get() = LocalEchoColors.current.cardBorder
+
     val onSurface: Color
         @Composable
         get() = LocalEchoColors.current.onSurface
 
+    val textPrimary: Color
+        @Composable
+        get() = LocalEchoColors.current.textPrimary
+
     val textSecondary: Color
         @Composable
         get() = LocalEchoColors.current.textSecondary
+
+    val textMuted: Color
+        @Composable
+        get() = LocalEchoColors.current.textMuted
 
     val isDark: Boolean
         @Composable
         get() = LocalEchoColors.current.isDark
 }
 
-fun getPaletteColors(paletteName: String): Pair<Color, Color> {
-    return when (paletteName.trim().lowercase(Locale.ROOT)) {
+fun getPaletteColors(paletteName: String, isDark: Boolean = false): Pair<Color, Color> {
+    val (primary, lightContainer) = when (paletteName.trim().lowercase(Locale.ROOT)) {
         "serene lavender" -> Pair(Color(0xFF8B5CF6), Color(0xFFF5F3FF))
         "emerald forest" -> Pair(Color(0xFF10B981), Color(0xFFECFDF5))
         "sunset amber" -> Pair(Color(0xFFF97316), Color(0xFFFFF7ED))
         "rose blossom" -> Pair(Color(0xFFEC4899), Color(0xFFFDF2F8))
-        "midnight slate" -> Pair(Color(0xFF475569), Color(0xFFF1F5F9))
+        "midnight slate" -> Pair(Color(0xFF64748B), Color(0xFFF1F5F9))
         else -> Pair(Color(0xFF5165F6), Color(0xFFEEF2FF)) // Calm Blue (Default)
     }
+
+    val container = if (isDark) {
+        when (paletteName.trim().lowercase(Locale.ROOT)) {
+            "serene lavender" -> Color(0xFF2E2248)
+            "emerald forest" -> Color(0xFF132F26)
+            "sunset amber" -> Color(0xFF382316)
+            "rose blossom" -> Color(0xFF381B2B)
+            "midnight slate" -> Color(0xFF1E293B)
+            else -> Color(0xFF1E2442) // Calm Blue dark container
+        }
+    } else {
+        lightContainer
+    }
+
+    return Pair(primary, container)
 }
 
 @Composable
@@ -85,20 +124,28 @@ fun EchoDiaryTheme(
     paletteName: String = DiaryActivityStore.themePalette.value,
     content: @Composable () -> Unit
 ) {
-    val (primary, container) = getPaletteColors(paletteName)
+    val (primary, container) = getPaletteColors(paletteName, isDark = darkTheme)
 
     val background = if (darkTheme) Color(0xFF0F172A) else Color(0xFFFAFBFC)
     val surface = if (darkTheme) Color(0xFF1E293B) else Color.White
+    val cardBackground = if (darkTheme) Color(0xFF1E293B) else Color.White
+    val cardBorder = if (darkTheme) Color(0xFF334155) else Color(0xFFE2E8F0)
     val onSurface = if (darkTheme) Color(0xFFF8FAFC) else Color(0xFF1E293B)
+    val textPrimary = onSurface
     val textSecondary = if (darkTheme) Color(0xFF94A3B8) else Color(0xFF64748B)
+    val textMuted = if (darkTheme) Color(0xFF64748B) else Color(0xFF94A3B8)
 
     val echoColors = EchoDiaryColors(
         primary = primary,
         primaryContainer = container,
         background = background,
         surface = surface,
+        cardBackground = cardBackground,
+        cardBorder = cardBorder,
         onSurface = onSurface,
+        textPrimary = textPrimary,
         textSecondary = textSecondary,
+        textMuted = textMuted,
         isDark = darkTheme
     )
 
@@ -110,7 +157,8 @@ fun EchoDiaryTheme(
             surface = surface,
             onPrimary = Color.White,
             onBackground = onSurface,
-            onSurface = onSurface
+            onSurface = onSurface,
+            onSurfaceVariant = textSecondary
         )
     } else {
         lightColorScheme(
@@ -120,7 +168,8 @@ fun EchoDiaryTheme(
             surface = surface,
             onPrimary = Color.White,
             onBackground = onSurface,
-            onSurface = onSurface
+            onSurface = onSurface,
+            onSurfaceVariant = textSecondary
         )
     }
 
