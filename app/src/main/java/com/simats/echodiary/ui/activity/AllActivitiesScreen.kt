@@ -161,7 +161,7 @@ fun AllActivitiesScreen(
 
             // Subtitle info
             Text(
-                text = "${state.entries.size} entries · Stored in memory of activities",
+                text = if (state.entries.isEmpty()) "No activities recorded yet" else "${state.entries.size} entries · Stored in memory of activities",
                 fontSize = 12.sp,
                 color = EchoTheme.textSecondary,
                 fontWeight = EchoTheme.textMedium
@@ -169,79 +169,108 @@ fun AllActivitiesScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // List of entry cards
-            state.entries.forEach { entry ->
+            if (state.entries.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
                         .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
-                        .clickable { onNavigateToActivityDetails(entry) }
-                        .padding(16.dp)
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Column {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = entry.icon, fontSize = 20.sp)
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column(modifier = Modifier.weight(1f)) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "📝", fontSize = 40.sp)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "No diary activities yet",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = EchoTheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "Write or record your daily moments to build your diary memory.",
+                            fontSize = 13.sp,
+                            color = EchoTheme.textSecondary,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            } else {
+                // List of entry cards
+                state.entries.forEach { entry ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                            .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
+                            .clickable { onNavigateToActivityDetails(entry) }
+                            .padding(16.dp)
+                    ) {
+                        Column {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(text = entry.icon, fontSize = 20.sp)
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = entry.title,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = EchoTheme.onSurface
+                                    )
+                                    Text(
+                                        text = "${entry.category} · ${entry.date}",
+                                        fontSize = 12.sp,
+                                        color = EchoTheme.textSecondary
+                                    )
+                                }
+                                val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
+                                val hasExplicitMood = entry.mood.isNotBlank() &&
+                                    !entry.mood.equals("not specified", ignoreCase = true) &&
+                                    !entry.mood.equals("unspecified", ignoreCase = true)
+                                if (hasExplicitMood) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(EchoTheme.container, shape = RoundedCornerShape(10.dp))
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(
+                                            text = "$moodEmoji ${entry.mood}",
+                                            fontSize = 12.sp,
+                                            fontWeight = EchoTheme.textMedium,
+                                            color = EchoTheme.primary
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                }
                                 Text(
-                                    text = entry.title,
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = EchoTheme.onSurface
+                                    text = "✏️",
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.clickable { onNavigateToActivityDetails(entry) }
                                 )
+                            }
+
+                            if (entry.description.isNotBlank()) {
+                                Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = "${entry.category} · ${entry.date}",
-                                    fontSize = 12.sp,
+                                    text = entry.description,
+                                    fontSize = 14.sp,
                                     color = EchoTheme.textSecondary
                                 )
                             }
-                            val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
-                            val hasExplicitMood = entry.mood.isNotBlank() &&
-                                !entry.mood.equals("not specified", ignoreCase = true) &&
-                                !entry.mood.equals("unspecified", ignoreCase = true)
-                            if (hasExplicitMood) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(EchoTheme.container, shape = RoundedCornerShape(10.dp))
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                                ) {
-                                    Text(
-                                        text = "$moodEmoji ${entry.mood}",
-                                        fontSize = 12.sp,
-                                        fontWeight = EchoTheme.textMedium,
-                                        color = EchoTheme.primary
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(6.dp))
-                            }
-                            Text(
-                                text = "✏️",
-                                fontSize = 14.sp,
-                                modifier = Modifier.clickable { onNavigateToActivityDetails(entry) }
-                            )
-                        }
-
-                        if (entry.description.isNotBlank()) {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = entry.description,
-                                fontSize = 14.sp,
-                                color = EchoTheme.textSecondary
-                            )
                         }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "All ${state.entries.size} entries in your diary",
+                text = if (state.entries.isEmpty()) "0 entries in your diary" else "All ${state.entries.size} entries in your diary",
                 fontSize = 13.sp,
                 color = EchoTheme.textMuted,
                 textAlign = TextAlign.Center,

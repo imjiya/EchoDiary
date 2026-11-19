@@ -20,7 +20,7 @@ data class MemoriesUiState(
     val memorySubtitle: String = "${DiaryActivityStore.getCurrentWeekLabel()} · ${DiaryActivityStore.activities.value.size} diary entries",
     val highlights: List<String> = DiaryActivityStore.weeklyHighlights.value,
     val entries: List<DiaryEntryItem> = emptyList(),
-    val totalSavedMemoriesCount: Int = if (DiaryActivityStore.activities.value.isEmpty()) 0 else 3,
+    val totalSavedMemoriesCount: Int = if (DiaryActivityStore.activities.value.isEmpty()) 0 else 1,
     val photosSubtitle: String = "No photo memories yet",
     val monthlyCardSubtitle: String = "${DiaryActivityStore.getCurrentMonthLabel()} · Based on your entries",
     val yearlyCardSubtitle: String = "${DiaryActivityStore.getCurrentYearLabel()} · Based on your entries"
@@ -37,17 +37,24 @@ class MemoriesViewModel(
     init {
         executionScope.launch {
             DiaryActivityStore.activities.collectLatest { activities ->
-                val photoEntries = activities.filter { it.hasPhoto || !it.photoUri.isNullOrBlank() }
+                val photoEntries = activities.filter { it.getAllPhotos().isNotEmpty() }
                 val sub = if (photoEntries.isNotEmpty()) {
                     val first = photoEntries.first()
                     "${first.title} · ${first.date}"
                 } else {
-                    "No photo memories yet"
+                    val weeklyPhotos = linkedSetOf<String>()
+                    DiaryActivityStore.weeklyMemoryPhotoUri.value?.let { if (it.isNotBlank()) weeklyPhotos.add(it) }
+                    DiaryActivityStore.weeklyMemoryPhotoUris.value.forEach { if (it.isNotBlank()) weeklyPhotos.add(it) }
+                    if (weeklyPhotos.isNotEmpty()) {
+                        "Weekly Memory · Photo attached"
+                    } else {
+                        "No photo memories yet"
+                    }
                 }
                 _uiState.update {
                     it.copy(
                         photosSubtitle = sub,
-                        totalSavedMemoriesCount = if (activities.isEmpty()) 0 else 3,
+                        totalSavedMemoriesCount = if (activities.isEmpty()) 0 else 1,
                         monthlyCardSubtitle = "${DiaryActivityStore.getCurrentMonthLabel()} · ${activities.size} entries",
                         yearlyCardSubtitle = "${DiaryActivityStore.getCurrentYearLabel()} · ${activities.size} entries"
                     )

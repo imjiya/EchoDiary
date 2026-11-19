@@ -188,39 +188,42 @@ fun WeeklyMemoryScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Highlights section
-            Text(
-                text = "Highlights",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = EchoTheme.onSurface
-            )
+            if (state.highlights.isNotEmpty()) {
+                Text(
+                    text = "Highlights",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = EchoTheme.onSurface
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            // Highlights Chips
-            val chunks = state.highlights.chunked(2)
-            chunks.forEach { rowHighlights ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    rowHighlights.forEach { highlight ->
-                        Box(
-                            modifier = Modifier
-                                .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                                .padding(horizontal = 16.dp, vertical = 10.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = highlight,
-                                fontSize = 13.sp,
-                                fontWeight = EchoTheme.textMedium,
-                                color = EchoTheme.textSecondary
-                            )
+                // Highlights Chips
+                val chunks = state.highlights.chunked(2)
+                chunks.forEach { rowHighlights ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        rowHighlights.forEach { highlight ->
+                            Box(
+                                modifier = Modifier
+                                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
+                                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = highlight,
+                                    fontSize = 13.sp,
+                                    fontWeight = EchoTheme.textMedium,
+                                    color = EchoTheme.textSecondary
+                                )
+                            }
                         }
                     }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
-                Spacer(modifier = Modifier.height(10.dp))
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -228,7 +231,7 @@ fun WeeklyMemoryScreen(
             Text(
                 text = state.footerText,
                 fontSize = 12.sp,
-                color = Color(0xFF94A3B8)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(32.dp))

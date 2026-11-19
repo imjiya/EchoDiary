@@ -269,36 +269,44 @@ fun MonthlyMemoryScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    state.categoryBreakdown.forEach { item ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = item.name,
-                                fontSize = 14.sp,
-                                color = EchoTheme.textSecondary,
-                                modifier = Modifier.width(80.dp)
-                            )
-                            LinearProgressIndicator(
-                                progress = { item.progress },
+                    if (state.categoryBreakdown.isEmpty()) {
+                        Text(
+                            text = "No category data available yet. Start logging moments to see your category insights.",
+                            fontSize = 13.sp,
+                            color = EchoTheme.textSecondary
+                        )
+                    } else {
+                        state.categoryBreakdown.forEach { item ->
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = EchoTheme.primary,
-                                trackColor = EchoTheme.container,
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(
-                                text = "${item.count}",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = EchoTheme.onSurface
-                            )
+                                    .fillMaxWidth()
+                                    .padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = item.name,
+                                    fontSize = 14.sp,
+                                    color = EchoTheme.textSecondary,
+                                    modifier = Modifier.width(80.dp)
+                                )
+                                LinearProgressIndicator(
+                                    progress = { item.progress },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    color = EchoTheme.primary,
+                                    trackColor = EchoTheme.container,
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = "${item.count}",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = EchoTheme.onSurface
+                                )
+                            }
                         }
                     }
                 }
@@ -338,7 +346,7 @@ fun MonthlyMemoryScreen(
                         Text(
                             text = "No diary entries recorded for this month yet.",
                             fontSize = 13.sp,
-                            color = Color(0xFF94A3B8)
+                            color = EchoTheme.textSecondary
                         )
                     } else {
                         state.entries.forEach { entry ->

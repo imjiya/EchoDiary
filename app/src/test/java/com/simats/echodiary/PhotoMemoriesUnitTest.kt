@@ -34,20 +34,13 @@ class PhotoMemoriesUnitTest {
     }
 
     @Test
-    fun testInitialPhotoMemoriesLoadsDefaultWithRespectiveDateAndMemory() {
+    fun testInitialPhotoMemoriesEmptyWhenNoPhotosExist() {
         val viewModel = PhotoMemoriesViewModel(scope = testScope)
         val state = viewModel.uiState.value
 
-        assertTrue("Should have at least 1 photo memory initially", state.photoMemories.isNotEmpty())
-        assertEquals(1, state.totalPhotosCount)
-
-        val firstMemory = state.photoMemories.first()
-        assertEquals("Lunch with friends", firstMemory.title)
-        assertEquals("Oct 6, 2026", firstMemory.date)
-        assertEquals("October 6, 2026 · 1 photo", firstMemory.dateHeader)
-        assertEquals("Friends", firstMemory.category)
-        assertEquals("Had lunch with friends after class.", firstMemory.description)
-        assertTrue(firstMemory.hasPhoto)
+        assertTrue("Should have no photo memories initially without static mock data", state.photoMemories.isEmpty())
+        assertEquals(0, state.totalPhotosCount)
+        assertEquals("No photo memories recorded yet.", state.footerText)
     }
 
     @Test
@@ -71,7 +64,7 @@ class PhotoMemoriesUnitTest {
         viewModel.loadPhotoMemories(DiaryActivityStore.activities.value)
 
         val state = viewModel.uiState.value
-        assertEquals(2, state.totalPhotosCount)
+        assertEquals(1, state.totalPhotosCount)
 
         val trekMemory = state.photoMemories.find { it.id == 301 }
         assertNotNull("Newly added photo memory should be present", trekMemory)
@@ -86,15 +79,30 @@ class PhotoMemoriesUnitTest {
     @Test
     fun testDeletePhotoEntryRemovesFromPhotoMemories() {
         val viewModel = PhotoMemoriesViewModel(scope = testScope)
-        val initialCount = viewModel.uiState.value.totalPhotosCount
+        val photoPath = "/data/user/0/com.simats.echodiary/files/diary_photos/photo_beach.jpg"
 
-        // Delete default lunch activity
-        DiaryActivityStore.deleteActivity(2, "Lunch with friends")
+        val photoItem = DiaryEntryItem(
+            id = 302,
+            title = "Beach Sunset",
+            category = "Travel",
+            date = "Oct 19, 2026",
+            description = "Watched sunset at the beach.",
+            icon = "✈️",
+            mood = "Peaceful",
+            hasPhoto = true,
+            photoUri = photoPath
+        )
+        DiaryActivityStore.addActivity(photoItem)
+        viewModel.loadPhotoMemories(DiaryActivityStore.activities.value)
+        assertEquals(1, viewModel.uiState.value.totalPhotosCount)
+
+        // Delete photo activity
+        DiaryActivityStore.deleteActivity(302, "Beach Sunset")
         viewModel.loadPhotoMemories(DiaryActivityStore.activities.value)
 
         val state = viewModel.uiState.value
-        assertEquals(initialCount - 1, state.totalPhotosCount)
-        assertFalse(state.photoMemories.any { it.title == "Lunch with friends" })
+        assertEquals(0, state.totalPhotosCount)
+        assertFalse(state.photoMemories.any { it.title == "Beach Sunset" })
     }
 
     @Test

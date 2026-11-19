@@ -97,10 +97,11 @@ class PhotoMemoriesViewModel(
     }
 
     fun loadPhotoMemories(activities: List<DiaryEntryItem>) {
-        val photoEntries = activities.filter { it.hasPhoto || !it.photoUri.isNullOrBlank() || it.photoUris.isNotEmpty() }
+        val photoEntries = activities.filter { it.getAllPhotos().isNotEmpty() }
 
-        val mappedItems = photoEntries.map { entry ->
+        val mappedItems = photoEntries.mapNotNull { entry ->
             val allPhotos = entry.getAllPhotos()
+            if (allPhotos.isEmpty()) return@mapNotNull null
             val dateHdr = formatPhotoDateHeader(entry.date, allPhotos.size)
             val timeText = if (entry.time.isNotBlank()) entry.time else "Recorded moment"
             val timeHdr = if (entry.time.isNotBlank()) "🕒 ${entry.time}" else "🕒 Memory moment"
@@ -118,14 +119,12 @@ class PhotoMemoriesViewModel(
                 icon = entry.icon.ifBlank { DiaryActivityStore.getCategoryIcon(entry.category) },
                 photoUri = entry.photoUri ?: allPhotos.firstOrNull(),
                 photoUris = allPhotos,
-                hasPhoto = allPhotos.isNotEmpty() || entry.hasPhoto,
+                hasPhoto = true,
                 imageCaption = "${entry.title} · ${entry.category}",
                 imageSubcaption = if (allPhotos.size > 1) {
                     "${allPhotos.size} photos collage · ${entry.mood}"
-                } else if (allPhotos.isNotEmpty()) {
-                    "Photo associated with this memory · ${entry.mood}"
                 } else {
-                    "Illustrative photo associated with this entry."
+                    "Photo associated with this memory · ${entry.mood}"
                 },
                 rawEntry = entry
             )
@@ -176,7 +175,7 @@ class PhotoMemoriesViewModel(
             )
         }
 
-        val totalPhotos = mappedItems.sumOf { it.getAllPhotos().size.coerceAtLeast(1) }
+        val totalPhotos = mappedItems.sumOf { it.getAllPhotos().size }
         val firstItem = mappedItems.firstOrNull()
         val footer = when (totalPhotos) {
             0 -> "No photo memories recorded yet."
@@ -189,12 +188,12 @@ class PhotoMemoriesViewModel(
                 photoMemories = mappedItems,
                 dateGroups = dateGroups,
                 totalPhotosCount = totalPhotos,
-                dateHeader = firstItem?.dateHeader ?: it.dateHeader,
-                imageCaption = firstItem?.imageCaption ?: it.imageCaption,
-                imageSubcaption = firstItem?.imageSubcaption ?: it.imageSubcaption,
-                entryTitle = firstItem?.title ?: it.entryTitle,
-                entrySubtitle = firstItem?.let { f -> "${f.category} · ${f.date}" } ?: it.entrySubtitle,
-                entryDescription = firstItem?.description ?: it.entryDescription,
+                dateHeader = firstItem?.dateHeader ?: "",
+                imageCaption = firstItem?.imageCaption ?: "",
+                imageSubcaption = firstItem?.imageSubcaption ?: "",
+                entryTitle = firstItem?.title ?: "",
+                entrySubtitle = firstItem?.let { f -> "${f.category} · ${f.date}" } ?: "",
+                entryDescription = firstItem?.description ?: "",
                 footerText = footer
             )
         }

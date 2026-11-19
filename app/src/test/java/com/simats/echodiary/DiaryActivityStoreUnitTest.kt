@@ -23,13 +23,9 @@ class DiaryActivityStoreUnitTest {
     }
 
     @Test
-    fun testInitialActivitiesPresent() {
+    fun testInitialActivitiesEmptyWithoutStaticData() {
         val activities = DiaryActivityStore.activities.value
-        assertTrue("Initial activities should not be empty", activities.isNotEmpty())
-        assertTrue(
-            "Default activities should contain 'Weekend with family'",
-            activities.any { it.title == "Weekend with family" }
-        )
+        assertTrue("Initial activities should be empty without static mock data", activities.isEmpty())
     }
 
     @Test
@@ -141,7 +137,7 @@ class DiaryActivityStoreUnitTest {
         val count = DiaryActivityStore.weeklyEntriesCount.value
 
         assertTrue("Weekly summary title should not be blank", title.isNotBlank())
-        assertTrue("Weekly narrative should mention entries", narrative.contains("This week") || narrative.contains("No entries"))
+        assertTrue("Weekly narrative should mention entries", narrative.contains("This week") || narrative.contains("entries") || narrative.contains("No diary entries"))
         assertTrue("Weekly entries count should be >= 0", count >= 0)
     }
 
@@ -154,7 +150,13 @@ class DiaryActivityStoreUnitTest {
 
         assertTrue("Monthly summary title should not be blank", title.isNotBlank())
         assertTrue("Monthly summary text should not be blank", text.isNotBlank())
-        assertTrue("Monthly breakdown should be populated", breakdown.isNotEmpty())
+        assertTrue("Monthly breakdown should be empty when no activities exist", breakdown.isEmpty())
+
+        DiaryActivityStore.addActivity(
+            DiaryEntryItem(id = 501, title = "Test Activity", category = "Work", date = "Nov 19, 2026", description = "Test", icon = "💼", mood = "Focused")
+        )
+        DiaryActivityStore.generateMonthlySummary(null)
+        assertTrue("Monthly breakdown should be populated after adding activity", DiaryActivityStore.monthlyCategoryBreakdown.value.isNotEmpty())
     }
 
     @Test
@@ -166,7 +168,13 @@ class DiaryActivityStoreUnitTest {
 
         assertTrue("Yearly chapter title should not be blank", title.isNotBlank())
         assertTrue("Yearly chapter text should not be blank", text.isNotBlank())
-        assertTrue("Yearly supporting records should be populated", supporting.isNotEmpty())
+        assertTrue("Yearly supporting records should be empty when no activities exist", supporting.isEmpty())
+
+        DiaryActivityStore.addActivity(
+            DiaryEntryItem(id = 502, title = "Test Year Activity", category = "Health", date = "Nov 19, 2026", description = "Test", icon = "❤️", mood = "Calm")
+        )
+        DiaryActivityStore.generateYearlySummary(null)
+        assertTrue("Yearly supporting records should be populated after adding activity", DiaryActivityStore.yearlySupportingRecords.value.isNotEmpty())
     }
 
     @Test

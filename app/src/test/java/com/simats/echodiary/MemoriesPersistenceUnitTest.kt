@@ -23,13 +23,19 @@ class MemoriesPersistenceUnitTest {
     @Before
     fun setup() {
         testScope = CoroutineScope(Dispatchers.Default)
-        DiaryActivityStore.resetToDefaults()
+        DiaryActivityStore.clearData()
+        DiaryActivityStore.setActivities(
+            listOf(
+                DiaryEntryItem(id = 1, title = "Study Session", category = "College", date = "Oct 5, 2026", description = "Studied algorithms.", icon = "🎓", mood = "Focused"),
+                DiaryEntryItem(id = 2, title = "Gym workout", category = "Health", date = "Oct 6, 2026", description = "Cardio session.", icon = "❤️", mood = "Calm")
+            )
+        )
     }
 
     @After
     fun tearDown() {
         testScope.cancel()
-        DiaryActivityStore.resetToDefaults()
+        DiaryActivityStore.clearData()
     }
 
     @Test

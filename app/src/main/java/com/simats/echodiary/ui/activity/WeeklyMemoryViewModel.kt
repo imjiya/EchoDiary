@@ -19,7 +19,11 @@ data class WeeklyMemoryUiState(
     val title: String = DiaryActivityStore.weeklyMemoryTitle.value,
     val summaryText: String = DiaryActivityStore.weeklyMemoryNarrative.value,
     val highlights: List<String> = DiaryActivityStore.weeklyHighlights.value,
-    val footerText: String = "Based on your ${DiaryActivityStore.activities.value.size} entries. Review before saving.",
+    val footerText: String = if (DiaryActivityStore.activities.value.isEmpty()) {
+        "Start journaling to build your personalized weekly memory."
+    } else {
+        "Based on your ${DiaryActivityStore.activities.value.size} entries. Review before saving."
+    },
     val photoUri: String? = DiaryActivityStore.weeklyMemoryPhotoUri.value,
     val hasPhoto: Boolean = !DiaryActivityStore.weeklyMemoryPhotoUri.value.isNullOrBlank()
 )
@@ -64,8 +68,14 @@ class WeeklyMemoryViewModel : ViewModel() {
         }
         viewModelScope.launch {
             DiaryActivityStore.activities.collectLatest { activities ->
+                val count = activities.size
+                val footer = when (count) {
+                    0 -> "Start journaling to build your personalized weekly memory."
+                    1 -> "Based on your 1 entry. Review before saving."
+                    else -> "Based on your $count entries. Review before saving."
+                }
                 _uiState.update {
-                    it.copy(footerText = "Based on your ${activities.size} entries. Review before saving.")
+                    it.copy(footerText = footer)
                 }
             }
         }

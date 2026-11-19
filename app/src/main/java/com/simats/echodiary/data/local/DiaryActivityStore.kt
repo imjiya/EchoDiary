@@ -19,53 +19,14 @@ import java.util.Locale
 
 object DiaryActivityStore {
 
-    val sampleActivities = listOf(
-        DiaryEntryItem(
-            title = "Weekend with family",
-            category = "Family",
-            date = "Oct 10, 2026",
-            description = "Spent time with family over the weekend.",
-            icon = "🏠",
-            id = 5,
-            mood = "Happy"
-        ),
-        DiaryEntryItem(
-            title = "Presentation preparation",
-            category = "Work",
-            date = "Oct 8, 2026",
-            description = "Prepared a presentation.",
-            icon = "💼",
-            id = 4,
-            mood = "Focused"
-        ),
-        DiaryEntryItem(
-            title = "Evening walk",
-            category = "Health",
-            date = "Oct 7, 2026",
-            description = "Went for an evening walk.",
-            icon = "❤️",
-            id = 3,
-            mood = "Calm"
-        ),
-        DiaryEntryItem(
-            title = "Lunch with friends",
-            category = "Friends",
-            date = "Oct 6, 2026",
-            description = "Had lunch with friends after class.",
-            icon = "👥",
-            id = 2,
-            mood = "Joyful",
-            hasPhoto = true
-        ),
-        DiaryEntryItem(
-            title = "Lectures and project",
-            category = "College",
-            date = "Oct 5, 2026",
-            description = "Attended lectures and worked on a project.",
-            icon = "🎓",
-            id = 1,
-            mood = "Focused"
-        )
+    val sampleActivities: List<DiaryEntryItem> = emptyList()
+
+    private val staticMockTitles = setOf(
+        "Weekend with family",
+        "Presentation preparation",
+        "Evening walk",
+        "Lunch with friends",
+        "Lectures and project"
     )
 
     private val _activities = MutableStateFlow<List<DiaryEntryItem>>(emptyList())
@@ -529,18 +490,19 @@ object DiaryActivityStore {
                 val json = file.readText()
                 val type = object : TypeToken<List<DiaryEntryItem>>() {}.type
                 val items: List<DiaryEntryItem>? = Gson().fromJson(json, type)
-                if (!items.isNullOrEmpty()) {
-                    _activities.value = items
-                    _selectedActivity.value = items.firstOrNull()
+                if (items != null) {
+                    val realItems = items.filterNot {
+                        (it.id in 1..5) && (it.title in staticMockTitles)
+                    }
+                    _activities.value = realItems
+                    _selectedActivity.value = realItems.firstOrNull()
                     return
                 }
             }
         } catch (_: Throwable) {}
 
-        if (_activities.value.isEmpty()) {
-            _activities.value = sampleActivities
-            _selectedActivity.value = sampleActivities.firstOrNull()
-        }
+        _activities.value = emptyList()
+        _selectedActivity.value = null
     }
 
     fun resetMemories() {
@@ -550,8 +512,8 @@ object DiaryActivityStore {
     }
 
     fun loadSampleActivities() {
-        _activities.value = sampleActivities
-        _selectedActivity.value = sampleActivities.firstOrNull()
+        _activities.value = emptyList()
+        _selectedActivity.value = null
         _isLoadedFromBackend.value = false
         saveToDisk()
         refreshMemories()
@@ -570,8 +532,8 @@ object DiaryActivityStore {
         refreshMemories()
     }
 
-    fun resetToDefaults(loadSampleData: Boolean = true) {
-        if (loadSampleData) {
+    fun resetToDefaults(loadSampleData: Boolean = false) {
+        if (loadSampleData && sampleActivities.isNotEmpty()) {
             loadSampleActivities()
         } else {
             clearData()

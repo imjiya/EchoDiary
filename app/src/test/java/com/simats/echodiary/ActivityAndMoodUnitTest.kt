@@ -20,13 +20,62 @@ class ActivityAndMoodUnitTest {
     @Before
     fun setup() {
         testScope = CoroutineScope(Dispatchers.Default)
-        DiaryActivityStore.resetToDefaults()
+        DiaryActivityStore.clearData()
+        val testActivities = listOf(
+            DiaryEntryItem(
+                title = "Weekend with family",
+                category = "Family",
+                date = "Oct 10, 2026",
+                description = "Spent time with family over the weekend.",
+                icon = "🏠",
+                id = 5,
+                mood = "Happy"
+            ),
+            DiaryEntryItem(
+                title = "Presentation preparation",
+                category = "Work",
+                date = "Oct 8, 2026",
+                description = "Prepared a presentation.",
+                icon = "💼",
+                id = 4,
+                mood = "Focused"
+            ),
+            DiaryEntryItem(
+                title = "Evening walk",
+                category = "Health",
+                date = "Oct 7, 2026",
+                description = "Went for an evening walk.",
+                icon = "❤️",
+                id = 3,
+                mood = "Calm"
+            ),
+            DiaryEntryItem(
+                title = "Lunch with friends",
+                category = "Friends",
+                date = "Oct 6, 2026",
+                description = "Had lunch with friends after class.",
+                icon = "👥",
+                id = 2,
+                mood = "Joyful",
+                hasPhoto = true
+            ),
+            DiaryEntryItem(
+                title = "Lectures and project",
+                category = "College",
+                date = "Oct 5, 2026",
+                description = "Attended lectures and worked on a project.",
+                icon = "🎓",
+                id = 1,
+                mood = "Focused"
+            )
+        )
+        DiaryActivityStore.setActivities(testActivities)
     }
 
     @After
     fun tearDown() {
         testScope.cancel()
-        DiaryActivityStore.resetToDefaults()
+        DiaryActivityStore.clearData()
     }
 
     @Test

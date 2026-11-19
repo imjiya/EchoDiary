@@ -97,8 +97,13 @@ fun MemoriesScreen(
                 color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
+            val memoryCountSubtitle = when (state.totalSavedMemoriesCount) {
+                0 -> "No saved memories yet."
+                1 -> "1 saved memory, ready to revisit."
+                else -> "${state.totalSavedMemoriesCount} saved memories, ready to revisit."
+            }
             Text(
-                text = "1 saved memory, ready to revisit.",
+                text = memoryCountSubtitle,
                 fontSize = 14.sp,
                 color = EchoTheme.textSecondary
             )

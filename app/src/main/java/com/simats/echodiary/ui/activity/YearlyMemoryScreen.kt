@@ -121,7 +121,8 @@ fun YearlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .clickable { viewModel.onYearDropdownClicked() }
                     .padding(16.dp)
             ) {
@@ -174,7 +175,8 @@ fun YearlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .clickable { viewModel.onChapterCardClicked() }
                     .padding(20.dp)
             ) {
@@ -195,26 +197,29 @@ fun YearlyMemoryScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            if (state.categories.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Category Chips Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                state.categories.forEach { category ->
-                    Box(
-                        modifier = Modifier
-                            .background(color = Color.White, shape = RoundedCornerShape(20.dp))
-                            .padding(horizontal = 14.dp, vertical = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = category,
-                            fontSize = 13.sp,
-                            fontWeight = EchoTheme.textMedium,
-                            color = EchoTheme.textSecondary
-                        )
+                // Category Chips Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    state.categories.forEach { category ->
+                        Box(
+                            modifier = Modifier
+                                .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                                .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
+                                .padding(horizontal = 14.dp, vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = category,
+                                fontSize = 13.sp,
+                                fontWeight = EchoTheme.textMedium,
+                                color = EchoTheme.textSecondary
+                            )
+                        }
                     }
                 }
             }
@@ -246,7 +251,8 @@ fun YearlyMemoryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                    .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                     .padding(16.dp)
             ) {
                 Column {
@@ -313,7 +319,7 @@ fun YearlyMemoryScreen(
                                 }
                             }
                         }
-                    } else {
+                    } else if (state.supportingRecords.isNotEmpty()) {
                         state.supportingRecords.forEach { record ->
                             Row(
                                 modifier = Modifier
@@ -336,6 +342,12 @@ fun YearlyMemoryScreen(
                                 )
                             }
                         }
+                    } else {
+                        Text(
+                            text = "No diary entries recorded for this year yet.",
+                            fontSize = 13.sp,
+                            color = EchoTheme.textSecondary
+                        )
                     }
                 }
             }
