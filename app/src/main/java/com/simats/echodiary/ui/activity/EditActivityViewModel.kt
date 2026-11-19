@@ -80,11 +80,14 @@ class EditActivityViewModel(
         mood: String = "Not specified",
         id: Int = 0,
         photoUri: String? = null,
-        hasPhoto: Boolean = false
+        hasPhoto: Boolean = false,
+        photoUris: List<String> = emptyList()
     ) {
         val selected = DiaryActivityStore.selectedActivity.value
         val resolvedPhotoUri = photoUri ?: selected?.photoUri
-        val resolvedPhotoUris = if (selected?.photoUris?.isNotEmpty() == true) {
+        val resolvedPhotoUris = if (photoUris.isNotEmpty()) {
+            photoUris
+        } else if (selected?.photoUris?.isNotEmpty() == true) {
             selected.photoUris
         } else if (!resolvedPhotoUri.isNullOrBlank()) {
             listOf(resolvedPhotoUri)

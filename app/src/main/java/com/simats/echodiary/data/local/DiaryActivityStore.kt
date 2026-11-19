@@ -1,5 +1,7 @@
 package com.simats.echodiary.data.local
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.simats.echodiary.EchoDiaryApp
 import com.simats.echodiary.ui.activity.CategoryBreakdownItem
 import com.simats.echodiary.ui.activity.DiaryEntryItem
@@ -9,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -273,6 +276,7 @@ object DiaryActivityStore {
                 else -> "Reminders paused"
             }
         } catch (_: Exception) {}
+        loadFromDisk()
         refreshMemories()
     }
 
@@ -499,6 +503,46 @@ object DiaryActivityStore {
         }
     }
 
+    private const val ACTIVITIES_CACHE_FILE = "cached_diary_activities.json"
+
+    private fun getCacheFile(): File? {
+        return try {
+            val context = EchoDiaryApp.instance
+            File(context.filesDir, ACTIVITIES_CACHE_FILE)
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+    private fun saveToDisk() {
+        try {
+            val file = getCacheFile() ?: return
+            val json = Gson().toJson(_activities.value)
+            file.writeText(json)
+        } catch (_: Throwable) {}
+    }
+
+    fun loadFromDisk() {
+        try {
+            val file = getCacheFile()
+            if (file != null && file.exists() && file.isFile) {
+                val json = file.readText()
+                val type = object : TypeToken<List<DiaryEntryItem>>() {}.type
+                val items: List<DiaryEntryItem>? = Gson().fromJson(json, type)
+                if (!items.isNullOrEmpty()) {
+                    _activities.value = items
+                    _selectedActivity.value = items.firstOrNull()
+                    return
+                }
+            }
+        } catch (_: Throwable) {}
+
+        if (_activities.value.isEmpty()) {
+            _activities.value = sampleActivities
+            _selectedActivity.value = sampleActivities.firstOrNull()
+        }
+    }
+
     fun resetMemories() {
         _weeklyMemoryPhotoUri.value = null
         _weeklyMemoryPhotoUris.value = emptyList()
@@ -509,6 +553,7 @@ object DiaryActivityStore {
         _activities.value = sampleActivities
         _selectedActivity.value = sampleActivities.firstOrNull()
         _isLoadedFromBackend.value = false
+        saveToDisk()
         refreshMemories()
     }
 
@@ -519,6 +564,9 @@ object DiaryActivityStore {
         _weeklyMemoryPhotoUris.value = emptyList()
         _isLoadedFromBackend.value = false
         _isProfileLoadedFromBackend.value = false
+        try {
+            getCacheFile()?.delete()
+        } catch (_: Throwable) {}
         refreshMemories()
     }
 
@@ -530,6 +578,9 @@ object DiaryActivityStore {
         }
         _isLoadedFromBackend.value = false
         _isProfileLoadedFromBackend.value = false
+        try {
+            getCacheFile()?.delete()
+        } catch (_: Throwable) {}
     }
 
     private fun refreshMemories() {
@@ -539,8 +590,41 @@ object DiaryActivityStore {
     }
 
     fun setActivities(items: List<DiaryEntryItem>) {
-        _activities.value = items
-        _selectedActivity.value = items.firstOrNull()
+        val existing = _activities.value
+        val existingMap = existing.filter { it.id > 0 }.associateBy { it.id }
+        val existingByTitle = existing.associateBy { it.title.trim().lowercase(Locale.ROOT) }
+
+        val merged = items.map { item ->
+            val old = (if (item.id > 0) existingMap[item.id] else null)
+                ?: existingByTitle[item.title.trim().lowercase(Locale.ROOT)]
+
+            if (old != null) {
+                val allOldPhotos = old.getAllPhotos()
+                val allItemPhotos = item.getAllPhotos()
+                val combinedPhotos = (allOldPhotos + allItemPhotos).distinct()
+
+                item.copy(
+                    hasPhoto = old.hasPhoto || item.hasPhoto || combinedPhotos.isNotEmpty(),
+                    photoUri = combinedPhotos.firstOrNull() ?: old.photoUri ?: item.photoUri,
+                    photoUris = combinedPhotos.ifEmpty { old.photoUris.ifEmpty { item.photoUris } },
+                    time = if (item.time.isNotBlank()) item.time else old.time
+                )
+            } else {
+                item
+            }
+        }.toMutableList()
+
+        // Preserve any locally created activities not present in the incoming items
+        existing.forEach { oldItem ->
+            val existsInMerged = merged.any { (it.id > 0 && it.id == oldItem.id) || it.title.equals(oldItem.title, ignoreCase = true) }
+            if (!existsInMerged) {
+                merged.add(oldItem)
+            }
+        }
+
+        _activities.value = merged
+        _selectedActivity.value = merged.firstOrNull()
+        saveToDisk()
         refreshMemories()
     }
 
@@ -553,6 +637,7 @@ object DiaryActivityStore {
         current.add(0, item)
         _activities.value = current
         _selectedActivity.value = item
+        saveToDisk()
         refreshMemories()
     }
 
@@ -568,6 +653,7 @@ object DiaryActivityStore {
         }
         _activities.value = current
         _selectedActivity.value = updatedItem
+        saveToDisk()
         refreshMemories()
     }
 
@@ -581,6 +667,7 @@ object DiaryActivityStore {
         if (_selectedActivity.value?.id == id || (cleanTitle.isNotBlank() && _selectedActivity.value?.title.equals(cleanTitle, ignoreCase = true))) {
             _selectedActivity.value = current.firstOrNull()
         }
+        saveToDisk()
         refreshMemories()
     }
 

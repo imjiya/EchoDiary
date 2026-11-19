@@ -1,11 +1,13 @@
 package com.simats.echodiary.ui.activity
 
+import com.simats.echodiary.util.PhotoStorageHelper
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -75,6 +77,7 @@ fun EditActivityScreen(
     entryId: Int = 0,
     initialPhotoUri: String? = null,
     initialHasPhoto: Boolean = false,
+    initialPhotoUris: List<String> = emptyList(),
     onNavigateBack: () -> Unit,
     onNavigateToAllActivities: () -> Unit
 ) {
@@ -82,92 +85,44 @@ fun EditActivityScreen(
     val context = LocalContext.current
 
     val photoBitmap = remember(state.photoUri) {
-        state.photoUri?.let { pathOrUri ->
-            try {
-                val file = File(pathOrUri)
-                if (file.exists() && file.isFile) {
-                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
-                } else {
-                    val uri = Uri.parse(pathOrUri)
-                    if (uri.scheme == "file") {
-                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
-                    } else {
-                        context.contentResolver.openInputStream(uri)?.use { stream ->
-                            BitmapFactory.decodeStream(stream)
-                        }?.asImageBitmap()
-                    }
-                }
-            } catch (_: Exception) {
-                null
-            }
-        }
+        PhotoStorageHelper.decodeSampledBitmap(context, state.photoUri, 1024, 1024)
     }
 
-    // Function to persist the imported gallery photo into internal storage
-    fun savePhotoToMemory(uri: Uri): String {
-        return try {
-            val photosDir = java.io.File(context.filesDir, "diary_photos")
-            if (!photosDir.exists()) {
-                photosDir.mkdirs()
-            }
-            val destinationFile = java.io.File(photosDir, "photo_${System.currentTimeMillis()}.jpg")
-            context.contentResolver.openInputStream(uri)?.use { input ->
-                java.io.FileOutputStream(destinationFile).use { output ->
-                    input.copyTo(output)
-                }
-            }
-            destinationFile.absolutePath
-        } catch (_: Exception) {
-            uri.toString()
-        }
-    }
-
-    // Launcher to select photo(s) from gallery
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents()
+    // Modern Photo Picker Launcher (PickMultipleVisualMedia - zero permission barrier)
+    val modernPhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris: List<Uri> ->
         if (uris.isNotEmpty()) {
-            val persistentPhotoPaths = uris.map { savePhotoToMemory(it) }
+            val persistentPhotoPaths = PhotoStorageHelper.savePhotosToInternalStorage(context, uris)
             viewModel.onPhotosSelected(persistentPhotoPaths)
         }
     }
 
-    // Appropriate permissions based on Android API level
-    val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-        arrayOf(
-            Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
-        )
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-    } else {
-        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
-
-    // Launcher to request gallery access permission
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionsMap ->
-        val isGranted = permissionsMap.values.any { it }
-        if (isGranted) {
-            photoPickerLauncher.launch("image/*")
-        } else {
-            viewModel.onPermissionDenied("Gallery permission is required to import photos.")
+    // Fallback Photo Picker Launcher (GetMultipleContents)
+    val fallbackPhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris: List<Uri> ->
+        if (uris.isNotEmpty()) {
+            val persistentPhotoPaths = PhotoStorageHelper.savePhotosToInternalStorage(context, uris)
+            viewModel.onPhotosSelected(persistentPhotoPaths)
         }
     }
 
     fun onPhotoButtonClicked() {
-        val hasPermission = permissionsToRequest.any { perm ->
-            ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED
-        }
-        if (hasPermission) {
-            photoPickerLauncher.launch("image/*")
-        } else {
-            permissionLauncher.launch(permissionsToRequest)
+        try {
+            modernPhotoPickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        } catch (_: Throwable) {
+            try {
+                fallbackPhotoPickerLauncher.launch("image/*")
+            } catch (e: Throwable) {
+                viewModel.onPermissionDenied("Unable to open photo picker: ${e.message}")
+            }
         }
     }
 
-    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId, initialPhotoUri, initialHasPhoto) {
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId, initialPhotoUri, initialHasPhoto, initialPhotoUris) {
         if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
             viewModel.setInitialDetails(
                 title = initialTitle,
@@ -177,7 +132,8 @@ fun EditActivityScreen(
                 mood = initialMood,
                 id = entryId,
                 photoUri = initialPhotoUri,
-                hasPhoto = initialHasPhoto
+                hasPhoto = initialHasPhoto,
+                photoUris = initialPhotoUris
             )
         }
     }
@@ -463,23 +419,7 @@ fun EditActivityScreen(
                 ) {
                     currentPhotos.forEachIndexed { index, pathOrUri ->
                         val itemBitmap = remember(pathOrUri) {
-                            try {
-                                val file = java.io.File(pathOrUri)
-                                if (file.exists() && file.isFile) {
-                                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
-                                } else {
-                                    val uri = Uri.parse(pathOrUri)
-                                    if (uri.scheme == "file") {
-                                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
-                                    } else {
-                                        context.contentResolver.openInputStream(uri)?.use { stream ->
-                                            BitmapFactory.decodeStream(stream)
-                                        }?.asImageBitmap()
-                                    }
-                                }
-                            } catch (_: Exception) {
-                                null
-                            }
+                            PhotoStorageHelper.decodeSampledBitmap(context, pathOrUri, 300, 300)
                         }
 
                         Box(

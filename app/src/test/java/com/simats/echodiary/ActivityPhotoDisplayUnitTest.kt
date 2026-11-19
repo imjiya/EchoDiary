@@ -168,4 +168,130 @@ class ActivityPhotoDisplayUnitTest {
         assertTrue("hasPhoto should be preserved after edit", updated?.hasPhoto == true)
         assertEquals(testPhotoPath, updated?.photoUri)
     }
+
+    @Test
+    fun testActivityDetailsDisplaysMultiplePhotosStatus() {
+        val photos = listOf(
+            "/data/user/0/com.simats.echodiary/files/diary_photos/p1.jpg",
+            "/data/user/0/com.simats.echodiary/files/diary_photos/p2.jpg",
+            "/data/user/0/com.simats.echodiary/files/diary_photos/p3.jpg"
+        )
+        val entry = DiaryEntryItem(
+            id = 205,
+            title = "Weekend Trip",
+            category = "Travel",
+            date = "Oct 20, 2026",
+            description = "Travel highlights and sights.",
+            icon = "✈️",
+            mood = "Excited",
+            hasPhoto = true,
+            photoUri = photos[0],
+            photoUris = photos
+        )
+        DiaryActivityStore.addActivity(entry)
+        DiaryActivityStore.selectActivity(entry)
+
+        val viewModel = ActivityDetailsViewModel(scope = testScope)
+        viewModel.setEntryDetails(
+            title = entry.title,
+            description = entry.description,
+            date = entry.date,
+            category = entry.category,
+            mood = entry.mood,
+            id = entry.id,
+            photoUri = entry.photoUri,
+            hasPhoto = entry.hasPhoto,
+            photoUris = entry.photoUris
+        )
+
+        val state = viewModel.uiState.value
+        assertTrue(state.hasPhoto)
+        assertEquals(3, state.photoUris.size)
+        assertEquals("3 photos attached", state.photoStatus)
+    }
+
+    @Test
+    fun testEditActivityPreservesMultiplePhotos() {
+        val photos = listOf(
+            "/data/user/0/com.simats.echodiary/files/diary_photos/a.jpg",
+            "/data/user/0/com.simats.echodiary/files/diary_photos/b.jpg"
+        )
+        val entry = DiaryEntryItem(
+            id = 206,
+            title = "Museum Tour",
+            category = "Hobbies",
+            date = "Oct 21, 2026",
+            description = "Viewed historical exhibits.",
+            icon = "🎨",
+            mood = "Inspired",
+            hasPhoto = true,
+            photoUri = photos[0],
+            photoUris = photos
+        )
+        DiaryActivityStore.addActivity(entry)
+        DiaryActivityStore.selectActivity(entry)
+
+        val viewModel = EditActivityViewModel(scope = testScope)
+        viewModel.setInitialDetails(
+            title = entry.title,
+            description = entry.description,
+            date = entry.date,
+            category = entry.category,
+            mood = entry.mood,
+            id = entry.id,
+            photoUri = entry.photoUri,
+            hasPhoto = entry.hasPhoto,
+            photoUris = entry.photoUris
+        )
+
+        viewModel.onTitleChanged("Museum Tour and Workshop")
+        viewModel.onSaveClicked()
+
+        val updated = DiaryActivityStore.activities.value.find { it.id == 206 }
+        assertNotNull(updated)
+        assertEquals(2, updated?.photoUris?.size)
+        assertEquals("Museum Tour and Workshop", updated?.title)
+        assertTrue(updated?.hasPhoto == true)
+    }
+
+    @Test
+    fun testDiaryActivityStoreMergingPreservesLocalPhotos() {
+        val photos = listOf("/data/user/0/com.simats.echodiary/files/diary_photos/beach1.jpg", "/data/user/0/com.simats.echodiary/files/diary_photos/beach2.jpg")
+        val localEntryWithPhotos = DiaryEntryItem(
+            id = 10,
+            title = "Beach Sunset",
+            category = "Travel",
+            date = "Oct 22, 2026",
+            description = "Watched sunset with friends.",
+            icon = "✈️",
+            mood = "Calm",
+            hasPhoto = true,
+            photoUri = photos[0],
+            photoUris = photos
+        )
+        DiaryActivityStore.addActivity(localEntryWithPhotos)
+
+        // Simulate backend sending refreshed list without local photo paths
+        val backendEntries = listOf(
+            DiaryEntryItem(
+                id = 10,
+                title = "Beach Sunset",
+                category = "Travel",
+                date = "Oct 22, 2026",
+                description = "Watched sunset with friends.",
+                icon = "✈️",
+                mood = "Calm",
+                hasPhoto = false,
+                photoUri = null,
+                photoUris = emptyList()
+            )
+        )
+        DiaryActivityStore.setActivities(backendEntries)
+
+        val merged = DiaryActivityStore.activities.value.find { it.id == 10 }
+        assertNotNull(merged)
+        assertTrue("Local photos must be preserved during backend merge", merged?.hasPhoto == true)
+        assertEquals(photos[0], merged?.photoUri)
+        assertEquals(2, merged?.photoUris?.size)
+    }
 }

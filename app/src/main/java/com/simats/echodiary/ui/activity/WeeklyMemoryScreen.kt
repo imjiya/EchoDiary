@@ -1,5 +1,6 @@
 package com.simats.echodiary.ui.activity
 
+import com.simats.echodiary.util.PhotoStorageHelper
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Canvas
@@ -66,25 +67,7 @@ fun WeeklyMemoryScreen(
     val context = LocalContext.current
 
     val photoBitmap = remember(state.photoUri) {
-        state.photoUri?.let { pathOrUri ->
-            try {
-                val file = File(pathOrUri)
-                if (file.exists() && file.isFile) {
-                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
-                } else {
-                    val uri = Uri.parse(pathOrUri)
-                    if (uri.scheme == "file") {
-                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
-                    } else {
-                        context.contentResolver.openInputStream(uri)?.use { stream ->
-                            BitmapFactory.decodeStream(stream)
-                        }?.asImageBitmap()
-                    }
-                }
-            } catch (_: Exception) {
-                null
-            }
-        }
+        PhotoStorageHelper.decodeSampledBitmap(context, state.photoUri, 1024, 1024)
     }
 
     LaunchedEffect(key1 = true) {

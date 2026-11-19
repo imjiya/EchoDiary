@@ -1,5 +1,6 @@
 package com.simats.echodiary.ui.activity
 
+import com.simats.echodiary.util.PhotoStorageHelper
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -634,7 +635,7 @@ private fun CollagePhotoCell(
     onClick: () -> Unit
 ) {
     val bitmap = remember(pathOrUri) {
-        decodeImageBitmap(context, pathOrUri)
+        PhotoStorageHelper.decodeSampledBitmap(context, pathOrUri, 600, 600)
     }
 
     Box(
@@ -661,21 +662,5 @@ private fun CollagePhotoCell(
 }
 
 private fun decodeImageBitmap(context: Context, pathOrUri: String): ImageBitmap? {
-    return try {
-        val file = java.io.File(pathOrUri)
-        if (file.exists() && file.isFile) {
-            BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
-        } else {
-            val uri = Uri.parse(pathOrUri)
-            if (uri.scheme == "file") {
-                BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
-            } else {
-                context.contentResolver.openInputStream(uri)?.use { stream ->
-                    BitmapFactory.decodeStream(stream)
-                }?.asImageBitmap()
-            }
-        }
-    } catch (_: Exception) {
-        null
-    }
+    return PhotoStorageHelper.decodeSampledBitmap(context, pathOrUri, 1200, 1200)
 }

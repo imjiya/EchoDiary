@@ -141,5 +141,40 @@ class PhotoMemoriesUnitTest {
         assertEquals("Sunset at Lake", selected?.title)
         assertEquals("/files/photos/lake.jpg", selected?.photoUri)
     }
+
+    @Test
+    fun testMultiPhotoEntryFormatsCollageAndGroupsByDate() {
+        val viewModel = PhotoMemoriesViewModel(scope = testScope)
+        val photos = listOf(
+            "/files/photos/collage_1.jpg",
+            "/files/photos/collage_2.jpg",
+            "/files/photos/collage_3.jpg"
+        )
+        val multiPhotoEntry = DiaryEntryItem(
+            id = 501,
+            title = "Graduation Day",
+            category = "College",
+            date = "Oct 25, 2026",
+            description = "Ceremony, photos with family and friends.",
+            icon = "🎓",
+            mood = "Joyful",
+            hasPhoto = true,
+            photoUri = photos[0],
+            photoUris = photos,
+            time = "11:30 AM"
+        )
+        DiaryActivityStore.addActivity(multiPhotoEntry)
+        viewModel.loadPhotoMemories(DiaryActivityStore.activities.value)
+
+        val memory = viewModel.uiState.value.photoMemories.find { it.id == 501 }
+        assertNotNull(memory)
+        assertEquals(3, memory?.getAllPhotos()?.size)
+        assertEquals("3 photos collage · Joyful", memory?.imageSubcaption)
+        assertEquals("October 25, 2026 · 3 photos", memory?.dateHeader)
+
+        val dateGroup = viewModel.uiState.value.dateGroups.find { it.formattedDate.contains("October 25") }
+        assertNotNull(dateGroup)
+        assertEquals(3, dateGroup?.totalPhotosInDate)
+    }
 }
 

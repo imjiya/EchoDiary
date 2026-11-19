@@ -89,6 +89,11 @@ class PhotoMemoriesViewModel(
                 loadPhotoMemories(activitiesList)
             }
         }
+        executionScope.launch {
+            DiaryActivityStore.weeklyMemoryPhotoUris.collectLatest {
+                loadPhotoMemories(DiaryActivityStore.activities.value)
+            }
+        }
     }
 
     fun loadPhotoMemories(activities: List<DiaryEntryItem>) {
@@ -124,15 +129,48 @@ class PhotoMemoriesViewModel(
                 },
                 rawEntry = entry
             )
+        }.toMutableList()
+
+        // Include weekly memory if it has attached photo(s)
+        val weeklyPhotos = linkedSetOf<String>()
+        DiaryActivityStore.weeklyMemoryPhotoUri.value?.let { if (it.isNotBlank()) weeklyPhotos.add(it) }
+        DiaryActivityStore.weeklyMemoryPhotoUris.value.forEach { if (it.isNotBlank()) weeklyPhotos.add(it) }
+
+        if (weeklyPhotos.isNotEmpty()) {
+            val weeklyTitle = DiaryActivityStore.weeklyMemoryTitle.value.ifBlank { "Your Weekly Memory" }
+            val alreadyPresent = mappedItems.any { it.title.equals(weeklyTitle, ignoreCase = true) }
+            if (!alreadyPresent) {
+                val todayStr = SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH).format(Date())
+                mappedItems.add(
+                    PhotoMemoryItem(
+                        id = 99999,
+                        title = weeklyTitle,
+                        description = DiaryActivityStore.weeklyMemoryNarrative.value,
+                        date = todayStr,
+                        time = "Weekly Summary",
+                        dateHeader = formatPhotoDateHeader(todayStr, weeklyPhotos.size),
+                        timeHeader = "✨ Weekly Memory",
+                        category = "Weekly Summary",
+                        mood = "Reflective",
+                        icon = "✨",
+                        photoUri = weeklyPhotos.firstOrNull(),
+                        photoUris = weeklyPhotos.toList(),
+                        hasPhoto = true,
+                        imageCaption = "$weeklyTitle · Weekly Summary",
+                        imageSubcaption = if (weeklyPhotos.size > 1) "${weeklyPhotos.size} photos collage · Weekly" else "Photo associated with this weekly memory",
+                        rawEntry = null
+                    )
+                )
+            }
         }
 
         // Group by Date for chronological timeline display
-        val groupedByDate = mappedItems.groupBy { it.date }
-        val dateGroups = groupedByDate.entries.map { (dateKey, itemsInDate) ->
+        val groupedByDate = mappedItems.groupBy { formatDateOnlyHeader(it.date) }
+        val dateGroups = groupedByDate.entries.map { (dateHeader, itemsInDate) ->
             val totalInGroup = itemsInDate.sumOf { it.getAllPhotos().size.coerceAtLeast(1) }
             PhotoDateGroup(
-                rawDate = dateKey,
-                formattedDate = formatDateOnlyHeader(dateKey),
+                rawDate = itemsInDate.firstOrNull()?.date ?: dateHeader,
+                formattedDate = dateHeader,
                 totalPhotosInDate = totalInGroup,
                 memories = itemsInDate
             )

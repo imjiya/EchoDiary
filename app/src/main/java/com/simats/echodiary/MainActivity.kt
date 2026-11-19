@@ -139,6 +139,7 @@ class MainActivity : ComponentActivity() {
                 var entryMood by remember { mutableStateOf("Not specified") }
                 var entryId by remember { mutableStateOf(0) }
                 var entryPhotoUri by remember { mutableStateOf<String?>(null) }
+                var entryPhotoUris by remember { mutableStateOf<List<String>>(emptyList()) }
                 var entryHasPhoto by remember { mutableStateOf(false) }
                 val writeDiaryViewModel = remember { WriteDiaryEntryViewModel() }
                 val homeViewModel = remember { HomeViewModel() }
@@ -266,7 +267,8 @@ class MainActivity : ComponentActivity() {
                                     entryMood = activityItem.mood
                                     entryId = activityItem.id
                                     entryPhotoUri = activityItem.photoUri
-                                    entryHasPhoto = activityItem.hasPhoto
+                                    entryPhotoUris = activityItem.getAllPhotos()
+                                    entryHasPhoto = activityItem.hasPhoto || entryPhotoUris.isNotEmpty()
                                     DiaryActivityStore.selectActivity(activityItem)
                                 }
                                 navController.navigate(Screen.ActivityDetails)
@@ -344,14 +346,16 @@ class MainActivity : ComponentActivity() {
                             },
                             onNavigateToActivityDetails = { title, description, date, category ->
                                 val item = DiaryActivityStore.selectedActivity.value
+                                val allAttached = item?.getAllPhotos() ?: writeDiaryViewModel.uiState.value.photoUris.ifEmpty { listOfNotNull(writeDiaryViewModel.uiState.value.photoUri) }
                                 entryTitle = title
                                 entryDescription = description
                                 entryDate = date
                                 entryCategory = category
                                 entryMood = item?.mood ?: writeDiaryViewModel.uiState.value.mood
                                 entryId = item?.id ?: 0
-                                entryPhotoUri = item?.photoUri ?: writeDiaryViewModel.uiState.value.photoUri
-                                entryHasPhoto = item?.hasPhoto ?: writeDiaryViewModel.uiState.value.hasPhoto
+                                entryPhotoUris = allAttached
+                                entryPhotoUri = allAttached.firstOrNull() ?: item?.photoUri ?: writeDiaryViewModel.uiState.value.photoUri
+                                entryHasPhoto = (item?.hasPhoto ?: writeDiaryViewModel.uiState.value.hasPhoto) || allAttached.isNotEmpty()
                                 navController.navigateAndPopUpTo(Screen.ActivityDetails, popUpTo = Screen.Home)
                             },
                             onNavigateToChooseCategory = {
@@ -364,8 +368,9 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.ActivityDetails -> {
                         val currentSelected = DiaryActivityStore.selectedActivity.value
-                        val resolvedPhotoUri = currentSelected?.photoUri ?: entryPhotoUri
-                        val resolvedHasPhoto = currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank() || entryHasPhoto
+                        val allPhotos = if (currentSelected?.getAllPhotos()?.isNotEmpty() == true) currentSelected.getAllPhotos() else entryPhotoUris
+                        val resolvedPhotoUri = allPhotos.firstOrNull() ?: currentSelected?.photoUri ?: entryPhotoUri
+                        val resolvedHasPhoto = currentSelected?.hasPhoto == true || allPhotos.isNotEmpty() || !resolvedPhotoUri.isNullOrBlank() || entryHasPhoto
                         ActivityDetailsScreen(
                             initialTitle = currentSelected?.title?.takeIf { it.isNotBlank() } ?: entryTitle,
                             initialDescription = currentSelected?.description?.takeIf { it.isNotBlank() } ?: entryDescription,
@@ -375,6 +380,7 @@ class MainActivity : ComponentActivity() {
                             entryId = currentSelected?.id?.takeIf { it > 0 } ?: entryId,
                             initialPhotoUri = resolvedPhotoUri,
                             initialHasPhoto = resolvedHasPhoto,
+                            initialPhotoUris = allPhotos,
                             onNavigateBack = {
                                 navController.popBackStack()
                             },
@@ -390,8 +396,9 @@ class MainActivity : ComponentActivity() {
                     }
                     is Screen.EditActivity -> {
                         val currentSelected = DiaryActivityStore.selectedActivity.value
-                        val resolvedPhotoUri = currentSelected?.photoUri ?: entryPhotoUri
-                        val resolvedHasPhoto = currentSelected?.hasPhoto == true || !resolvedPhotoUri.isNullOrBlank() || entryHasPhoto
+                        val allPhotos = if (currentSelected?.getAllPhotos()?.isNotEmpty() == true) currentSelected.getAllPhotos() else entryPhotoUris
+                        val resolvedPhotoUri = allPhotos.firstOrNull() ?: currentSelected?.photoUri ?: entryPhotoUri
+                        val resolvedHasPhoto = currentSelected?.hasPhoto == true || allPhotos.isNotEmpty() || !resolvedPhotoUri.isNullOrBlank() || entryHasPhoto
                         EditActivityScreen(
                             initialTitle = currentSelected?.title?.takeIf { it.isNotBlank() } ?: entryTitle,
                             initialDescription = currentSelected?.description?.takeIf { it.isNotBlank() } ?: entryDescription,
@@ -401,6 +408,7 @@ class MainActivity : ComponentActivity() {
                             entryId = currentSelected?.id?.takeIf { it > 0 } ?: entryId,
                             initialPhotoUri = resolvedPhotoUri,
                             initialHasPhoto = resolvedHasPhoto,
+                            initialPhotoUris = allPhotos,
                             onNavigateBack = {
                                 navController.popBackStack()
                             },
@@ -429,7 +437,8 @@ class MainActivity : ComponentActivity() {
                                 entryMood = activityItem.mood
                                 entryId = activityItem.id
                                 entryPhotoUri = activityItem.photoUri
-                                entryHasPhoto = activityItem.hasPhoto
+                                entryPhotoUris = activityItem.getAllPhotos()
+                                entryHasPhoto = activityItem.hasPhoto || entryPhotoUris.isNotEmpty()
                                 DiaryActivityStore.selectActivity(activityItem)
                                 navController.navigate(Screen.ActivityDetails)
                             },
@@ -662,14 +671,16 @@ class MainActivity : ComponentActivity() {
                             onNavigateToActivityDetails = { selectedItem ->
                                 val itemToOpen = selectedItem ?: DiaryActivityStore.selectedActivity.value
                                 if (itemToOpen != null) {
+                                    val allPhotos = itemToOpen.getAllPhotos()
                                     entryTitle = itemToOpen.title
                                     entryDescription = itemToOpen.description
                                     entryDate = itemToOpen.date
                                     entryCategory = itemToOpen.category
                                     entryMood = itemToOpen.mood
                                     entryId = itemToOpen.id
-                                    entryPhotoUri = itemToOpen.photoUri
-                                    entryHasPhoto = itemToOpen.hasPhoto || !itemToOpen.photoUri.isNullOrBlank()
+                                    entryPhotoUri = allPhotos.firstOrNull() ?: itemToOpen.photoUri
+                                    entryPhotoUris = allPhotos
+                                    entryHasPhoto = itemToOpen.hasPhoto || allPhotos.isNotEmpty()
                                     DiaryActivityStore.selectActivity(itemToOpen)
                                 }
                                 navController.navigate(Screen.ActivityDetails)
@@ -684,14 +695,16 @@ class MainActivity : ComponentActivity() {
                             onNavigateToActivityDetails = {
                                 val item = DiaryActivityStore.selectedActivity.value
                                 if (item != null) {
+                                    val allPhotos = item.getAllPhotos()
                                     entryTitle = item.title
                                     entryDescription = item.description
                                     entryDate = item.date
                                     entryCategory = item.category
                                     entryMood = item.mood
                                     entryId = item.id
-                                    entryPhotoUri = item.photoUri
-                                    entryHasPhoto = item.hasPhoto
+                                    entryPhotoUri = allPhotos.firstOrNull() ?: item.photoUri
+                                    entryPhotoUris = allPhotos
+                                    entryHasPhoto = item.hasPhoto || allPhotos.isNotEmpty()
                                 }
                                 navController.navigate(Screen.ActivityDetails)
                             }

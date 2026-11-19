@@ -26,6 +26,7 @@ data class ActivityDetailsUiState(
     val photoStatus: String = "No photo attached",
     val hasPhoto: Boolean = false,
     val photoUri: String? = null,
+    val photoUris: List<String> = emptyList(),
     val entryIdText: String = "Entry · Stored in memory of activities",
     val entryId: Int = 0
 )
@@ -68,7 +69,8 @@ class ActivityDetailsViewModel(
                 mood = current.mood,
                 id = current.id,
                 photoUri = current.photoUri,
-                hasPhoto = current.hasPhoto
+                hasPhoto = current.hasPhoto,
+                photoUris = current.photoUris
             )
         }
         executionScope.launch {
@@ -82,7 +84,8 @@ class ActivityDetailsViewModel(
                         mood = item.mood,
                         id = item.id,
                         photoUri = item.photoUri,
-                        hasPhoto = item.hasPhoto
+                        hasPhoto = item.hasPhoto,
+                        photoUris = item.photoUris
                     )
                 }
             }
@@ -97,12 +100,28 @@ class ActivityDetailsViewModel(
         mood: String = "Not specified",
         id: Int = 0,
         photoUri: String? = null,
-        hasPhoto: Boolean = false
+        hasPhoto: Boolean = false,
+        photoUris: List<String> = emptyList()
     ) {
         val selected = DiaryActivityStore.selectedActivity.value
         val resolvedPhotoUri = photoUri ?: selected?.photoUri
-        val hasAttachedPhoto = hasPhoto || !resolvedPhotoUri.isNullOrBlank() || selected?.hasPhoto == true
-        val photoStatusText = if (hasAttachedPhoto) "1 photo attached" else "No photo attached"
+        val resolvedPhotoUris = if (photoUris.isNotEmpty()) {
+            photoUris
+        } else if (selected?.photoUris?.isNotEmpty() == true) {
+            selected.photoUris
+        } else if (!resolvedPhotoUri.isNullOrBlank()) {
+            listOf(resolvedPhotoUri)
+        } else {
+            emptyList()
+        }
+
+        val hasAttachedPhoto = hasPhoto || resolvedPhotoUris.isNotEmpty() || !resolvedPhotoUri.isNullOrBlank() || selected?.hasPhoto == true
+        val photoStatusText = when (resolvedPhotoUris.size) {
+            0 -> if (hasAttachedPhoto) "1 photo attached" else "No photo attached"
+            1 -> "1 photo attached"
+            else -> "${resolvedPhotoUris.size} photos attached"
+        }
+
         _uiState.update {
             it.copy(
                 title = if (title.isNotBlank()) title else it.title,
@@ -112,7 +131,8 @@ class ActivityDetailsViewModel(
                 mood = if (mood.isNotBlank()) mood else it.mood,
                 entryId = if (id > 0) id else it.entryId,
                 hasPhoto = hasAttachedPhoto,
-                photoUri = resolvedPhotoUri,
+                photoUri = resolvedPhotoUris.firstOrNull() ?: resolvedPhotoUri,
+                photoUris = resolvedPhotoUris,
                 photoStatus = photoStatusText,
                 entryIdText = "Entry · Stored in memory of activities"
             )

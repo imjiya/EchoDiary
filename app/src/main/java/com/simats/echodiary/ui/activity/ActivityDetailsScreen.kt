@@ -1,5 +1,6 @@
 package com.simats.echodiary.ui.activity
 
+import com.simats.echodiary.util.PhotoStorageHelper
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Canvas
@@ -7,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,19 +23,23 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,36 +70,20 @@ fun ActivityDetailsScreen(
     entryId: Int = 0,
     initialPhotoUri: String? = null,
     initialHasPhoto: Boolean = false,
+    initialPhotoUris: List<String> = emptyList(),
     onNavigateBack: () -> Unit,
     onNavigateToEdit: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    var previewPhotoUri by remember { mutableStateOf<String?>(null) }
 
     val photoBitmap = remember(state.photoUri) {
-        state.photoUri?.let { pathOrUri ->
-            try {
-                val file = File(pathOrUri)
-                if (file.exists() && file.isFile) {
-                    BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
-                } else {
-                    val uri = Uri.parse(pathOrUri)
-                    if (uri.scheme == "file") {
-                        BitmapFactory.decodeFile(uri.path)?.asImageBitmap()
-                    } else {
-                        context.contentResolver.openInputStream(uri)?.use { stream ->
-                            BitmapFactory.decodeStream(stream)
-                        }?.asImageBitmap()
-                    }
-                }
-            } catch (_: Exception) {
-                null
-            }
-        }
+        PhotoStorageHelper.decodeSampledBitmap(context, state.photoUri, 1024, 1024)
     }
 
-    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId, initialPhotoUri, initialHasPhoto) {
+    LaunchedEffect(initialTitle, initialDescription, initialDate, initialCategory, initialMood, entryId, initialPhotoUri, initialHasPhoto, initialPhotoUris) {
         if (initialTitle.isNotBlank() || initialDescription.isNotBlank() || initialDate.isNotBlank()) {
             viewModel.setEntryDetails(
                 title = initialTitle,
@@ -103,7 +93,8 @@ fun ActivityDetailsScreen(
                 mood = initialMood,
                 id = entryId,
                 photoUri = initialPhotoUri,
-                hasPhoto = initialHasPhoto
+                hasPhoto = initialHasPhoto,
+                photoUris = initialPhotoUris
             )
         }
     }
@@ -263,8 +254,9 @@ fun ActivityDetailsScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Photo Card - displays the inserted photo saved in memory
-            if (state.hasPhoto || !state.photoUri.isNullOrBlank()) {
+            // Photo Card - displays the inserted photo(s) saved in memory
+            val attachedPhotos = if (state.photoUris.isNotEmpty()) state.photoUris else listOfNotNull(state.photoUri)
+            if (state.hasPhoto || attachedPhotos.isNotEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -279,7 +271,7 @@ fun ActivityDetailsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Attached photo",
+                                text = if (attachedPhotos.size > 1) "Attached photos (${attachedPhotos.size})" else "Attached photo",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = EchoTheme.onSurface
@@ -292,14 +284,49 @@ fun ActivityDetailsScreen(
                             )
                         }
                         Spacer(modifier = Modifier.height(10.dp))
-                        if (photoBitmap != null) {
+
+                        if (attachedPhotos.size > 1) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                attachedPhotos.forEachIndexed { index, path ->
+                                    val thumb = remember(path) {
+                                        PhotoStorageHelper.decodeSampledBitmap(context, path, 300, 300)
+                                    }
+                                    Box(
+                                        modifier = Modifier
+                                            .size(110.dp)
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(Color(0xFFE2E8F0))
+                                            .clickable { previewPhotoUri = path }
+                                    ) {
+                                        if (thumb != null) {
+                                            Image(
+                                                bitmap = thumb,
+                                                contentDescription = "Attached photo $index",
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        } else {
+                                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                                Text(text = "🖼️", fontSize = 24.sp)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else if (photoBitmap != null) {
                             Image(
                                 bitmap = photoBitmap,
                                 contentDescription = "Memory photo",
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
-                                    .clip(RoundedCornerShape(12.dp)),
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable { previewPhotoUri = state.photoUri ?: attachedPhotos.firstOrNull() },
                                 contentScale = ContentScale.Crop
                             )
                         } else {
@@ -414,5 +441,51 @@ fun ActivityDetailsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+
+    // Photo Preview Dialog
+    previewPhotoUri?.let { path ->
+        val previewBitmap = remember(path) {
+            PhotoStorageHelper.decodeSampledBitmap(context, path, 1200, 1200)
+        }
+        AlertDialog(
+            onDismissRequest = { previewPhotoUri = null },
+            title = {
+                Text(
+                    text = "Attached Photo",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = EchoTheme.onSurface
+                )
+            },
+            text = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(EchoTheme.container),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (previewBitmap != null) {
+                        Image(
+                            bitmap = previewBitmap,
+                            contentDescription = "Full photo preview",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit
+                        )
+                    } else {
+                        Text(text = "🖼️ Preview not available", color = EchoTheme.textSecondary)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { previewPhotoUri = null }) {
+                    Text(text = "Close", color = EchoTheme.primary, fontWeight = FontWeight.Bold)
+                }
+            },
+            containerColor = EchoTheme.surface,
+            shape = RoundedCornerShape(24.dp)
+        )
     }
 }

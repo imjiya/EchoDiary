@@ -70,21 +70,10 @@ object MemoryImageShareHelper {
         val contentWidth = width - (padding * 2)
 
         // Load photo if available
-        var attachedBitmap: Bitmap? = null
-        if (!photoUri.isNullOrBlank()) {
-            attachedBitmap = try {
-                val f = File(photoUri)
-                if (f.exists()) {
-                    BitmapFactory.decodeFile(f.absolutePath)
-                } else {
-                    val u = Uri.parse(photoUri)
-                    context.contentResolver.openInputStream(u)?.use { stream ->
-                        BitmapFactory.decodeStream(stream)
-                    }
-                }
-            } catch (_: Exception) {
-                null
-            }
+        val attachedBitmap: Bitmap? = if (!photoUri.isNullOrBlank()) {
+            PhotoStorageHelper.decodeAndroidBitmap(context, photoUri, 1200, 1200)
+        } else {
+            null
         }
 
         // Paints
