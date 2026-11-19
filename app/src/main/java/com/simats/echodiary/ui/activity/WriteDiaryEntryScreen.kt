@@ -215,7 +215,7 @@ fun WriteDiaryEntryScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel", color = Color(0xFF64748B))
+                    Text("Cancel", color = EchoTheme.textSecondary)
                 }
             }
         ) {
@@ -491,7 +491,7 @@ fun WriteDiaryEntryScreen(
                         Text(
                             text = label,
                             fontSize = 12.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Normal,
                             color = if (isSelected) Color.White else EchoTheme.onSurface
                         )
                     }
@@ -642,7 +642,7 @@ fun WriteDiaryEntryScreen(
                         text = state.errorMessage ?: "",
                         fontSize = 13.sp,
                         color = Color(0xFFDC2626),
-                        fontWeight = FontWeight.Medium
+                        fontWeight = EchoTheme.textMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -674,7 +674,7 @@ fun WriteDiaryEntryScreen(
                         text = state.statusMessage ?: "",
                         fontSize = 13.sp,
                         color = Color(0xFF1D4ED8),
-                        fontWeight = FontWeight.Medium
+                        fontWeight = EchoTheme.textMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))

@@ -264,7 +264,7 @@ fun ReviewTranscriptScreen(
                         text = "Saving entry to your diary...",
                         fontSize = 13.sp,
                         color = EchoTheme.primary,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = EchoTheme.textMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -296,7 +296,7 @@ fun ReviewTranscriptScreen(
                         text = state.errorMessage ?: "",
                         fontSize = 13.sp,
                         color = Color(0xFFDC2626),
-                        fontWeight = FontWeight.Medium
+                        fontWeight = EchoTheme.textMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))

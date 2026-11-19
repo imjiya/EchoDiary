@@ -199,7 +199,7 @@ fun EditActivityScreen(
                         text = "Edit memory",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
@@ -236,7 +236,7 @@ fun EditActivityScreen(
                 text = "Update the details to save in your memory of activities.",
                 fontSize = 12.sp,
                 color = EchoTheme.textSecondary,
-                fontWeight = FontWeight.Medium
+                fontWeight = EchoTheme.textMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -414,7 +414,7 @@ fun EditActivityScreen(
                         Text(
                             text = label,
                             fontSize = 12.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Normal,
                             color = if (isSelected) Color.White else EchoTheme.onSurface
                         )
                     }

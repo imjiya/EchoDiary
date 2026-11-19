@@ -1,5 +1,7 @@
 package com.simats.echodiary.ui.splash
 
+import com.simats.echodiary.ui.theme.EchoTheme
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -116,7 +118,7 @@ fun SplashScreen(
                 text = "EchoDiary AI",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 letterSpacing = (-0.5).sp
             )
 
@@ -125,7 +127,7 @@ fun SplashScreen(
             Text(
                 text = "Your Voice. Your Day. Your Memories.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 textAlign = TextAlign.Center
             )
         }
@@ -133,7 +135,7 @@ fun SplashScreen(
         Text(
             text = "A little space for your everyday.",
             fontSize = 12.sp,
-            color = Color(0xFF94A3B8),
+            color = EchoTheme.textMuted,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 48.dp)

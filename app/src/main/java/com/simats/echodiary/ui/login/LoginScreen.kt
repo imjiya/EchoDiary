@@ -207,7 +207,7 @@ fun LoginScreen(
                         text = state.errorMessage!!,
                         fontSize = 13.sp,
                         color = Color(0xFFDC2626),
-                        fontWeight = FontWeight.Medium
+                        fontWeight = EchoTheme.textMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -221,7 +221,7 @@ fun LoginScreen(
                 Text(
                     text = "Email",
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = EchoTheme.textMedium,
                     color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
@@ -268,7 +268,7 @@ fun LoginScreen(
                 Text(
                     text = "Password",
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = EchoTheme.textMedium,
                     color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )

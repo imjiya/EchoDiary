@@ -142,7 +142,7 @@ fun CreateAccountScreen(
                         text = state.errorMessage!!,
                         fontSize = 13.sp,
                         color = Color(0xFFDC2626),
-                        fontWeight = FontWeight.Medium
+                        fontWeight = EchoTheme.textMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -156,7 +156,7 @@ fun CreateAccountScreen(
                 Text(
                     text = "Full name",
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = EchoTheme.textMedium,
                     color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
@@ -189,7 +189,7 @@ fun CreateAccountScreen(
                 Text(
                     text = "Email",
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = EchoTheme.textMedium,
                     color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
@@ -236,7 +236,7 @@ fun CreateAccountScreen(
                 Text(
                     text = "Password",
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = EchoTheme.textMedium,
                     color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
@@ -288,7 +288,7 @@ fun CreateAccountScreen(
                 Text(
                     text = "Confirm password",
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = EchoTheme.textMedium,
                     color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )

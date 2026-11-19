@@ -164,7 +164,7 @@ fun AllActivitiesScreen(
                 text = "${state.entries.size} entries · Stored in memory of activities",
                 fontSize = 12.sp,
                 color = EchoTheme.textSecondary,
-                fontWeight = FontWeight.Medium
+                fontWeight = EchoTheme.textMedium
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -211,7 +211,7 @@ fun AllActivitiesScreen(
                                     Text(
                                         text = "$moodEmoji ${entry.mood}",
                                         fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium,
+                                        fontWeight = EchoTheme.textMedium,
                                         color = EchoTheme.primary
                                     )
                                 }

@@ -70,10 +70,11 @@ fun ChooseCategoryScreen(
                         text = "Choose category",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -82,7 +83,7 @@ fun ChooseCategoryScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -105,7 +106,7 @@ fun ChooseCategoryScreen(
             Text(
                 text = "Pick the category that fits best.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -124,12 +125,12 @@ fun ChooseCategoryScreen(
                                 .weight(1f)
                                 .height(64.dp)
                                 .background(
-                                    color = if (isSelected) EchoTheme.container else Color.White,
+                                    color = if (isSelected) EchoTheme.container else EchoTheme.surface,
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .border(
                                     width = if (isSelected) 1.5.dp else 1.dp,
-                                    color = if (isSelected) EchoTheme.primary else Color(0xFFE2E8F0),
+                                    color = if (isSelected) EchoTheme.primary else EchoTheme.cardBorder,
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .clickable { viewModel.selectCategory(cat.name) }
@@ -148,7 +149,7 @@ fun ChooseCategoryScreen(
                                         text = cat.name,
                                         fontSize = 15.sp,
                                         fontWeight = FontWeight.SemiBold,
-                                        color = Color(0xFF1E293B)
+                                        color = EchoTheme.onSurface
                                     )
                                 }
                                 if (isSelected) {

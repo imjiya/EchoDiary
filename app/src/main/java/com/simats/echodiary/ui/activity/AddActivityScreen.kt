@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -74,10 +75,11 @@ fun AddActivityScreen(
                         text = "Add activity",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -86,7 +88,7 @@ fun AddActivityScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -110,13 +112,13 @@ fun AddActivityScreen(
                 text = "How was your day?",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Start with your voice or a few written words.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -129,6 +131,7 @@ fun AddActivityScreen(
                         color = EchoTheme.container,
                         shape = RoundedCornerShape(24.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                     .clickable { viewModel.onRecordByVoiceClicked() }
                     .padding(20.dp)
             ) {
@@ -138,7 +141,7 @@ fun AddActivityScreen(
                     Box(
                         modifier = Modifier
                             .size(44.dp)
-                            .background(Color.White, shape = RoundedCornerShape(12.dp)),
+                            .background(EchoTheme.surface, shape = RoundedCornerShape(12.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Canvas(modifier = Modifier.size(20.dp)) {
@@ -170,7 +173,7 @@ fun AddActivityScreen(
                         text = "Record by Voice",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -178,7 +181,7 @@ fun AddActivityScreen(
                     Text(
                         text = "Say it naturally. Review your transcript before saving.",
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 20.sp
                     )
 
@@ -211,9 +214,10 @@ fun AddActivityScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color.White,
+                        color = EchoTheme.surface,
                         shape = RoundedCornerShape(24.dp)
                     )
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
                     .clickable { viewModel.onWriteManuallyClicked() }
                     .padding(20.dp)
             ) {
@@ -247,7 +251,7 @@ fun AddActivityScreen(
                         text = "Write Manually",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -255,7 +259,7 @@ fun AddActivityScreen(
                     Text(
                         text = "A sentence or a page. Write at your own pace.",
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 20.sp
                     )
 
@@ -288,7 +292,7 @@ fun AddActivityScreen(
                 text = "Start with a category",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -299,7 +303,8 @@ fun AddActivityScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .clickable { viewModel.onCategoryButtonClicked() }
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
@@ -307,13 +312,14 @@ fun AddActivityScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "🎓", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "College", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                        Text(text = "College", fontSize = 14.sp, fontWeight = EchoTheme.textMedium, color = EchoTheme.onSurface)
                     }
                 }
 
                 Box(
                     modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .clickable { viewModel.onCategoryButtonClicked() }
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
@@ -321,13 +327,14 @@ fun AddActivityScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "💼", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "Work", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                        Text(text = "Work", fontSize = 14.sp, fontWeight = EchoTheme.textMedium, color = EchoTheme.onSurface)
                     }
                 }
 
                 Box(
                     modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(20.dp))
+                        .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
+                        .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
                         .clickable { viewModel.onCategoryButtonClicked() }
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     contentAlignment = Alignment.Center
@@ -335,7 +342,7 @@ fun AddActivityScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "➕", fontSize = 12.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "Other", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF1E293B))
+                        Text(text = "Other", fontSize = 14.sp, fontWeight = EchoTheme.textMedium, color = EchoTheme.onSurface)
                     }
                 }
             }
@@ -345,7 +352,7 @@ fun AddActivityScreen(
             Text(
                 text = "No perfect words needed. Just yours.",
                 fontSize = 13.sp,
-                color = Color(0xFF94A3B8),
+                color = EchoTheme.textMuted,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )

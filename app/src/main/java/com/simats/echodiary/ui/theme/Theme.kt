@@ -2,6 +2,10 @@ package com.simats.echodiary.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -90,6 +94,14 @@ object EchoTheme {
     val isDark: Boolean
         @Composable
         get() = LocalEchoColors.current.isDark
+
+    val textNormal: FontWeight
+        @Composable
+        get() = if (LocalEchoColors.current.isDark) FontWeight.Bold else FontWeight.Normal
+
+    val textMedium: FontWeight
+        @Composable
+        get() = if (LocalEchoColors.current.isDark) FontWeight.Bold else FontWeight.Medium
 }
 
 fun getPaletteColors(paletteName: String, isDark: Boolean = false): Pair<Color, Color> {
@@ -129,11 +141,11 @@ fun EchoDiaryTheme(
     val background = if (darkTheme) Color(0xFF0F172A) else Color(0xFFFAFBFC)
     val surface = if (darkTheme) Color(0xFF1E293B) else Color.White
     val cardBackground = if (darkTheme) Color(0xFF1E293B) else Color.White
-    val cardBorder = if (darkTheme) Color(0xFF334155) else Color(0xFFE2E8F0)
-    val onSurface = if (darkTheme) Color(0xFFF8FAFC) else Color(0xFF1E293B)
+    val cardBorder = if (darkTheme) Color(0xFF475569) else Color(0xFFE2E8F0)
+    val onSurface = if (darkTheme) Color(0xFFFFFFFF) else Color(0xFF1E293B)
     val textPrimary = onSurface
-    val textSecondary = if (darkTheme) Color(0xFF94A3B8) else Color(0xFF64748B)
-    val textMuted = if (darkTheme) Color(0xFF64748B) else Color(0xFF94A3B8)
+    val textSecondary = if (darkTheme) Color(0xFFE2E8F0) else Color(0xFF64748B)
+    val textMuted = if (darkTheme) Color(0xFFCBD5E1) else Color(0xFF94A3B8)
 
     val echoColors = EchoDiaryColors(
         primary = primary,
@@ -173,10 +185,20 @@ fun EchoDiaryTheme(
         )
     }
 
-    CompositionLocalProvider(LocalEchoColors provides echoColors) {
+    val typography = getEchoTypography(darkTheme)
+    val defaultTextStyle = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = if (darkTheme) FontWeight.Bold else FontWeight.Normal,
+        color = onSurface
+    )
+
+    CompositionLocalProvider(
+        LocalEchoColors provides echoColors,
+        LocalTextStyle provides defaultTextStyle
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
+            typography = typography,
             content = content
         )
     }

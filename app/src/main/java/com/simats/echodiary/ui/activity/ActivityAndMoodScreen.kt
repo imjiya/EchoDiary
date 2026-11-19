@@ -130,7 +130,7 @@ fun ActivityAndMoodScreen(
                         Text(
                             text = tab,
                             fontSize = 14.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Medium,
                             color = if (isSelected) EchoTheme.primary else EchoTheme.textSecondary
                         )
                     }
@@ -452,8 +452,8 @@ fun ActivityAndMoodScreen(
                                         Text(
                                             text = if (hasExplicitMood) entry.mood else "Unspecified",
                                             fontSize = 12.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            color = if (hasExplicitMood) Color(0xFF334155) else Color(0xFF94A3B8)
+                                            fontWeight = EchoTheme.textMedium,
+                                            color = if (hasExplicitMood) EchoTheme.onSurface else EchoTheme.textMuted
                                         )
                                     }
                                 }

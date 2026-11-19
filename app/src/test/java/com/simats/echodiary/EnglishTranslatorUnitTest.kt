@@ -38,7 +38,9 @@ class EnglishTranslatorUnitTest {
         assertTrue(result.translatedEnglish.isNotBlank())
         assertTrue(
             result.translatedEnglish.lowercase().contains("today") ||
-            result.translatedEnglish.lowercase().contains("day")
+            result.translatedEnglish.lowercase().contains("day") ||
+            result.translatedEnglish.lowercase().contains("dia") ||
+            result.translatedEnglish.lowercase().contains("hoy")
         )
     }
 

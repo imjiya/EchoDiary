@@ -177,7 +177,7 @@ fun CalendarScreen(
                                             Text(
                                                 text = "$dayNum",
                                                 fontSize = 14.sp,
-                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                                fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Normal,
                                                 color = when {
                                                     isSelected -> Color.White
                                                     hasEntry -> EchoTheme.primary
@@ -214,8 +214,8 @@ fun CalendarScreen(
                 Text(
                     text = "● Has entries  ·  Select date above",
                     fontSize = 12.sp,
-                    color = Color(0xFF64748B),
-                    fontWeight = FontWeight.Medium
+                    color = EchoTheme.textSecondary,
+                    fontWeight = EchoTheme.textMedium
                 )
                 Text(
                     text = "Selected: ${state.selectedActivityDate}",
@@ -232,7 +232,7 @@ fun CalendarScreen(
                 text = state.selectedDateText,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -263,12 +263,12 @@ fun CalendarScreen(
                                 text = state.selectedActivityTitle,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Text(
                                 text = "${state.selectedActivityCategory} · ${state.selectedActivityDate}",
                                 fontSize = 12.sp,
-                                color = Color(0xFF94A3B8)
+                                color = EchoTheme.textMuted
                             )
                         }
                     }
@@ -278,7 +278,7 @@ fun CalendarScreen(
                     Text(
                         text = state.selectedActivityDescription,
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
                 }
             }

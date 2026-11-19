@@ -163,7 +163,7 @@ fun ActivityDetailsScreen(
                 text = state.date,
                 fontSize = 12.sp,
                 color = EchoTheme.textSecondary,
-                fontWeight = FontWeight.Medium
+                fontWeight = EchoTheme.textMedium
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -317,7 +317,7 @@ fun ActivityDetailsScreen(
                                     Text(
                                         text = "Photo stored in memory",
                                         fontSize = 13.sp,
-                                        fontWeight = FontWeight.Medium,
+                                        fontWeight = EchoTheme.textMedium,
                                         color = EchoTheme.primary
                                     )
                                 }

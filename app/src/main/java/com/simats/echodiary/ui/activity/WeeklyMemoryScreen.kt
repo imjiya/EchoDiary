@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -107,10 +108,11 @@ fun WeeklyMemoryScreen(
                         text = "Weekly memory",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -119,7 +121,7 @@ fun WeeklyMemoryScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -154,7 +156,7 @@ fun WeeklyMemoryScreen(
                 text = state.title,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B),
+                color = EchoTheme.onSurface,
                 lineHeight = 32.sp
             )
 
@@ -176,7 +178,7 @@ fun WeeklyMemoryScreen(
                     Text(
                         text = state.summaryText,
                         fontSize = 15.sp,
-                        color = Color(0xFF1E293B),
+                        color = EchoTheme.onSurface,
                         lineHeight = 22.sp
                     )
                 }
@@ -207,7 +209,7 @@ fun WeeklyMemoryScreen(
                 text = "Highlights",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -229,8 +231,8 @@ fun WeeklyMemoryScreen(
                             Text(
                                 text = highlight,
                                 fontSize = 13.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFF64748B)
+                                fontWeight = EchoTheme.textMedium,
+                                color = EchoTheme.textSecondary
                             )
                         }
                     }

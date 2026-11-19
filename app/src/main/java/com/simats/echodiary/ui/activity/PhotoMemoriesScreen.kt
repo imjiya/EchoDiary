@@ -243,7 +243,7 @@ fun PhotoMemoriesScreen(
                                             Text(
                                                 text = item.category,
                                                 fontSize = 11.sp,
-                                                fontWeight = FontWeight.Medium,
+                                                fontWeight = EchoTheme.textMedium,
                                                 color = EchoTheme.primary
                                             )
                                         }
@@ -256,7 +256,7 @@ fun PhotoMemoriesScreen(
                                             Text(
                                                 text = item.mood,
                                                 fontSize = 12.sp,
-                                                fontWeight = FontWeight.Medium,
+                                                fontWeight = EchoTheme.textMedium,
                                                 color = EchoTheme.textSecondary
                                             )
                                         }
@@ -388,7 +388,7 @@ fun PhotoMemoriesScreen(
                     text = "Photo Memory",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             },
             text = {
@@ -397,7 +397,7 @@ fun PhotoMemoriesScreen(
                         .fillMaxWidth()
                         .height(300.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFE2E8F0)),
+                        .background(EchoTheme.container),
                     contentAlignment = Alignment.Center
                 ) {
                     if (previewBitmap != null) {
@@ -408,7 +408,7 @@ fun PhotoMemoriesScreen(
                             contentScale = ContentScale.Fit
                         )
                     } else {
-                        Text(text = "🖼️ Preview not available", color = Color(0xFF64748B))
+                        Text(text = "🖼️ Preview not available", color = EchoTheme.textSecondary)
                     }
                 }
             },
@@ -417,7 +417,7 @@ fun PhotoMemoriesScreen(
                     Text(text = "Close", color = EchoTheme.primary, fontWeight = FontWeight.Bold)
                 }
             },
-            containerColor = Color.White,
+            containerColor = EchoTheme.surface,
             shape = RoundedCornerShape(24.dp)
         )
     }
@@ -441,7 +441,7 @@ private fun MemoryPhotoCollage(
                     .clip(RoundedCornerShape(16.dp))
                     .background(
                         Brush.linearGradient(
-                            colors = listOf(EchoTheme.container, Color(0xFFF1F5F9))
+                            colors = listOf(EchoTheme.container, EchoTheme.surface)
                         )
                     ),
                 contentAlignment = Alignment.Center
@@ -452,8 +452,8 @@ private fun MemoryPhotoCollage(
                     Text(
                         text = "$title photo",
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF64748B)
+                        fontWeight = EchoTheme.textMedium,
+                        color = EchoTheme.textSecondary
                     )
                 }
             }

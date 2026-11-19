@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,10 +78,11 @@ fun MonthlyMemoryScreen(
                         text = "Monthly memory",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -89,7 +91,7 @@ fun MonthlyMemoryScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -113,7 +115,7 @@ fun MonthlyMemoryScreen(
                 text = "Month",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -123,6 +125,7 @@ fun MonthlyMemoryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = EchoTheme.surface, shape = RoundedCornerShape(16.dp))
+                    .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(16.dp))
                     .clickable { viewModel.onMonthDropdownClicked() }
                     .padding(16.dp)
             ) {
@@ -135,13 +138,13 @@ fun MonthlyMemoryScreen(
                         text = state.monthTitle,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Text(
                         text = "⌄",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
                 }
             }
@@ -163,7 +166,7 @@ fun MonthlyMemoryScreen(
                     Text(
                         text = state.infoText,
                         fontSize = 13.sp,
-                        color = Color(0xFF334155),
+                        color = EchoTheme.onSurface,
                         lineHeight = 18.sp
                     )
                 }
@@ -193,7 +196,7 @@ fun MonthlyMemoryScreen(
                         Text(
                             text = "Diary entries",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -215,7 +218,7 @@ fun MonthlyMemoryScreen(
                         Text(
                             text = "Categories",
                             fontSize = 13.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -236,13 +239,13 @@ fun MonthlyMemoryScreen(
                         text = state.summaryTitle,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = state.summaryText,
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 20.sp
                     )
                 }
@@ -262,7 +265,7 @@ fun MonthlyMemoryScreen(
                         text = "Category breakdown · ${state.categoriesCount} categories",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -277,7 +280,7 @@ fun MonthlyMemoryScreen(
                             Text(
                                 text = item.name,
                                 fontSize = 14.sp,
-                                color = Color(0xFF64748B),
+                                color = EchoTheme.textSecondary,
                                 modifier = Modifier.width(80.dp)
                             )
                             LinearProgressIndicator(
@@ -294,7 +297,7 @@ fun MonthlyMemoryScreen(
                                 text = "${item.count}",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                         }
                     }
@@ -320,12 +323,12 @@ fun MonthlyMemoryScreen(
                             text = "Saved entries in this monthly memory",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E293B)
+                            color = EchoTheme.onSurface
                         )
                         Text(
                             text = "${state.entries.size} entries",
                             fontSize = 12.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
 
@@ -373,13 +376,13 @@ fun MonthlyMemoryScreen(
                                             text = entry.title,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.SemiBold,
-                                            color = Color(0xFF1E293B),
+                                            color = EchoTheme.onSurface,
                                             maxLines = 1
                                         )
                                         Text(
                                             text = "${entry.category} · ${entry.date}",
                                             fontSize = 12.sp,
-                                            color = Color(0xFF64748B)
+                                            color = EchoTheme.textSecondary
                                         )
                                     }
                                 }
@@ -402,7 +405,7 @@ fun MonthlyMemoryScreen(
                                             Text(
                                                 text = entry.mood,
                                                 fontSize = 11.sp,
-                                                fontWeight = FontWeight.Medium,
+                                                fontWeight = EchoTheme.textMedium,
                                                 color = EchoTheme.primary
                                             )
                                         }
@@ -420,7 +423,7 @@ fun MonthlyMemoryScreen(
             Text(
                 text = state.footerText,
                 fontSize = 13.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 18.sp
             )
 

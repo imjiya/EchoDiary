@@ -144,7 +144,7 @@ fun HelpAndSupportScreen(
                         Text(
                             text = msg,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = EchoTheme.textMedium,
                             color = Color(0xFF065F46)
                         )
                     }
@@ -167,7 +167,7 @@ fun HelpAndSupportScreen(
                 text = "A little help, anytime.",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -175,7 +175,7 @@ fun HelpAndSupportScreen(
             Text(
                 text = "Instant answers for capturing, reviewing memories & device troubleshooting.",
                 fontSize = 14.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -245,7 +245,7 @@ fun HelpAndSupportScreen(
                         Text(
                             text = cat,
                             fontSize = 13.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Medium,
                             color = if (isSelected) Color.White else EchoTheme.onSurface
                         )
                     }
@@ -287,7 +287,7 @@ fun HelpAndSupportScreen(
                         Text(
                             text = "Try searching for a different keyword or contact support below.",
                             fontSize = 12.sp,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -647,7 +647,7 @@ private fun DiagnosticRow(
                     text = statusText,
                     fontSize = 11.sp,
                     color = if (isSuccess) Color(0xFF059669) else Color(0xFFDC2626),
-                    fontWeight = FontWeight.Medium
+                    fontWeight = EchoTheme.textMedium
                 )
             }
         }

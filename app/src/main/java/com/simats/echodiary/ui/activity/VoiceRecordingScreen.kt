@@ -292,7 +292,7 @@ fun VoiceRecordingScreen(
                             text = state.statusText,
                             fontSize = 13.sp,
                             color = EchoTheme.onSurface,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = EchoTheme.textMedium
                         )
                     }
 
@@ -460,7 +460,7 @@ fun VoiceRecordingScreen(
                             text = "\"${state.spokenText}\"",
                             fontSize = 14.sp,
                             color = EchoTheme.onSurface,
-                            fontWeight = FontWeight.Normal
+                            fontWeight = EchoTheme.textNormal
                         )
                     }
                 }
@@ -526,7 +526,7 @@ fun VoiceRecordingScreen(
                                 text = "Translating speech into proper English...",
                                 fontSize = 13.sp,
                                 color = EchoTheme.primary,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = EchoTheme.textMedium
                             )
                         }
                     } else if (state.translatedText.isNotBlank()) {
@@ -544,7 +544,7 @@ fun VoiceRecordingScreen(
                             text = "✓ Live translation active · Ready for diary transcript",
                             fontSize = 12.sp,
                             color = EchoTheme.primary,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = EchoTheme.textMedium
                         )
                     } else {
                         Text(

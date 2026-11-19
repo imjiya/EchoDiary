@@ -172,7 +172,7 @@ fun MemoryDetailsScreen(
                             text = highlight,
                             fontSize = 13.sp,
                             color = EchoTheme.textSecondary,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = EchoTheme.textMedium
                         )
                     }
                 }

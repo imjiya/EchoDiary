@@ -164,7 +164,7 @@ fun NotificationsScreen(
                         Text(
                             text = "✕",
                             fontSize = 12.sp,
-                            color = Color(0xFF64748B),
+                            color = EchoTheme.textSecondary,
                             modifier = Modifier
                                 .clickable { viewModel.clearStatusMessage() }
                                 .padding(start = 8.dp)
@@ -221,7 +221,7 @@ fun NotificationsScreen(
                 text = "Reminder schedule",
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
+                color = EchoTheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -236,7 +236,7 @@ fun NotificationsScreen(
                     text = "Daily reminder",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
                 Text(
                     text = "Pick time 🕒",
@@ -330,7 +330,7 @@ fun NotificationsScreen(
                     text = "Weekly reminder",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
                 Text(
                     text = "Pick day & time 📅",
@@ -381,7 +381,7 @@ fun NotificationsScreen(
             Text(
                 text = "Notifications trigger gently according to your chosen schedule. Firebase Cloud Messaging delivers interactive daily memory reminders.",
                 fontSize = 12.sp,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -477,8 +477,8 @@ fun NotificationsScreen(
                             Text(
                                 text = "📅  $day",
                                 fontSize = 15.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color(0xFF1E293B)
+                                fontWeight = EchoTheme.textMedium,
+                                color = EchoTheme.onSurface
                             )
                         }
                     }
@@ -486,7 +486,7 @@ fun NotificationsScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showWeeklyDayDialog = false }) {
-                    Text("Cancel", color = Color(0xFF64748B))
+                    Text("Cancel", color = EchoTheme.textSecondary)
                 }
             }
         )

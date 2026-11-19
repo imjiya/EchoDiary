@@ -199,7 +199,7 @@ fun EditProfileScreen(
                         text = state.feedbackMessage ?: "",
                         fontSize = 13.sp,
                         color = if (state.isSuccess) Color(0xFF15803D) else Color(0xFFB91C1C),
-                        fontWeight = FontWeight.Medium
+                        fontWeight = EchoTheme.textMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))

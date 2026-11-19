@@ -218,7 +218,7 @@ fun HomeScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "🎓", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "College", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = EchoTheme.onSurface)
+                        Text(text = "College", fontSize = 13.sp, fontWeight = EchoTheme.textMedium, color = EchoTheme.onSurface)
                     }
                 }
 
@@ -233,7 +233,7 @@ fun HomeScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "💼", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "Work", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = EchoTheme.onSurface)
+                        Text(text = "Work", fontSize = 13.sp, fontWeight = EchoTheme.textMedium, color = EchoTheme.onSurface)
                     }
                 }
 
@@ -248,7 +248,7 @@ fun HomeScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "👥", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "Friends", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = EchoTheme.onSurface)
+                        Text(text = "Friends", fontSize = 13.sp, fontWeight = EchoTheme.textMedium, color = EchoTheme.onSurface)
                     }
                 }
             }
@@ -433,7 +433,7 @@ fun HomeScreen(
                                     Text(
                                         text = "$moodEmoji ${entry.mood}",
                                         fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium,
+                                        fontWeight = EchoTheme.textMedium,
                                         color = EchoTheme.primary
                                     )
                                 }

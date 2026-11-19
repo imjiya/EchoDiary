@@ -184,7 +184,7 @@ fun CreatingYourMemoryScreen(
                     text = state.progressPercentageText,
                     fontSize = 13.sp,
                     color = EchoTheme.textSecondary,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = EchoTheme.textMedium
                 )
             }
 
@@ -210,7 +210,7 @@ fun CreatingYourMemoryScreen(
                             Text(
                                 text = task,
                                 fontSize = 15.sp,
-                                fontWeight = if (isCompleted) FontWeight.Medium else FontWeight.Bold,
+                                fontWeight = if (isCompleted && !EchoTheme.isDark) FontWeight.Medium else FontWeight.Bold,
                                 color = if (isCompleted) EchoTheme.onSurface else EchoTheme.primary
                             )
                             if (isCompleted) {

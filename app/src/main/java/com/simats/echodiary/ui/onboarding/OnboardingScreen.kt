@@ -163,7 +163,7 @@ fun OnboardingScreen(
                     Text(
                         text = "EchoDiary AI",
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = EchoTheme.textMedium,
                         color = EchoTheme.primary
                     )
                 }
@@ -193,7 +193,7 @@ fun OnboardingScreen(
             Text(
                 text = "Your Voice. Your Day. Your Memories.",
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
+                fontWeight = EchoTheme.textMedium,
                 color = EchoTheme.primary
             )
 

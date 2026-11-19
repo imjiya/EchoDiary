@@ -133,7 +133,7 @@ fun MemoriesScreen(
                         Text(
                             text = tab,
                             fontSize = 14.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Medium,
                             color = if (isSelected) EchoTheme.primary else EchoTheme.textSecondary
                         )
                     }
@@ -210,7 +210,7 @@ fun MemoriesScreen(
                                     Text(
                                         text = highlight,
                                         fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium,
+                                        fontWeight = EchoTheme.textMedium,
                                         color = EchoTheme.primary
                                     )
                                 }
@@ -350,7 +350,7 @@ fun MemoriesScreen(
                                             Text(
                                                 text = entry.mood,
                                                 fontSize = 11.sp,
-                                                fontWeight = FontWeight.Medium,
+                                                fontWeight = EchoTheme.textMedium,
                                                 color = EchoTheme.primary
                                             )
                                         }

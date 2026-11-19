@@ -192,7 +192,7 @@ fun SearchDiaryScreen(
                                     }
                                     val moodEmoji = com.simats.echodiary.data.local.DiaryActivityStore.getMoodEmoji(entry.mood)
                                     if (entry.mood.isNotBlank() && !entry.mood.equals("not specified", ignoreCase = true)) {
-                                        Text(text = "$moodEmoji ${entry.mood}", fontSize = 12.sp, color = EchoTheme.primary, fontWeight = FontWeight.Medium)
+                                        Text(text = "$moodEmoji ${entry.mood}", fontSize = 12.sp, color = EchoTheme.primary, fontWeight = EchoTheme.textMedium)
                                     }
                                 }
 
@@ -258,7 +258,7 @@ fun SearchDiaryScreen(
                             Text(
                                 text = search,
                                 fontSize = 15.sp,
-                                fontWeight = FontWeight.Medium,
+                                fontWeight = EchoTheme.textMedium,
                                 color = EchoTheme.onSurface
                             )
                         }

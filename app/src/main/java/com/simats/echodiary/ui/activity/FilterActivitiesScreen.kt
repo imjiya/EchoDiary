@@ -110,7 +110,7 @@ fun FilterActivitiesScreen(
                 text = "Find a moment with a little more focus.",
                 fontSize = 12.sp,
                 color = EchoTheme.textSecondary,
-                fontWeight = FontWeight.Medium
+                fontWeight = EchoTheme.textMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -208,7 +208,7 @@ fun FilterActivitiesScreen(
                             Text(
                                 text = cat,
                                 fontSize = 13.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Medium,
                                 color = if (isSelected) EchoTheme.primary else EchoTheme.onSurface
                             )
                         }
@@ -253,7 +253,7 @@ fun FilterActivitiesScreen(
                         Text(
                             text = source,
                             fontSize = 13.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Medium,
                             color = if (isSelected) EchoTheme.primary else EchoTheme.onSurface
                         )
                     }
@@ -295,7 +295,7 @@ fun FilterActivitiesScreen(
                         Text(
                             text = mood,
                             fontSize = 13.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Medium,
                             color = if (isSelected) EchoTheme.primary else EchoTheme.onSurface
                         )
                     }

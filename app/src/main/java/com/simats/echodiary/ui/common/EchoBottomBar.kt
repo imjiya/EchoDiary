@@ -91,7 +91,7 @@ fun EchoBottomBar(
                     Text(
                         text = item.title,
                         fontSize = 11.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                        fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Normal,
                         color = if (isSelected) EchoTheme.primary else EchoTheme.textSecondary
                     )
                 },

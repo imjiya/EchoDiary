@@ -164,7 +164,7 @@ fun AppearanceScreen(
                             Text(
                                 text = mode,
                                 fontSize = 14.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                fontWeight = if (isSelected || EchoTheme.isDark) FontWeight.Bold else FontWeight.Medium,
                                 color = if (isSelected) activePalette.primaryColor else EchoTheme.onSurface
                             )
                         }
@@ -375,7 +375,7 @@ fun AppearanceScreen(
                             Text(
                                 text = "❤️ Health",
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium,
+                                fontWeight = EchoTheme.textMedium,
                                 color = EchoTheme.onSurface
                             )
                         }

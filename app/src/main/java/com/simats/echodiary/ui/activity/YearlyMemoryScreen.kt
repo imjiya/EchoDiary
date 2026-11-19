@@ -2,6 +2,7 @@ package com.simats.echodiary.ui.activity
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -74,10 +75,11 @@ fun YearlyMemoryScreen(
                         text = "Yearly memory",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                 },
                 navigationIcon = {
+                    val backColor = EchoTheme.onSurface
                     IconButton(onClick = { viewModel.onBackClicked() }) {
                         Canvas(modifier = Modifier.size(24.dp)) {
                             val stroke = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
@@ -86,7 +88,7 @@ fun YearlyMemoryScreen(
                                 lineTo(size.width * 0.3f, size.height * 0.5f)
                                 lineTo(size.width * 0.7f, size.height * 0.8f)
                             }
-                            drawPath(path, Color(0xFF1E293B), style = stroke)
+                            drawPath(path, backColor, style = stroke)
                         }
                     }
                 },
@@ -110,7 +112,7 @@ fun YearlyMemoryScreen(
                 text = "Year",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF64748B)
+                color = EchoTheme.textSecondary
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -132,13 +134,13 @@ fun YearlyMemoryScreen(
                         text = state.yearTitle,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Text(
                         text = "⌄",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
                 }
             }
@@ -160,7 +162,7 @@ fun YearlyMemoryScreen(
                     Text(
                         text = state.infoText,
                         fontSize = 13.sp,
-                        color = Color(0xFF334155),
+                        color = EchoTheme.onSurface,
                         lineHeight = 18.sp
                     )
                 }
@@ -181,13 +183,13 @@ fun YearlyMemoryScreen(
                         text = state.chapterTitle,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = state.chapterText,
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 20.sp
                     )
                 }
@@ -210,8 +212,8 @@ fun YearlyMemoryScreen(
                         Text(
                             text = category,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF64748B)
+                            fontWeight = EchoTheme.textMedium,
+                            color = EchoTheme.textSecondary
                         )
                     }
                 }
@@ -229,12 +231,12 @@ fun YearlyMemoryScreen(
                     text = "Saved entries in yearly memory",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
                 Text(
                     text = "${if (state.entries.isNotEmpty()) state.entries.size else state.supportingRecords.size} entries",
                     fontSize = 12.sp,
-                    color = Color(0xFF64748B)
+                    color = EchoTheme.textSecondary
                 )
             }
 
@@ -281,13 +283,13 @@ fun YearlyMemoryScreen(
                                             text = entry.title,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.SemiBold,
-                                            color = Color(0xFF1E293B),
+                                            color = EchoTheme.onSurface,
                                             maxLines = 1
                                         )
                                         Text(
                                             text = "${entry.category} · ${entry.date}",
                                             fontSize = 12.sp,
-                                            color = Color(0xFF64748B)
+                                            color = EchoTheme.textSecondary
                                         )
                                     }
                                 }
@@ -304,7 +306,7 @@ fun YearlyMemoryScreen(
                                         Text(
                                             text = "$moodEmoji ${entry.mood}",
                                             fontSize = 12.sp,
-                                            fontWeight = FontWeight.Medium,
+                                            fontWeight = EchoTheme.textMedium,
                                             color = EchoTheme.primary
                                         )
                                     }
@@ -324,12 +326,12 @@ fun YearlyMemoryScreen(
                                 Text(
                                     text = record.title,
                                     fontSize = 14.sp,
-                                    color = Color(0xFF1E293B)
+                                    color = EchoTheme.onSurface
                                 )
                                 Text(
                                     text = record.date,
                                     fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
+                                    fontWeight = EchoTheme.textMedium,
                                     color = EchoTheme.primary
                                 )
                             }
@@ -344,7 +346,7 @@ fun YearlyMemoryScreen(
             Text(
                 text = state.footerText,
                 fontSize = 13.sp,
-                color = Color(0xFF64748B),
+                color = EchoTheme.textSecondary,
                 lineHeight = 18.sp
             )
 

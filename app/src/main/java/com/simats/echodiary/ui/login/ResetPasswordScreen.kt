@@ -169,7 +169,7 @@ fun ResetPasswordScreen(
                 Text(
                     text = "Email",
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = EchoTheme.textMedium,
                     color = EchoTheme.onSurface,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )

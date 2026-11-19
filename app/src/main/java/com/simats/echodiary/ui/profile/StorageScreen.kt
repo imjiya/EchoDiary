@@ -140,7 +140,7 @@ fun StorageScreen(
                         Text(
                             text = msg,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = EchoTheme.textMedium,
                             color = Color(0xFF065F46)
                         )
                     }
@@ -311,7 +311,7 @@ fun StorageScreen(
                             text = "Category Distribution",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF64748B)
+                            color = EchoTheme.textSecondary
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         state.categoryBreakdown.take(4).forEach { cat ->
@@ -332,14 +332,14 @@ fun StorageScreen(
                                     Text(
                                         text = cat.name,
                                         fontSize = 13.sp,
-                                        color = Color(0xFF334155)
+                                        color = EchoTheme.onSurface
                                     )
                                 }
                                 Text(
                                     text = "${cat.count} (${(cat.percentage * 100).toInt()}%)",
                                     fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF64748B)
+                                    fontWeight = EchoTheme.textMedium,
+                                    color = EchoTheme.textSecondary
                                 )
                             }
                         }
@@ -370,7 +370,7 @@ fun StorageScreen(
                     Text(
                         text = "🧠 100% On-device RAG embedding vectors & SLM synthesis index.",
                         fontSize = 12.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 16.sp
                     )
                 }
@@ -390,7 +390,7 @@ fun StorageScreen(
                     Text(
                         text = "Photos saved with your weekly, monthly and yearly memories are preserved in app-private sandboxed storage.",
                         fontSize = 12.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 16.sp
                     )
                 }
@@ -415,7 +415,7 @@ fun StorageScreen(
                         Text(
                             text = "Cleaning cache frees space without removing diary entries or memories.",
                             fontSize = 12.sp,
-                            color = Color(0xFF64748B),
+                            color = EchoTheme.textSecondary,
                             modifier = Modifier.weight(1f),
                             lineHeight = 16.sp
                         )
@@ -712,7 +712,7 @@ private fun MemoryTagChip(
         Text(
             text = label,
             fontSize = 11.sp,
-            fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal,
+            fontWeight = if (active || EchoTheme.isDark) FontWeight.Bold else FontWeight.Normal,
             color = if (active) EchoTheme.primary else EchoTheme.textSecondary
         )
     }

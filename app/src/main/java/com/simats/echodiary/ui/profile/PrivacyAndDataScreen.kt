@@ -148,7 +148,7 @@ fun PrivacyAndDataScreen(
                         Text(
                             text = msg,
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = EchoTheme.textMedium,
                             color = Color(0xFF065F46)
                         )
                     }
@@ -359,7 +359,7 @@ fun PrivacyAndDataScreen(
                     text = "Clear Diary Data",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             },
             text = {
@@ -367,7 +367,7 @@ fun PrivacyAndDataScreen(
                     Text(
                         text = "Choose whether you want to reset synthesized memories or permanently delete all diary entries.",
                         fontSize = 14.sp,
-                        color = Color(0xFF64748B),
+                        color = EchoTheme.textSecondary,
                         lineHeight = 20.sp
                     )
 
@@ -407,10 +407,10 @@ fun PrivacyAndDataScreen(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { viewModel.setShowClearDataDialog(false) }) {
-                    Text(text = "Cancel", color = Color(0xFF64748B))
+                    Text(text = "Cancel", color = EchoTheme.textSecondary)
                 }
             },
-            containerColor = Color.White,
+            containerColor = EchoTheme.surface,
             shape = RoundedCornerShape(24.dp)
         )
     }
@@ -426,7 +426,7 @@ fun PrivacyAndDataScreen(
                     text = "Privacy Preferences",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E293B)
+                    color = EchoTheme.onSurface
                 )
             },
             text = {
@@ -442,12 +442,12 @@ fun PrivacyAndDataScreen(
                                 text = "On-Device AI Processing",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Text(
                                 text = "Guarantees SLM memory synthesis runs locally without cloud servers.",
                                 fontSize = 12.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
@@ -471,12 +471,12 @@ fun PrivacyAndDataScreen(
                                 text = "App Lock / Biometrics",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1E293B)
+                                color = EchoTheme.onSurface
                             )
                             Text(
                                 text = "Require device authentication to view sensitive diary entries.",
                                 fontSize = 12.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
@@ -509,7 +509,7 @@ fun PrivacyAndDataScreen(
                             Text(
                                 text = "EchoDiary does not include telemetry or advertising SDKs.",
                                 fontSize = 11.sp,
-                                color = Color(0xFF64748B)
+                                color = EchoTheme.textSecondary
                             )
                         }
                     }
@@ -537,7 +537,7 @@ fun PrivacyAndDataScreen(
                     Text(text = "Done", color = primaryColor, fontWeight = FontWeight.Bold)
                 }
             },
-            containerColor = Color.White,
+            containerColor = EchoTheme.surface,
             shape = RoundedCornerShape(24.dp)
         )
     }
@@ -554,12 +554,12 @@ fun PrivacyAndDataScreen(
                         text = "EchoDiary Privacy Policy",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = EchoTheme.onSurface
                     )
                     Text(
                         text = "Published November 2026 · Built for Complete Privacy",
                         fontSize = 11.sp,
-                        color = Color(0xFF64748B)
+                        color = EchoTheme.textSecondary
                     )
                 }
             },
@@ -596,7 +596,7 @@ fun PrivacyAndDataScreen(
                     Text(text = "I Understand", color = primaryColor, fontWeight = FontWeight.Bold)
                 }
             },
-            containerColor = Color.White,
+            containerColor = EchoTheme.surface,
             shape = RoundedCornerShape(24.dp)
         )
     }
@@ -619,7 +619,7 @@ fun PrivacyAndDataScreen(
                 Text(
                     text = "Are you sure? This will permanently erase all your diary entries, AI memories, attached photos, and login credentials from this device.\n\nThis action cannot be undone.",
                     fontSize = 14.sp,
-                    color = Color(0xFF64748B),
+                    color = EchoTheme.textSecondary,
                     lineHeight = 20.sp
                 )
             },
@@ -638,10 +638,10 @@ fun PrivacyAndDataScreen(
             },
             dismissButton = {
                 TextButton(onClick = { viewModel.setShowDeleteAccountDialog(false) }) {
-                    Text(text = "Cancel", color = Color(0xFF64748B))
+                    Text(text = "Cancel", color = EchoTheme.textSecondary)
                 }
             },
-            containerColor = Color.White,
+            containerColor = EchoTheme.surface,
             shape = RoundedCornerShape(24.dp)
         )
     }
@@ -654,13 +654,13 @@ private fun PolicySection(title: String, text: String) {
         text = title,
         fontSize = 13.sp,
         fontWeight = FontWeight.Bold,
-        color = Color(0xFF1E293B)
+        color = EchoTheme.onSurface
     )
     Spacer(modifier = Modifier.height(4.dp))
     Text(
         text = text,
         fontSize = 12.sp,
-        color = Color(0xFF64748B),
+        color = EchoTheme.textSecondary,
         lineHeight = 17.sp
     )
 }
