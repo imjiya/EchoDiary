@@ -444,7 +444,7 @@ fun MemoriesScreen(
                                 .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = "📅", fontSize = 16.sp)
+                            Text(text = "🗓️", fontSize = 16.sp)
                         }
                         Spacer(modifier = Modifier.width(14.dp))
                         Column {

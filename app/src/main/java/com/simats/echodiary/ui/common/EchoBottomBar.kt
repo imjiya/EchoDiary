@@ -17,6 +17,8 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -61,9 +63,18 @@ fun EchoBottomBar(
         )
     )
 
+    val topBorderColor = EchoTheme.cardBorder
     NavigationBar(
+        modifier = Modifier.drawBehind {
+            drawLine(
+                color = topBorderColor,
+                start = Offset(0f, 0f),
+                end = Offset(size.width, 0f),
+                strokeWidth = 1.dp.toPx()
+            )
+        },
         containerColor = EchoTheme.surface,
-        tonalElevation = 8.dp
+        tonalElevation = 0.dp
     ) {
         tabs.forEachIndexed { index, item ->
             val isSelected = selectedIndex == index

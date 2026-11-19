@@ -122,11 +122,13 @@ fun StorageScreen(
 
             // Feedback Message Banner
             state.feedbackMessage?.let { msg ->
+                val bannerBg = if (EchoTheme.isDark) Color(0xFF064E3B) else Color(0xFFECFDF5)
+                val bannerText = if (EchoTheme.isDark) Color(0xFF6EE7B7) else Color(0xFF065F46)
                 Spacer(modifier = Modifier.height(14.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFECFDF5), RoundedCornerShape(16.dp))
+                        .background(bannerBg, RoundedCornerShape(16.dp))
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -141,14 +143,14 @@ fun StorageScreen(
                             text = msg,
                             fontSize = 13.sp,
                             fontWeight = EchoTheme.textMedium,
-                            color = Color(0xFF065F46)
+                            color = bannerText
                         )
                     }
                     Text(
                         text = "✕",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF065F46),
+                        color = bannerText,
                         modifier = Modifier
                             .clickable { viewModel.clearFeedbackMessage() }
                             .padding(4.dp)

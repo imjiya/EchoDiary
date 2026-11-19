@@ -213,33 +213,35 @@ fun PhotoMemoriesScreen(
                     dateGroup.memories.forEach { item ->
                         val photos = item.getAllPhotos()
 
-                        // Photo Memory Card Container
+                        // Unified Photo Memory Card
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(color = EchoTheme.surface, shape = RoundedCornerShape(24.dp))
                                 .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(24.dp))
-                                .padding(16.dp)
+                                .padding(18.dp)
                         ) {
                             Column {
-                                // Time & Category Header
+                                // Top Header: Icon + Category + Time + Mood
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(
-                                            text = item.timeHeader,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = EchoTheme.primary
-                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .background(EchoTheme.container, CircleShape),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(text = item.icon.ifBlank { "📝" }, fontSize = 18.sp)
+                                        }
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Box(
                                             modifier = Modifier
                                                 .background(EchoTheme.container, RoundedCornerShape(8.dp))
-                                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                                                .padding(horizontal = 8.dp, vertical = 3.dp)
                                         ) {
                                             Text(
                                                 text = item.category,
@@ -248,9 +250,17 @@ fun PhotoMemoriesScreen(
                                                 color = EchoTheme.primary
                                             )
                                         }
+                                        if (item.time.isNotBlank()) {
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(
+                                                text = "🕒 ${item.time}",
+                                                fontSize = 11.sp,
+                                                color = EchoTheme.textSecondary
+                                            )
+                                        }
                                     }
 
-                                    if (item.mood.isNotBlank() && !item.mood.equals("not specified", ignoreCase = true)) {
+                                    if (item.mood.isNotBlank() && !item.mood.equals("not specified", ignoreCase = true) && !item.mood.equals("unspecified", ignoreCase = true)) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Text(text = DiaryActivityStore.getMoodEmoji(item.mood), fontSize = 14.sp)
                                             Spacer(modifier = Modifier.width(4.dp))
@@ -264,7 +274,7 @@ fun PhotoMemoriesScreen(
                                     }
                                 }
 
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(12.dp))
 
                                 // Dynamic Photo Collage according to time & photo count
                                 MemoryPhotoCollage(
@@ -277,90 +287,72 @@ fun PhotoMemoriesScreen(
                                     }
                                 )
 
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Spacer(modifier = Modifier.height(14.dp))
 
+                                // Title and reflections
                                 Text(
-                                    text = item.imageCaption,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.SemiBold,
+                                    text = item.title,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
                                     color = EchoTheme.onSurface
                                 )
-                                Spacer(modifier = Modifier.height(2.dp))
-                                Text(
-                                    text = item.imageSubcaption,
-                                    fontSize = 12.sp,
-                                    color = EchoTheme.textSecondary
-                                )
-                            }
-                        }
 
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Associated Entry Card for the respective memory
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(color = EchoTheme.surface, shape = RoundedCornerShape(20.dp))
-                                .border(1.dp, EchoTheme.cardBorder, RoundedCornerShape(20.dp))
-                                .clickable {
-                                    val raw = item.rawEntry ?: DiaryEntryItem(
-                                        id = item.id,
-                                        title = item.title,
-                                        category = item.category,
-                                        date = item.date,
-                                        description = item.description,
-                                        icon = item.icon,
-                                        mood = item.mood,
-                                        hasPhoto = item.hasPhoto,
-                                        photoUri = item.photoUri,
-                                        photoUris = item.photoUris,
-                                        time = item.time
+                                if (item.description.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = item.description,
+                                        fontSize = 13.sp,
+                                        color = EchoTheme.textSecondary,
+                                        lineHeight = 18.sp,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
                                     )
-                                    viewModel.onEntryClicked(raw)
                                 }
-                                .padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // Navigation Link to Activity Details
+                                Row(
                                     modifier = Modifier
-                                        .size(44.dp)
-                                        .background(EchoTheme.container, shape = RoundedCornerShape(12.dp)),
-                                    contentAlignment = Alignment.Center
+                                        .fillMaxWidth()
+                                        .background(EchoTheme.container, shape = RoundedCornerShape(12.dp))
+                                        .clickable {
+                                            val raw = item.rawEntry ?: DiaryEntryItem(
+                                                id = item.id,
+                                                title = item.title,
+                                                category = item.category,
+                                                date = item.date,
+                                                description = item.description,
+                                                icon = item.icon,
+                                                mood = item.mood,
+                                                hasPhoto = item.hasPhoto,
+                                                photoUri = item.photoUri,
+                                                photoUris = item.photoUris,
+                                                time = item.time
+                                            )
+                                            viewModel.onEntryClicked(raw)
+                                        }
+                                        .padding(horizontal = 12.dp, vertical = 9.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(text = item.icon.ifBlank { "📝" }, fontSize = 20.sp)
-                                }
-                                Spacer(modifier = Modifier.width(14.dp))
-                                Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = item.title,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = EchoTheme.onSurface
-                                    )
-                                    Spacer(modifier = Modifier.height(2.dp))
-                                    Text(
-                                        text = "${item.category} · ${item.date}${if (item.time.isNotBlank()) " at ${item.time}" else ""}",
+                                        text = "View Diary Entry Details",
                                         fontSize = 12.sp,
-                                        color = EchoTheme.textSecondary
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = EchoTheme.primary
                                     )
-                                    if (item.description.isNotBlank()) {
-                                        Spacer(modifier = Modifier.height(6.dp))
-                                        Text(
-                                            text = item.description,
-                                            fontSize = 13.sp,
-                                            color = EchoTheme.onSurface,
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    }
+                                    Text(
+                                        text = "→",
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = EchoTheme.primary
+                                    )
                                 }
-                                Text(text = "›", fontSize = 18.sp, color = EchoTheme.textMuted, fontWeight = FontWeight.Bold)
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
@@ -385,20 +377,29 @@ fun PhotoMemoriesScreen(
         AlertDialog(
             onDismissRequest = { previewPhotoUri = null },
             title = {
-                Text(
-                    text = "Photo Memory",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = EchoTheme.onSurface
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Photo Memory",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = EchoTheme.onSurface
+                    )
+                    IconButton(onClick = { previewPhotoUri = null }) {
+                        Text(text = "✕", fontSize = 16.sp, color = EchoTheme.textSecondary, fontWeight = FontWeight.Bold)
+                    }
+                }
             },
             text = {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(300.dp)
+                        .height(320.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(EchoTheme.container),
+                        .background(Color.Black.copy(alpha = 0.85f)),
                     contentAlignment = Alignment.Center
                 ) {
                     if (previewBitmap != null) {
@@ -409,15 +410,11 @@ fun PhotoMemoriesScreen(
                             contentScale = ContentScale.Fit
                         )
                     } else {
-                        Text(text = "🖼️ Preview not available", color = EchoTheme.textSecondary)
+                        Text(text = "🖼️ Preview not available", color = Color.White)
                     }
                 }
             },
-            confirmButton = {
-                TextButton(onClick = { previewPhotoUri = null }) {
-                    Text(text = "Close", color = EchoTheme.primary, fontWeight = FontWeight.Bold)
-                }
-            },
+            confirmButton = {},
             containerColor = EchoTheme.surface,
             shape = RoundedCornerShape(24.dp)
         )

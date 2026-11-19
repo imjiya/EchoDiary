@@ -153,12 +153,16 @@ fun HomeScreen(
                     shape = RoundedCornerShape(26.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.primary)
                 ) {
-                    Text(
-                        text = "Add Voice Entry",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "🎙️", fontSize = 15.sp)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Voice Entry",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                    }
                 }
 
                 Button(
@@ -169,12 +173,16 @@ fun HomeScreen(
                     shape = RoundedCornerShape(26.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = EchoTheme.container)
                 ) {
-                    Text(
-                        text = "Write a Diary",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = EchoTheme.primary
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "✍️", fontSize = 15.sp)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Write Diary",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = EchoTheme.primary
+                        )
+                    }
                 }
             }
 
